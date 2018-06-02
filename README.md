@@ -76,6 +76,7 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 
 #### Common 
 
+  ~~~ sh
 - Background			<string>  color Hex or xrdb.color<num>
 - Foreground			<string>  color Hex or xrdb.color<num>
 - Underline			<string>  color Hex or xrdb.color<num>
@@ -89,9 +90,11 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 - FontName			<string>  default parent fontfamily
 - FontSize			<int>     default parent font size
 - FontBold			<bool>    default  window fontbold
+  ~~~
 
 #### Panel 
 
+  ~~~ sh
 - BorderColor			<string>  color Hex or xrdb.color<num>
 - BarLeft			<list> Ex:Systray,statu1,statu2
 - BarCenter			<list> Ex:Time,Date
@@ -106,18 +109,23 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 - PaddingRight                  <int>  default=0
 - PaddingTop                    <int>  default=0
 
+  ~~~
+
 #### Systray
 
 #### Pager and Taskbar
 
+  ~~~ sh
 - ActiveBackground		<string>  default  window highlight
 - ActiveAlpha 			<int>     0-to-255 default=255
 - ActiveForeground		<string>  default  window highlightText
 - ActiveUnderline		<string>  color Hex or xrdb.color
 - ActiveOverline		<string>  color Hex or xrdb.color
+  ~~~
 
 #### Pager 
 
+  ~~~ sh
 - DesktopDesplay		<string>  "name" "index" "icon" default=index
  				icon-[0-9]  ex: home,office,multimedia,
 				NOTE: The desktop name needs to match the name configured by the WM
@@ -125,9 +133,11 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 				$ xprop -root _NET_DESKTOP_NAMES
 
 - IconsList			<list> list of icon 0 to 9
+  ~~~
 
 #### Status 
 
+  ~~~ sh
 - Command			<string>  Command to desplay
 - Interval			<int>     second default 1
 - Label				<string>  
@@ -138,7 +148,7 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 - MouseWheelUp			<string>   Command to exec
 - MouseWheelDown		<string>   Command to exec
 
-
+  ~~~
 
 
 
