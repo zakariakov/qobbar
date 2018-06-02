@@ -1,3 +1,10 @@
+/********************************************************************
+ *(c)GPL3+
+  Inspired by freedesktops tint2
+  original code  http://razor-qt.org
+  modified by abou zakaria
+*********************************************************************/
+
 #include <QTimer>
 #include <QDebug>
 #include <QApplication>

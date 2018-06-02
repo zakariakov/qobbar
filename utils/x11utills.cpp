@@ -248,7 +248,13 @@ bool X11UTILLS::getClientIcon(Window _wid, QPixmap& _pixreturn)
     }
 
     QImage img (data[0], data[1], QImage::Format_ARGB32);
-    for (int i=0; i<img.byteCount()/4; ++i)
+
+    //TODO FIX deprecated
+    //img.sizeInBytes()
+    //    for (int i=0; i<img.byteCount()/4; ++i)
+   //        ((uint*)img.bits())[i] = data[i+2];
+
+    for (int i=0; i<img.sizeInBytes()/4; ++i)
         ((uint*)img.bits())[i] = data[i+2];
 
     _pixreturn = QPixmap::fromImage(img);

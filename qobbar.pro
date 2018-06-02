@@ -4,13 +4,13 @@
 #
 #-------------------------------------------------
 
-QT       += core gui  x11extras concurrent  xml dbus
+QT       += core gui  x11extras concurrent  dbus
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TEMPLATE = app
 
-LIBS += $(SUBLIBS)  -L/usr/lib -lX11 -xrender -lXcomposite -lXdamage
+LIBS += $(SUBLIBS)  -L/usr/lib -lX11  -lXcomposite -lXdamage
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings

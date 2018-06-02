@@ -1,6 +1,5 @@
 #include "panelwidget.h"
 
-#include "utils/edir.h"
 #include <QApplication>
 #include "panel_adaptor.h"
 //#include <QAbstractNativeEventFilter>

@@ -2,17 +2,12 @@
 /********************************************************************
  *(c)GPL3+
   Inspired by freedesktops tint2
-original code  http://razor-qt.org
- modified by abou zakaria
+  original code  http://razor-qt.org
+  modified by abou zakaria
 *********************************************************************/
 //
 
-
-
-
 #include "systray.h"
-
-
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -23,10 +18,6 @@ original code  http://razor-qt.org
 #include <xcb/damage.h>
 #include "utils/x11utills.h"
 #include <X11/X.h>
-
-
-
-
 
 #define SYSTEM_TRAY_REQUEST_DOCK    0
 #define SYSTEM_TRAY_BEGIN_MESSAGE   1
@@ -64,7 +55,7 @@ SysTray::SysTray( QWidget *parent):
     // after construction is done and the creating object has a chance to connect.
     QTimer::singleShot(0, this, SLOT(startTray()));
 
-  setStyleSheet("background-color: rgb(255, 170, 255);");
+ // setStyleSheet("background-color: rgb(255, 170, 255);");
 }
 
 
@@ -97,8 +88,6 @@ bool SysTray::nativeEventFilter(const QByteArray &eventType, void *message, long
         case ClientMessage:
             clientMessageEvent(event);
             break;
-
-
 
         case DestroyNotify: {
             unsigned long event_window;

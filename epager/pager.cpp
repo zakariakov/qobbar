@@ -35,14 +35,15 @@ Pager::Pager(Setting *s, QWidget* parent, bool debug)
 {
 
    if(mdebug) qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"Pager()";
-    m_pSignalMapper=new QSignalMapper(this);
+   //TODO FIX deprecated
+   //1 m_pSignalMapper=new QSignalMapper;
     this->setObjectName("Pager");
     this->setWindowTitle(tr("Desktop Switch"));
     this->setContentsMargins(0,0,0,0);
     this->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
 
     m_GroupBtns = new QButtonGroup(this);
-    connect ( m_pSignalMapper, SIGNAL(mapped(int)), this, SLOT(setDesktop(int)));
+  //2  connect ( m_pSignalMapper, SIGNAL(mapped(int)), this, SLOT(setDesktop(int)));
 
     mHBoxLayout = new QHBoxLayout(this);
     mHBoxLayout->setSpacing(0);
@@ -195,7 +196,7 @@ void Pager::setupBtns()
     foreach (QAbstractButton * b, m_GroupBtns->buttons())
     {
 
-        m_pSignalMapper->removeMappings(b);
+       //3  m_pSignalMapper->removeMappings(b);
         m_GroupBtns->removeButton(b);
         delete b;
 
@@ -231,8 +232,8 @@ void Pager::setupBtns()
         //  btn->setText(QString::number(i+1));//XDesktop::name(i,"desktop")
         btn->setCheckable(true);
         btn->setToolTip( tr("Desktop %1").arg(XDesktop::name(i,"desktop")));
-        m_pSignalMapper->setMapping(btn, i);
-        connect(btn, SIGNAL(activated()), m_pSignalMapper, SLOT(map())) ;
+      //4  m_pSignalMapper->setMapping(btn, i);
+      //5  connect(btn, SIGNAL(activated()), m_pSignalMapper, SLOT(map())) ;
         btn->setMaximumWidth(btn->height());
         mHBoxLayout->addWidget(btn);
         m_GroupBtns->addButton(btn, i);
