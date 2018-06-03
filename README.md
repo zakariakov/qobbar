@@ -38,6 +38,7 @@
  The configuration uses the NativeFormat CONF file format.
 
  The default SystemScope paths "/etc/xdg/qobbar/qobbar.conf"
+
  The default UserScope paths "$HOME/.config/qobbar/qobbar.conf" 
 
  to create user configuration 
@@ -48,6 +49,7 @@
   ~~~
 
  or create any configuration file in "$HOME/.config/qobbar" 
+
  the suffix ".conf" is obligatoire ex;"myconf.conf"
 
 ### Running the app
@@ -70,9 +72,18 @@ or cp any configuration in the example folder to $HOME/.config/qobbar.
 
 to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 
+### Available modules
+
+  ~~~ sh
+    Panel         configured using this name 'Panel'.
+    Pager         configured using this name 'Pager'.
+    Systray       configured using this name 'Systray'.
+    Taskbar       configured using this name 'Taskbar'.
+    Statu         configured using any name ex: 'Cpu' 'Mem'.
+
+  ~~~ 
 
 ### Available token                                       
-
 
 #### Common 
 
@@ -151,6 +162,62 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
   ~~~
 
 
+### Example 
+  ~~~ sh
+	[Panel]
+	BarLeft=Button,Pager
+	BarCenter=Taskbar
+	BarRight=Cpu,Systray,Time
+	Top=true
+	Background=#000000
+	;Foreground=xrdb.foreground
+	Alpha=150
 
+	[Pager]
+	#ActiveBackground=#ffffff
+	ActiveForeground=#ffffff
+	ActiveOverline=#ffff00
+	DesktopDesplay="icon"
+	IconsList=,,,
+	Foreground=#8A8383
+	Border=1
+	ActiveAlpha=0
+	
+	[Taskbar]
+	ActiveForeground=#FFFFFF
+	ActiveOverline=#1E90FF
+	DesktopDesplay="icon"
+	ActiveBackground=#ffffff
+	ActiveAlpha=20
+	Border=1
+
+	[Time]
+	Interval=12
+	Command="date +%H:%M\--%d/%m/%y"
+	Label="<span style=' color:#4BB94B;'> </span>"
+	FontBold=true
+	ClickLeft="zenity --calendar"
+
+	[Cpu]
+	;Command=$HOME/.config/qobbar/blocks.sh 1
+	Command=$HOME/.config/scripts/cpu_usage
+	Interval=2
+	Label= "<span style=' color:#FFFFFF ;'></span> "	
+	Foreground=#FFFFFF
+	Overline=#ED163D
+	Border=1
+	
+	[Button]
+	Label=
+	ClickLeft= qobmenu
+	Underline=#FF3A00
+	;Overline=#40BF4D
+	Border=1
+	Foreground=xrdb.foreground
+  ~~~
+
+NOTE : to use this qobmenu [**@zakariakov**](https://github.com/zakariakov/qobmenu)
+
+or jgmenu (https://github.com/johanmalm/jgmenu)
 
 
