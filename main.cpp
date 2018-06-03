@@ -16,9 +16,19 @@ void help()
     puts("                                 run \"qobbar -c top-bar\"  .");
     puts(" -d  --debug                     Print debug in termminal.");
     puts(" -r  --right                     right-to-left layout direction.");
+    puts(" -l  --list                      Print list of available modules.");
 
 }
 
+void mylist()
+{
+    puts("Panel         configured using this name 'Panel'.");
+    puts("Pager         configured using this name 'Pager'.");
+    puts("Systray       configured using this name 'Systray'.");
+    puts("Taskbar       configured using this name 'Taskbar'.");
+    puts("Statu         configured using any name ex: 'Cpu' 'Mem'.");
+
+}
 
 int main(int argc, char *argv[])
 {
@@ -54,6 +64,13 @@ int main(int argc, char *argv[])
 
              else if (arg == "-r" || arg == "--right" )  {
                 a.setLayoutDirection(Qt::RightToLeft);
+             }
+
+             else if (arg == "-l" || arg == "--list" )  {
+                {
+                     mylist();
+                     return 1;}
+                 ;
              }
         }//for
     }//if

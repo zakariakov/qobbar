@@ -25,7 +25,6 @@
 #include <QSignalMapper>
 #include "utils/stylecolors.h"
 #include "utils/xdesktoputils.h"
-#include "utils/desktopfile.h"
 #include "pager.h"
 
 //_________________________________________________________________________________

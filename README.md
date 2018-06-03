@@ -123,6 +123,9 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
   ~~~
 
 #### Systray
+ ~~~ sh
+ NULL
+ ~~~ 
 
 #### Pager and Taskbar
 
@@ -186,7 +189,6 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 	[Taskbar]
 	ActiveForeground=#FFFFFF
 	ActiveOverline=#1E90FF
-	DesktopDesplay="icon"
 	ActiveBackground=#ffffff
 	ActiveAlpha=20
 	Border=1
