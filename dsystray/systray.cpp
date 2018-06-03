@@ -26,6 +26,20 @@
 #define XEMBED_EMBEDDED_NOTIFY  0
 #define XEMBED_MAPPED          (1 << 0)
 
+
+QSize getIconSize(QSize size)
+{
+ int   mSize=qMin(size.width(), size.height());
+    if(mSize<22)
+        return QSize(16,16);
+    else if(mSize<32)
+        return  QSize(24,24);
+    else if(mSize<48)
+        return  QSize(32,32);
+
+    return QSize(16,16);
+}
+
 SysTray::SysTray( QWidget *parent):
     QWidget(parent),
     mValid(false),
@@ -38,7 +52,9 @@ SysTray::SysTray( QWidget *parent):
 
      QFontMetrics fm(parent->font());
      int size=fm.height();
-     mIconSize=QSize(size-3,size-3);
+     mIconSize=getIconSize(QSize(size,size));
+     qDebug()<<"   [-]"<<__FILE__<< __LINE__ << "IconSize:"<<mIconSize;
+
 //   font.setPointSize(parent->font().pointSize());
 //   setFont(font);
    setContentsMargins(0,0,0,0);
@@ -53,9 +69,9 @@ SysTray::SysTray( QWidget *parent):
    qApp->installNativeEventFilter(this);
     // Init the selection later just to ensure that no signals are sent until
     // after construction is done and the creating object has a chance to connect.
-    QTimer::singleShot(0, this, SLOT(startTray()));
+    QTimer::singleShot(1500, this, SLOT(startTray()));
 
- // setStyleSheet("background-color: rgb(255, 170, 255);");
+
 }
 
 
@@ -177,7 +193,9 @@ TrayIcon* SysTray::findIcon(Window id)
 void SysTray::setIconSize(QSize iconSize)
 {
 
-    mIconSize = iconSize;
+
+    mIconSize = getIconSize(iconSize);
+       qDebug()<<"   [-]"<<__FILE__<< __LINE__ << "IconSize:"<<mIconSize;
     unsigned long size = qMin(mIconSize.width(), mIconSize.height());
     XChangeProperty(mDisplay,
                     mTrayId,
@@ -339,8 +357,11 @@ void SysTray::onIconDestroyed(QObject * icon)
  ************************************************/
 void SysTray::addIcon(Window winId)
 {
+
     TrayIcon* icon = new TrayIcon(winId, mIconSize, this);
+
     mIcons.append(icon);
     mLayout->addWidget(icon);
     connect(icon, &QObject::destroyed, this, &SysTray::onIconDestroyed);
+    qDebug()<<"   [-]"<<__FILE__<< __LINE__ << "addIcon"<<icon->toolTip()<<mIconSize;
 }

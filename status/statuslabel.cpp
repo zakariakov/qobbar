@@ -201,7 +201,7 @@ void StatusLabel::on_render_finished()
             .arg(mLabel)
             .arg(m_string.trimmed())
             .arg(mPrefix));
-   // qDebug()<<mName<<m_string;
+ //qDebug()<<mName<<m_string;
 }
 
 void StatusLabel::on_textReady(QString str)

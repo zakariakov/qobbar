@@ -106,6 +106,7 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 #### Panel 
 
   ~~~ sh
+- Top				<bool> panel top or bottom default=true
 - BorderColor			<string>  color Hex or xrdb.color<num>
 - BarLeft			<list> Ex:Systray,statu1,statu2
 - BarCenter			<list> Ex:Time,Date

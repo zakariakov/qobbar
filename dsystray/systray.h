@@ -70,6 +70,7 @@ class SysTray: public  QWidget, QAbstractNativeEventFilter
                         long unsigned int data3 = 0,
                         long unsigned int data4 = 0) const;
 
+
       void addIcon(Window id);
       TrayIcon* findIcon(Window trayId);
 

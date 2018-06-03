@@ -18,7 +18,7 @@
 #include <X11/X.h>
 #include <X11/extensions/Xdamage.h>
 
-#define TRAY_ICON_SIZE_DEFAULT 12
+#define TRAY_ICON_SIZE_DEFAULT 16
 class TrayIcon: public QWidget
 {
   Q_OBJECT
