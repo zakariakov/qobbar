@@ -101,7 +101,7 @@ void DtaskbarWidget::loadSettings()
     mSetting->beginGroup("Taskbar");
 
     QString bgColor         =mSetting->background();
-    QString fgColor         =mSetting->foreground();
+    QString fgColor         =mSetting->foreground(m_parent->palette().windowText().color().name());
     QString activebgColor   =mSetting->activeBackground(highlight);
     QString activefgColor   =mSetting->activeForeground(highlightTxt);
     int     alpha           =mSetting->alpha();//
@@ -184,9 +184,9 @@ void DtaskbarWidget::refreshTaskList()
 
     }
 
-//    foreach (DActionTaskbar *btn,mButtonsHash){
-
-//   }
+    foreach (DActionTaskbar *btn,mButtonsHash){
+         btn->setMaximumWidth(this->height()+6);
+    }
 
     activeWindowChanged();
 

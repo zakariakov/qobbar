@@ -51,7 +51,8 @@ DActionTaskbar::DActionTaskbar(const Window window, QWidget *parent) :
 
           getText();
           getIcon();
-         // this->setMinimumWidth(8);
+        this->setMaximumWidth(parent->height()+6);
+
 }
 
 QString getIconFromDesktopApp(QString fileName )
@@ -106,6 +107,8 @@ void DActionTaskbar::getIcon()
        // qDebug()<<"getIcon from classename-------------";
         return;
     }
+
+
      //from xdgappname
     QString xdgicon=getIconFromDesktopApp(appName());
     // qDebug()<<"getIconFromDesktopAppappName xdgicon------------"<<xdgicon;
@@ -147,7 +150,7 @@ QString DActionTaskbar::classeName()
 void DActionTaskbar::getText()
 {
           QString title = X11UTILLS::getWindowTitle(m_Window);
-          setText(title.replace("&", "&&"));
+         // setText(title.replace("&", "&&"));
           setToolTip(title);
           //     qDebug()<<"title-------------------------------------"<<title;
 }

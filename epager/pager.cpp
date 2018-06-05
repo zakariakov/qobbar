@@ -72,7 +72,7 @@ void Pager::loadSettings()
     mSetting->beginGroup("Pager");
 
     QString bgColor         =mSetting->background();
-    QString fgColor         =mSetting->foreground();
+    QString fgColor         =mSetting->foreground(mParent->palette().windowText().color().name());
     QString activebgColor   =mSetting->activeBackground(highlight);
     QString activefgColor   =mSetting->activeForeground(highlightTxt);
     int     alpha           =mSetting->alpha();//

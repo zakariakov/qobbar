@@ -116,8 +116,29 @@ void PanelWidget::loadSettings(bool charge)
     ui->horizontalLayout_left->setSpacing(barLeftSpacing);
 
     // StyleSheet ________________________________________________
+    QPalette pal=this->palette();
 
-    QString mystyle=StyleColors::style(bgColor,
+    if(bgColor.startsWith("xrdb"))
+        bgColor=StyleColors::loadXresourceColor(bgColor.section(".",1));
+
+    if(fgColor.startsWith("xrdb"))
+        fgColor=StyleColors::loadXresourceColor(fgColor.section(".",1));
+
+
+    QColor clbg(bgColor);
+    clbg.setAlpha(alpha);
+
+  if(clbg.isValid())
+    pal.setColor(QPalette::Window,clbg);
+
+
+
+  if(QColor(fgColor).isValid())
+    pal.setColor(QPalette::WindowText,QColor(fgColor));
+
+   setPalette(pal);
+
+   QString mystyle=StyleColors::style(bgColor,
                                        fgColor,
                                        underline,
                                        overline,
@@ -272,6 +293,7 @@ void PanelWidget::reconfigure(QString)
         mTaskbar->loadSettings();
 
      foreach (StatusLabel *w, listStatus) {
+       //  w->setPalette(this->palette());
         w->loadSettings();
      }
 
@@ -298,16 +320,21 @@ void PanelWidget::calculatSize()
     int heightSize=fm.height();
     foreach (StatusLabel *w, listStatus) {
         QFontMetrics fm(w->font());
-        int wSize=fm.height();
-        if (wSize>heightSize)
-            heightSize=wSize;
+        qDebug()<<fm.height();
+      heightSize=  qMax(heightSize,fm.height());
+      border=  qMax(border,w->border());
 
-        int wBorder=w->border();
-        if(wBorder>border)
-            border=wBorder;
+
+//        int wSize=fm.height();
+//        if (wSize>heightSize)
+//            heightSize=wSize;
+
+//        int wBorder=w->border();
+//        if(wBorder>border)
+//            border=wBorder;
     }
     setMaximumHeight(heightSize+(mBorder*2)+(border));
-   if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"calculatSize:"<<"font height:"<< heightSize<<"border:"<<(mBorder)+(border);
+   /*if(mdebug)*/  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"calculatSize:"<<"font height:"<< heightSize<<"border:"<<(mBorder)<<(border);
 
 }
 

@@ -68,7 +68,7 @@ void StatusLabel::loadSettings()
              mMouseWheelUpCmd   =mySetting->mouseWheelUp();
              mMouseWheelDownCmd =mySetting->mouseWheelDown();
      QString bgColor            =mySetting->background();
-     QString fgColor            =mySetting->foreground();
+     QString fgColor            =mySetting->foreground(mParent->palette().windowText().color().name());
      QString underline          =mySetting->underline();
      QString overline           =mySetting->overline();
              mBoreder           =mySetting->border();
