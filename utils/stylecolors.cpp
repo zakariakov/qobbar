@@ -49,7 +49,7 @@ QString StyleColors::loadXresourceColor(const QString &colorName)
         if(!line.contains(":")) continue;
 
 
-        if(line.startsWith("*."+colorName)){
+        if(line.startsWith("*"+colorName)||line.startsWith("*."+colorName)){
 
             QString key=line.section(":",0,0).trimmed();
             QString value=line.section(":",1,1).trimmed();
@@ -59,8 +59,9 @@ QString StyleColors::loadXresourceColor(const QString &colorName)
             if (value.isEmpty()) continue;
 
            // qDebug()<<key.section(".",1,1) <<value;
-            QString color=key.section(".",1,1);
-
+            key.remove("*");
+            key.remove(".");
+            QString color=key.trimmed();
 
             if(color==colorName){
                 files.close();
