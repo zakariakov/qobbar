@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
     a.setApplicationName("qobbar");
     a.setApplicationDisplayName("QobBar");
 
+ a.setLayoutDirection(Qt::LeftToRight);
 
     QStringList args = a.arguments();
 

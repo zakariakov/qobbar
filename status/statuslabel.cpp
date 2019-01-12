@@ -7,10 +7,10 @@
 #include <QMouseEvent>
 QString fixCommand(QString cmd)
 {
-    if(cmd.startsWith("$HOME/") || cmd.startsWith("~/")){
-        cmd.remove("$HOME");
-        cmd.remove("~");
-        cmd.insert(0,QDir::homePath());
+    if(cmd.contains("$HOME/") || cmd.contains("~/")){
+        cmd.replace("$HOME/",QDir::homePath()+"/");
+        cmd.replace("~/",QDir::homePath()+"/");
+//        cmd.insert(0,QDir::homePath());
     }
     return cmd.trimmed();
 }
@@ -55,6 +55,9 @@ StatusLabel::~StatusLabel()
 void StatusLabel::loadSettings()
 {
    if(mdebug) qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"loadSettings:"<<mName;
+
+   //
+    mTimer->stop();
 
     mySetting->beginGroup(mName);
 
@@ -110,17 +113,15 @@ void StatusLabel::loadSettings()
    if(mdebug) qDebug()<<"   [-]"<<__FILE__<< __LINE__<<mName<<"MouseWheelUpCmd:"<<mMouseWheelUpCmd;
    if(mdebug) qDebug()<<"   [-]"<<__FILE__<< __LINE__<<mName<<"MouseWheelDownCmd:"<<mMouseWheelDownCmd;
 
-   //
-    mTimer->stop();
+    //_________________________________________________ STYLESHEET
+    QString mystyle=StyleColors::style(bgColor,fgColor,underline,overline,mBoreder,alpha);
+    setStyleSheet(mystyle);
 
     if(!mCommand.isEmpty())
         startCommand(interval);
     else
        setText(mSuffix+mLabel+mPrefix);
 
-    //_________________________________________________ STYLESHEET
-    QString mystyle=StyleColors::style(bgColor,fgColor,underline,overline,mBoreder,alpha);
-    setStyleSheet(mystyle);
 
 }
 
