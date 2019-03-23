@@ -66,10 +66,11 @@ SysTray::SysTray( QWidget *parent):
     setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred);
 
     _NET_SYSTEM_TRAY_OPCODE = X11UTILLS::atom("_NET_SYSTEM_TRAY_OPCODE");
+    startTray();
    qApp->installNativeEventFilter(this);
     // Init the selection later just to ensure that no signals are sent until
     // after construction is done and the creating object has a chance to connect.
-    QTimer::singleShot(1500, this, SLOT(startTray()));
+   // QTimer::singleShot(1500, this, SLOT(startTray()));
 
 
 }

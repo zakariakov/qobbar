@@ -72,7 +72,7 @@ FORMS    += panelwidget.ui \
 
 DISTFILES += \
     etc/xdg/qobbar/qobbar.conf \
-     /home/yahia/.config/qobbar/*
+     README.md
 #---------------------------------------------
 #                 TRANSLATIONS
 #---------------------------------------------

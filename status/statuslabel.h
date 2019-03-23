@@ -5,6 +5,27 @@
 #include <QTimer>
 #include <QProcess>
 #include <QFutureWatcher>
+#include <QThread>
+//*********************THREAD**************************
+class Thread : public QThread
+{
+    Q_OBJECT
+
+public:
+    Thread(){}
+
+    void setCommand(const QString &cmd){mCmd=cmd;}
+
+signals:
+    void terminated(const QString &result);
+
+protected:
+    void run();
+
+private:
+
+    QString     mCmd;
+};
 
 class StatusLabel : public QLabel
 {
@@ -35,13 +56,15 @@ void    cancelRender();
 private:
      enum CmdType { MouseLeft, MouseRight, MouseWheelUp, MouseWheelDown };
 
+    Thread *mThread;
     //_________________________________
-    QString mCommand;
+  //  QString mCommand;
     QString mLabel;
     QString mSuffix;
     QString mPrefix;
     QString mName;
     int     mInterval;
+    int maxSize=100;
     QTimer *mTimer;
 QWidget *mParent;
 Setting *mySetting;
@@ -62,6 +85,8 @@ private slots:
 
     void    startRender();
     //void    cancelRender();
+
+    void updateCmd(QString result);
 };
 
 #endif // STATUSLABEL_H

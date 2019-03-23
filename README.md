@@ -160,6 +160,7 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
   ~~~ sh
 - Command			<string>  Command to desplay
 - Interval			<int>     second default 1
+- MaxSize			<int>     default 100
 - Label				<string>  
 - Suffix			<string>  
 - Prefix			<string>  

@@ -24,7 +24,6 @@ void mylist()
 {
     puts("Panel         configured using this name 'Panel'.");
     puts("Pager         configured using this name 'Pager'.");
-    puts("Systray       configured using this name 'Systray'.");
     puts("Taskbar       configured using this name 'Taskbar'.");
     puts("Statu         configured using any name ex: 'Cpu' 'Mem'.");
 
@@ -36,8 +35,7 @@ int main(int argc, char *argv[])
     a.setOrganizationName("qobbar");
     a.setApplicationName("qobbar");
     a.setApplicationDisplayName("QobBar");
-
- a.setLayoutDirection(Qt::LeftToRight);
+    a.setLayoutDirection(Qt::LeftToRight);
 
     QStringList args = a.arguments();
 

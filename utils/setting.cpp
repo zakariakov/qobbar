@@ -139,7 +139,10 @@ int  Setting::paddingBottom()
      return value("PaddingBottom",0).toInt();
 }
 
-
+bool Setting::showSystry()
+{
+    return value("Systray",false).toBool();
+}
 /*---------------------------------------------------*
 *                       Pager                        *
 *---------------------------------------------------*/
@@ -194,6 +197,12 @@ int Setting::interval()
 {
      return value("Interval",1).toInt()*1000;
 }
+//___________________________________________________
+int Setting::maxSize()
+{
+     return value("MaxSize",100).toInt();
+}
+
 //___________________________________________________
 QString Setting::label()
 {

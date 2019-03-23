@@ -43,16 +43,16 @@ class PanelWidget;
 #include "dsystray/systray.h"
 #include "epager/pager.h"
 
-#define _SYSTRAY "Systray"
-#define _PAGER "Pager"
-#define _TASKBAR "Taskbar"
+#define MSYSTRAY "Systray"
+#define MPAGER "Pager"
+#define MTASKBAR "Taskbar"
 
 class PanelWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit PanelWidget(bool debug=false,QWidget *parent = 0);
+    explicit PanelWidget(bool debug=false,QWidget *parent = nullptr);
     ~PanelWidget();
 public slots:
     // void reconfigure();

@@ -42,7 +42,7 @@
     <widget class="QWidget" name="widgetBg" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="spacing">
-       <number>0</number>
+       <number>3</number>
       </property>
       <property name="leftMargin">
        <number>0</number>
@@ -62,10 +62,10 @@
          <number>0</number>
         </property>
         <property name="leftMargin">
-         <number>3</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>3</number>
+         <number>0</number>
         </property>
        </layout>
       </item>
@@ -76,8 +76,8 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>40</width>
-          <height>20</height>
+          <width>5</width>
+          <height>5</height>
          </size>
         </property>
        </spacer>
@@ -85,6 +85,12 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_ceter">
         <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
          <number>0</number>
         </property>
        </layout>
@@ -96,7 +102,7 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>40</width>
+          <width>5</width>
           <height>5</height>
          </size>
         </property>
@@ -108,10 +114,26 @@
          <number>0</number>
         </property>
         <property name="leftMargin">
-         <number>3</number>
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>3</number>
+         <number>0</number>
+        </property>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_tray">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
         </property>
        </layout>
       </item>

@@ -34,7 +34,7 @@ m_parent=parent;
     m_horizontalLayout->setSpacing(0);
     m_horizontalLayout->setContentsMargins(0,0,0,0);
     m_horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-    m_horizontalLayout->addSpacing(3);
+   // m_horizontalLayout->addSpacing(3);
 //setMinimumHeight(m_parent->height());
     loadSettings();
 

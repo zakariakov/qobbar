@@ -8,7 +8,7 @@
 PanelWidget::PanelWidget(bool debug, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::PanelWidget),mdebug(debug),
-    mSysTray(0),mPager(0),mTaskbar(0)
+    mSysTray(nullptr),mPager(nullptr),mTaskbar(nullptr)
 {
 
     QByteArray sS=qgetenv("DESKTOP_SESSION");
@@ -64,7 +64,7 @@ PanelWidget::~PanelWidget()
 }
 
 //-------------------------------------------------------------------------------
-void PanelWidget::loadSettings(bool charge)
+void PanelWidget:: loadSettings(bool charge)
 {
 
     if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"loadSettings():beginGroup(Panel)";
@@ -92,6 +92,9 @@ void PanelWidget::loadSettings(bool charge)
     int         _bot            =mSetting->paddingBottom();
     mBorder                     =mSetting->border();
     m_topPos                    =mSetting->top();
+    bool m_showSystry           =mSetting->showSystry();
+
+
 
     mPaddingRect = QRect(QPoint(_left,_top),QPoint(_rigt,_bot));
 
@@ -152,6 +155,19 @@ void PanelWidget::loadSettings(bool charge)
     if(charge)
         chargeStatus( listLeft, listCenter, listRight);
 
+    if(m_showSystry){
+       if(!mSysTray){
+           mSysTray=new SysTray(this);
+          // listWidget.append(group);
+            ui->horizontalLayout_tray->addWidget(mSysTray);
+       }
+
+      // addWidget(mSysTray, pos);
+   }else{
+        if(mSysTray){delete mSysTray;mSysTray=nullptr;}
+
+   }
+
     calculatSize();
 }
 
@@ -179,9 +195,9 @@ void PanelWidget::chargeStatus(QStringList listLeft,QStringList listCenter,QStri
     // Delete non-existing widgets ---------------------------
     foreach (QString e, listWidget) {
         if(!list.contains(e)){
-            if     (e==_PAGER)  {if(mPager)  {delete mPager; mPager=0; listWidget.removeOne(_PAGER);}}
-            else if(e==_SYSTRAY){if(mSysTray){delete mSysTray;mSysTray=0;listWidget.removeOne(_SYSTRAY);}}
-            else if(e==_TASKBAR){if(mTaskbar){delete mTaskbar;mTaskbar=0;listWidget.removeOne(_TASKBAR);}}
+            if     (e==MPAGER)  {if(mPager)  {delete mPager; mPager=nullptr; listWidget.removeOne(MPAGER);}}
+ //           else if(e==MSYSTRAY){if(mSysTray){delete mSysTray;mSysTray=nullptr;listWidget.removeOne(MSYSTRAY);}}
+            else if(e==MTASKBAR){if(mTaskbar){delete mTaskbar;mTaskbar=nullptr;listWidget.removeOne(MTASKBAR);}}
         }
     }
 
@@ -208,7 +224,7 @@ void PanelWidget::addStatus(QStringList list,int pos)
 
         if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<" addWidget:"<<group<<posString;
 
-        if(group==_PAGER){
+        if(group==MPAGER){
             if(!mPager){
                 mPager=new Pager(mSetting,this,mdebug);
                 listWidget.append(group);
@@ -216,15 +232,16 @@ void PanelWidget::addStatus(QStringList list,int pos)
             addWidget(mPager, pos);
         }//_PAGER
 
-        else if(group==_SYSTRAY){
-            if(!mSysTray){
-                mSysTray=new SysTray(this);
-                listWidget.append(group);
-            }
-            addWidget(mSysTray, pos);
-        }//_SYSTRAY
+//        else if(group==MSYSTRAY){
+//            if(!mSysTray){
+//                mSysTray=new SysTray(this);
+//                listWidget.append(group);
+//            }
+//             ui->horizontalLayout_tray->addWidget(mSysTray);
+//           // addWidget(mSysTray, pos);
+//        }//_SYSTRAY
 
-        else if(group==_TASKBAR){
+        else if(group==MTASKBAR){
             if(!mTaskbar){
                 mTaskbar=new  DtaskbarWidget(mSetting,this,mdebug);
                 listWidget.append(group);
@@ -357,7 +374,8 @@ void PanelWidget::resizePanel()
 //        mSysTray->setIconSize(QSize(panelHeight-4,panelHeight-4));
 //    }
 
-    QRect screen(QApplication::desktop()->screen(0)->geometry());
+   // QRect screen(QApplication::desktop()->screen(0)->geometry());
+    QRect screen=QApplication::primaryScreen()->geometry();
    if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"   screen  :"<<screen;
     QRect rect;
 
@@ -393,9 +411,9 @@ void PanelWidget::resizePanel()
 
     this->move(rect.left()+p_left,rect.top()+p_top);
 
-    int mScreenNum= QApplication::desktop()->primaryScreen();
-    QRect desktop = QApplication::desktop()->screen(mScreenNum)->geometry();
-
+//    int mScreenNum= QApplication::desktop()->primaryScreen();
+//    QRect desktop = QApplication::desktop()->screen(mScreenNum)->geometry();
+ QRect desktop =QApplication::primaryScreen()->geometry();
     if (m_topPos==true){
         setStrut(  rect.bottom(), 0,
                    rect.left(), rect.right(),

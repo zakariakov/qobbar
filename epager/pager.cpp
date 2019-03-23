@@ -110,7 +110,6 @@ void Pager::loadSettings()
         mDesktopType=DESKINDEX;
     }
 
-
     mSetting->endGroup();
 
     //-------------------------------------------------------STYLESHEET
@@ -133,24 +132,19 @@ bool Pager::nativeEventFilter(const QByteArray &eventType, void *message, long *
     if (eventType == "xcb_generic_event_t") {
         xcb_generic_event_t* event = static_cast<xcb_generic_event_t *>(message);
 
-
         switch (event->response_type & ~0x80) {
-
 
         case XCB_PROPERTY_NOTIFY:
             xcb_property_notify_event_t *property = reinterpret_cast<xcb_property_notify_event_t*>(event);
             //TODO fix atom name
-
-
             if(property->atom==XDesktop::atom("_NET_DESKTOP_NAMES"))
             {if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"_NET_DESKTOP_NAMES"<<property->atom; rechargeDesktop();}
             else if(property->atom==XDesktop::atom("_NET_CURRENT_DESKTOP"))
             {if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"_NET_CURRENT_DESKTOP"<<property->atom; actvateBtnDesktop();}
             else if(property->atom==XDesktop::atom("_NET_NUMBER_OF_DESKTOPS"))
-            { if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"_NET_NUMBER_OF_DESKTOPS"<<property->atom; rechargeDesktop();}
+            { if(mdebug) qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"_NET_NUMBER_OF_DESKTOPS"<<property->atom; rechargeDesktop();}
 
             break;
-
         }
 
     }
@@ -161,13 +155,11 @@ bool Pager::nativeEventFilter(const QByteArray &eventType, void *message, long *
 //__________________________________________________________________________________
 void Pager::rechargeDesktop()
 {
-   if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"rechargeDesktop()";
+    if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"rechargeDesktop()";
     int count = qMax(XDesktop::count(), 1);
-
 
     if (m_DeskCount != count)
     {
-
         m_DeskCount = count;
         m_desktopNames = XDesktop::names();
         setupBtns();
@@ -181,7 +173,7 @@ void Pager::rechargeDesktop()
 
     int activeDesk = qMax(XDesktop::active(), 0);
 
-   if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<" activeDesk: "<<activeDesk<<"DeskCountt: "<<m_DeskCount;
+    if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<" activeDesk: "<<activeDesk<<"DeskCountt: "<<m_DeskCount;
     if(m_GroupBtns->buttons().count()>0 &&
             activeDesk < m_GroupBtns->buttons().count())
         m_GroupBtns->button(activeDesk)->setChecked(true);
@@ -194,11 +186,9 @@ void Pager::setupBtns()
    if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"setupBtns()";
     foreach (QAbstractButton * b, m_GroupBtns->buttons())
     {
-
        //3  m_pSignalMapper->removeMappings(b);
         m_GroupBtns->removeButton(b);
         delete b;
-
     }
 
    if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"m_DeskCount"<<m_DeskCount;
@@ -208,32 +198,32 @@ void Pager::setupBtns()
 
         ToolButton * btn = new ToolButton(this);
 
-
         switch (mDesktopType) {
         case DESKINDEX:
-            btn->setText(QString::number(i+1));//XDesktop::name(i,"desktop")
+            btn->setText(QString::number(i+1).trimmed());
             break;
         case DESKNAME:
-            btn->setText(XDesktop::name(i,"desktop"));
+            btn->setText(XDesktop::name(i,"desktop").trimmed());
             break;
         case DESKICON:
             if(i<listIcons.count())
-               btn->setText(listIcons.at(i));
+               btn->setText(listIcons.at(i).trimmed());
             else
-                btn->setText(QString::number(i+1));
+                btn->setText(QString::number(i+1).trimmed());
             break;
 
         default:
-            btn->setText(QString::number(i+1));//XDesktop::name(i,"desktop")
+            btn->setText(QString::number(i+1).trimmed());//XDesktop::name(i,"desktop")
             break;
+
         }
 
         //  btn->setText(QString::number(i+1));//XDesktop::name(i,"desktop")
         btn->setCheckable(true);
         btn->setToolTip( tr("Desktop %1").arg(XDesktop::name(i,"desktop")));
-      //4  m_pSignalMapper->setMapping(btn, i);
-      //5  connect(btn, SIGNAL(activated()), m_pSignalMapper, SLOT(map())) ;
-        btn->setMaximumWidth(btn->height());
+       //4  m_pSignalMapper->setMapping(btn, i);
+       //5  connect(btn, SIGNAL(activated()), m_pSignalMapper, SLOT(map())) ;
+       // btn->setMaximumWidth(btn->height());
         mHBoxLayout->addWidget(btn);
         m_GroupBtns->addButton(btn, i);
 
@@ -241,6 +231,7 @@ void Pager::setupBtns()
 
     int activeDesk = qMax(XDesktop::active(), 0);
     QAbstractButton * button = m_GroupBtns->button(activeDesk);
+
     if (button)
         button->setChecked(true);
 
@@ -313,10 +304,8 @@ void Pager::goDesktop(int arg)
 //__________________________________________________________________________________
 void Pager::setSize(QSize size)
 {
-
     m_size= size;
     setupBtns();
-
 }
 
 

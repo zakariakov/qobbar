@@ -49,6 +49,7 @@ public:
     int   paddingTop();
     int   paddingRight();
     int   paddingBottom();
+    bool  showSystry();
     //Pager
     int activeAlpha();
     QString activeBackground(const QString &defaultValue=QString());
@@ -61,6 +62,7 @@ public:
     //Statu
     QString command();
     int interval();
+    int maxSize();
     QString label();
     QString suffix();
     QString prefix();
