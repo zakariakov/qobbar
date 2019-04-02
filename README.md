@@ -82,7 +82,6 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
   ~~~ sh
     Panel         configured using this name 'Panel'.
     Pager         configured using this name 'Pager'.
-    Systray       configured using this name 'Systray'.
     Taskbar       configured using this name 'Taskbar'.
     Statu         configured using any name ex: 'Cpu' 'Mem'.
 
@@ -113,12 +112,13 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
   ~~~ sh
 - Top				<bool> panel top or bottom default=true
 - BorderColor			<string>  color Hex or xrdb.color<num>
-- BarLeft			<list> Ex:Systray,statu1,statu2
-- BarCenter			<list> Ex:Time,Date
-- BarRight			<list> Ex:Pager
+- BarLeft				<list> Ex:Systray,statu1,statu2
+- BarCenter				<list> Ex:Time,Date
+- BarRight				<list> Ex:Pager
 - BarLeftSpacing		<int>  default=0
 - BarRightSpacing		<int>  default=0
 - BarCenterSpacing		<int>  default=0
+- Systray				<bool>  default=false
 
  -----padding has no effect in tilling wm -----
 - PaddingBottom                 <int>  default=0
@@ -128,10 +128,6 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 
   ~~~
 
-#### Systray
- ~~~ sh
- NULL
- ~~~ 
 
 #### Pager and Taskbar
 
@@ -177,12 +173,13 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 	[Panel]
 	BarLeft=Button,Pager
 	BarCenter=Taskbar
-	BarRight=Cpu,Systray,Time
+	BarRight=Cpu,Time
 	Top=true
 	Background=#000000
 	;Foreground=xrdb.foreground
 	Alpha=150
-
+	Systray=true
+	
 	[Pager]
 	#ActiveBackground=#ffffff
 	ActiveForeground=#ffffff
