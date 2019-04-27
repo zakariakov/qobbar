@@ -164,7 +164,7 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 - ClickRight			<string>   Command to exec
 - MouseWheelUp			<string>   Command to exec
 - MouseWheelDown		<string>   Command to exec
-
+- ActiveIcon          <string> if DesktopDesplay==icon default=NULL
   ~~~
 
 

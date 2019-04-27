@@ -96,14 +96,15 @@ QString StyleColors::loadXresourceColor(const QString &colorName)
          }
 
      }
-//qDebug()<<"   [*]"<<__FILE__<<__LINE__<< "StyleColors::xrdbget return="<<txt;
+qDebug()<<"   [*]"<<__FILE__<<__LINE__<< "StyleColors::xrdbget return="<<txt;
      return txt;
 
  }
 QString StyleColors::style( QString bgColor, QString fgColor,
                       QString underline, QString overline,
-                     int border,int alpha,QString borderColor)
+                     int border,int alpha,QString borderColor,int radius)
 {
+
 
     if(bgColor.startsWith("xrdb"))
         bgColor=loadXresourceColor(bgColor.section(".",1));
@@ -138,7 +139,7 @@ QString StyleColors::style( QString bgColor, QString fgColor,
     if(QColor(borderColor).isValid())mStyleSheet+=QString("border: %1px solid %2;\n")
             .arg(qMax(1,border)).arg(borderColor);
    // else  mStyleSheet+=QString("border-top: 0px;\n") ;
-
+   if(radius>0) mStyleSheet+=QString("border-radius: %1px;\n") .arg(QString::number(radius));
 
    // qDebug()<<"   [*]"<<__FILE__<<__LINE__<<"StyleSheet"<<mStyleSheet;
     return mStyleSheet;

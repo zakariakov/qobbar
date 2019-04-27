@@ -60,6 +60,11 @@ public:
 signals:
 
     void activated();
+public slots:
+  void  setData(QString txt){m_data=txt;}
+  QString data(){return  m_data;}
+private:
+    QString m_data;
 };
 /**
  * @brief The Pager class التبديل بين اسطح المكتب
@@ -70,7 +75,7 @@ class Pager : public QWidget,public QAbstractNativeEventFilter
     Q_OBJECT
 
 public:
-    explicit    Pager(Setting *s,QWidget* parent = 0,bool debug=false);
+    explicit    Pager(Setting *s,QWidget* parent = nullptr,bool debug=false);
     bool nativeEventFilter(const QByteArray &eventType, void *message, long *);
     ~Pager();
 
@@ -105,6 +110,7 @@ bool mdebug;
 enum DesktopType{DESKINDEX,DESKNAME,DESKICON};
 int mDesktopType;
 QStringList listIcons;
+QString mActiveIcon;
 private slots:
     /**
      * @brief setDesktop الانتقال الى سطح مكتب

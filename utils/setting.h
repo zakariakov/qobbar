@@ -33,6 +33,7 @@ public:
     QString overline();
     QString borderColor();
     int fontSize(int defaultValue);
+    int radius(int defaultValue=0);
     int border();
     bool fontBold(bool defaultValue);
     int alpha();
@@ -54,6 +55,9 @@ public:
     int activeAlpha();
     QString activeBackground(const QString &defaultValue=QString());
     QString activeForeground(const QString &defaultValue=QString());
+    QString activeText(const QString &defaultValue=QString());
+    QString activeIcon(const QString &defaultValue=QString());
+
     QString activeUnderline();
     QString activeOverline();
     QString desktopDesplay();

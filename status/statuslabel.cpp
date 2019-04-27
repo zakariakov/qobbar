@@ -87,7 +87,7 @@ void StatusLabel::loadSettings()
      QString fontName           =mySetting->fontName(mParent->font().family());
      int     fontSize           =mySetting->fontSize(mParent->font().pointSize());
      bool    fontBold           =mySetting->fontBold(mParent->font().bold());
-
+     int     radius             =mySetting->radius();
      mySetting->endGroup();
 
     //_________________________________________________ INIT
@@ -123,7 +123,15 @@ void StatusLabel::loadSettings()
         qDebug()<<"   [-]"<<__FILE__<< __LINE__<<mName<<"MouseWheelDownCmd:"<<mMouseWheelDownCmd;
     }
     //_________________________________________________ STYLESHEET
-    QString mystyle=StyleColors::style(bgColor,fgColor,underline,overline,mBoreder,alpha);
+    QString mystyle=StyleColors::style(bgColor,
+                                       fgColor,
+                                       underline,
+                                       overline,
+                                       mBoreder,
+                                       alpha,
+                                       QString(),
+                                       radius);
+
     setStyleSheet(mystyle);
 
     if(!mCommand.isEmpty()){
@@ -223,11 +231,11 @@ void StatusLabel::on_render_finished()
        m_string+="...";
     }
 
-    setText(QString("%1 %2 %3 %4")
-            .arg(mSuffix.trimmed())
-            .arg(mLabel.trimmed())
-            .arg(m_string.trimmed())
-            .arg(mPrefix.trimmed()));
+    setText(QString(" %1 %2 %3 %4 ")
+            .arg(mSuffix)
+            .arg(mLabel)
+            .arg(m_string)
+            .arg(mPrefix));
  qDebug()<<mName<<m_string<<maxSize;
 }
 
@@ -318,12 +326,13 @@ void StatusLabel::updateCmd(QString result)
 
 
     setText(QString("%1 %2 %3 %4")
-            .arg(mSuffix.trimmed())
-            .arg(mLabel.trimmed())
-            .arg(result.trimmed())
-            .arg(mPrefix.trimmed()));
+            .arg(mSuffix)
+            .arg(mLabel)
+            .arg(result)
+            .arg(mPrefix));
+
     if(mdebug)
-        qDebug()<<"   [-]"<<__FILE__<< __LINE__<<mName<<result<<maxSize;
+        qDebug()<<"   [-]"<<__FILE__<< __LINE__<<mName<<mLabel<<result;
 
 }
 

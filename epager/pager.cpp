@@ -75,6 +75,7 @@ void Pager::loadSettings()
     QString fgColor         =mSetting->foreground(mParent->palette().windowText().color().name());
     QString activebgColor   =mSetting->activeBackground(highlight);
     QString activefgColor   =mSetting->activeForeground(highlightTxt);
+            mActiveIcon     =mSetting->activeIcon();
     int     alpha           =mSetting->alpha();//
     int     activeAlpha     =mSetting->activeAlpha();
     QString underline       =mSetting->underline();
@@ -174,9 +175,12 @@ void Pager::rechargeDesktop()
     int activeDesk = qMax(XDesktop::active(), 0);
 
     if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<" activeDesk: "<<activeDesk<<"DeskCountt: "<<m_DeskCount;
-    if(m_GroupBtns->buttons().count()>0 &&
-            activeDesk < m_GroupBtns->buttons().count())
+    if(m_GroupBtns->buttons().count()>0 &&  activeDesk < m_GroupBtns->buttons().count()){
+
         m_GroupBtns->button(activeDesk)->setChecked(true);
+
+    }
+
 
 }
 
@@ -221,6 +225,7 @@ void Pager::setupBtns()
         //  btn->setText(QString::number(i+1));//XDesktop::name(i,"desktop")
         btn->setCheckable(true);
         btn->setToolTip( tr("Desktop %1").arg(XDesktop::name(i,"desktop")));
+        btn->setData(btn->text());
        //4  m_pSignalMapper->setMapping(btn, i);
        //5  connect(btn, SIGNAL(activated()), m_pSignalMapper, SLOT(map())) ;
        // btn->setMaximumWidth(btn->height());
@@ -232,9 +237,12 @@ void Pager::setupBtns()
     int activeDesk = qMax(XDesktop::active(), 0);
     QAbstractButton * button = m_GroupBtns->button(activeDesk);
 
-    if (button)
+    if (button){
         button->setChecked(true);
 
+        if(mDesktopType==DESKICON && activeDesk<listIcons.count() && !mActiveIcon.isEmpty())
+            button->setText(mActiveIcon);
+    }
     connect(m_GroupBtns, SIGNAL(buttonClicked(int)),
             this, SLOT(setDesktop(int)));
 
@@ -251,8 +259,24 @@ void Pager::setDesktop(int desktop)
 
     XDesktop::setCurrent(desktop);
     int activeDesk = qMax(XDesktop::active(), 0);
-    m_GroupBtns->button(activeDesk)->setChecked(true);
 
+    if(mDesktopType==DESKICON  && !mActiveIcon.isEmpty()){
+        for (int i = 0; i < m_DeskCount; ++i)
+        {
+            if(i<listIcons.count())
+                m_GroupBtns->button(i)->setText(listIcons.at(i).trimmed());
+            else
+                 m_GroupBtns->button(activeDesk)->setText(QString::number(i+1).trimmed());
+
+        }
+    }
+    QAbstractButton * button = m_GroupBtns->button(activeDesk);
+     if (button){
+
+         button->setChecked(true);
+         if(mDesktopType==DESKICON && activeDesk<listIcons.count() && !mActiveIcon.isEmpty())
+           button->setText(mActiveIcon);
+     }
 }
 
 //__________________________________________________________________________________
@@ -275,11 +299,30 @@ void Pager::actvateBtnDesktop()
 {
     int activeDesk = qMax(XDesktop::active(), 0);
    if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"activeDesk"<<activeDesk;
-    QAbstractButton * button = m_GroupBtns->button(activeDesk);
-    if (button)
+
+   if(mDesktopType==DESKICON  && !mActiveIcon.isEmpty() ){
+       for (int i = 0; i < m_DeskCount; ++i)
+       {
+           if(i<listIcons.count())
+               m_GroupBtns->button(i)->setText(listIcons.at(i).trimmed());
+           else
+                m_GroupBtns->button(activeDesk)->setText(QString::number(i+1).trimmed());
+
+       }
+   }
+
+
+   QAbstractButton * button = m_GroupBtns->button(activeDesk);
+    if (button){
+
         button->setChecked(true);
+
+        if(mDesktopType==DESKICON && activeDesk<listIcons.count() && !mActiveIcon.isEmpty())
+        button->setText(mActiveIcon);
+    }
     else
         rechargeDesktop();
+
 }
 
 //__________________________________________________________________________________

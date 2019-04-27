@@ -64,6 +64,12 @@ int Setting::fontSize(int defaultValue)
     return value("FontSize",defaultValue).toInt();
 }
 //___________________________________________________
+int Setting::radius(int defaultValue)
+{
+    return value("BorderRadius",defaultValue).toInt();
+}
+
+//___________________________________________________
 bool Setting::fontBold(bool defaultValue)
 {
     return value("FontBold",defaultValue).toBool();
@@ -162,6 +168,16 @@ QString Setting::activeForeground(const QString &defaultValue)
 {
     return value("ActiveForeground",defaultValue).toString();
 }
+QString Setting::activeIcon(const QString &defaultValue)
+{
+    return value("ActiveIcon",defaultValue).toString();
+}
+//___________________________________________________
+QString Setting::activeText(const QString &defaultValue)
+{
+    return value("ActiveText",defaultValue).toString();
+}
+
 //___________________________________________________
 QString Setting::activeUnderline()
 {

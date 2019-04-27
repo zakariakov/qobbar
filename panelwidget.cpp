@@ -149,7 +149,7 @@ void PanelWidget:: loadSettings(bool charge)
                                        alpha,
                                        borderColor);
 
-    ui->widgetBg-> setStyleSheet("QWidget#widgetBg{"+mystyle+"}");
+   ui->widgetBg-> setStyleSheet("QWidget#widgetBg{"+mystyle+"}");
 //qDebug()<<ui->widgetBg->styleSheet();
     // charge status ---------------------------------------------
     if(charge)
@@ -169,6 +169,9 @@ void PanelWidget:: loadSettings(bool charge)
    }
 
     calculatSize();
+//    ui->widgetBg-> setAutoFillBackground(false);
+//    ui->widgetBg-> setWindowOpacity(alpha);
+
 }
 
 //-----------------------------------------------------------------------------------
