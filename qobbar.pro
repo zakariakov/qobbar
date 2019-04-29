@@ -72,14 +72,15 @@ FORMS    += panelwidget.ui \
 
 DISTFILES += \
     etc/xdg/qobbar/qobbar.conf \
-     README.md
+    etc/xdg/qobbar/blocks.sh \
+    README.md
 #---------------------------------------------
 #                 TRANSLATIONS
 #---------------------------------------------
 #---------------------------------------------
 #                   INSTALL
 #---------------------------------------------
- MKDIR = mkdir -p /etc/xdg/elokab
+ MKDIR = mkdir -p /etc/xdg
 
  target.path = /usr/bin
 

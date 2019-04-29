@@ -224,19 +224,19 @@ void StatusLabel::execCmd(int type)
 //________________________________________________________________ QFutureWatcher
 void StatusLabel::on_render_finished()
 {
-    setToolTip(QString());
-    if(m_string.length()>maxSize){
-       setToolTip(m_string);
-       m_string.resize(maxSize-3);
-       m_string+="...";
-    }
+//    setToolTip(QString());
+//    if(m_string.length()>maxSize){
+//       setToolTip(m_string);
+//       m_string.resize(maxSize-3);
+//       m_string+="...";
+//    }
 
-    setText(QString(" %1 %2 %3 %4 ")
-            .arg(mSuffix)
-            .arg(mLabel)
-            .arg(m_string)
-            .arg(mPrefix));
- qDebug()<<mName<<m_string<<maxSize;
+//    setText(QString(" %1 %2 %3 %4 ")
+//            .arg(mSuffix)
+//            .arg(mLabel)
+//            .arg(m_string)
+//            .arg(mPrefix));
+// qDebug()<<mName<<m_string<<maxSize;
 }
 
 void StatusLabel::on_textReady(QString str)
@@ -319,16 +319,15 @@ void StatusLabel::updateCmd(QString result)
     setToolTip(QString());
     if(result.length()>maxSize){
        setToolTip(result);
-       result.resize(maxSize-3);
-       result+="...";
+       result.resize(maxSize-1);
+       result+="…";
     }
-
 
 
     setText(QString("%1 %2 %3 %4")
             .arg(mSuffix)
             .arg(mLabel)
-            .arg(result)
+            .arg(result.trimmed())
             .arg(mPrefix));
 
     if(mdebug)

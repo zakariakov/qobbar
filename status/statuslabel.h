@@ -47,7 +47,7 @@ protected:
     void wheelEvent(QWheelEvent* e);
     //__________________________________________
 public:
-    StatusLabel(QString group,Setting *s, QWidget *parent=0,bool debug=false);
+    StatusLabel(QString group,Setting *s, QWidget *parent=nullptr,bool debug=false);
       ~StatusLabel();
 int border(){return mBoreder;}
     QString name(){return mName;}

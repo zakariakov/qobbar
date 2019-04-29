@@ -22,6 +22,7 @@
 #include <QToolButton>
 #include <QWheelEvent>
 #include <QtDebug>
+#include <QFontMetrics>
 #include <QSignalMapper>
 #include "utils/stylecolors.h"
 #include "utils/xdesktoputils.h"
@@ -50,7 +51,7 @@ Pager::Pager(Setting *s, QWidget* parent, bool debug)
     mHBoxLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
     setContentsMargins(0, 0, 0, 0);
 
-    m_size=QSize(16,16);
+   // m_size=QSize(16,16);
 
     loadSettings();
     qApp->installNativeEventFilter(this);
@@ -74,7 +75,7 @@ void Pager::loadSettings()
     QString bgColor         =mSetting->background();
     QString fgColor         =mSetting->foreground(mParent->palette().windowText().color().name());
     QString activebgColor   =mSetting->activeBackground(highlight);
-    QString activefgColor   =mSetting->activeForeground(highlightTxt);
+    QString activefgColor   =mSetting->activeForeground(mParent->palette().windowText().color().name());
             mActiveIcon     =mSetting->activeIcon();
     int     alpha           =mSetting->alpha();//
     int     activeAlpha     =mSetting->activeAlpha();
@@ -226,6 +227,9 @@ void Pager::setupBtns()
         btn->setCheckable(true);
         btn->setToolTip( tr("Desktop %1").arg(XDesktop::name(i,"desktop")));
         btn->setData(btn->text());
+        QFontMetrics mtr(btn->font());
+        int w=mtr.width(btn->text());
+        btn->setMaximumWidth(w+10);
        //4  m_pSignalMapper->setMapping(btn, i);
        //5  connect(btn, SIGNAL(activated()), m_pSignalMapper, SLOT(map())) ;
        // btn->setMaximumWidth(btn->height());
@@ -347,7 +351,7 @@ void Pager::goDesktop(int arg)
 //__________________________________________________________________________________
 void Pager::setSize(QSize size)
 {
-    m_size= size;
+   m_size= size;
     setupBtns();
 }
 

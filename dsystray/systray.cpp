@@ -33,7 +33,7 @@ QSize getIconSize(QSize size)
     if(mSize<22)
         return QSize(16,16);
     else if(mSize<32)
-        return  QSize(24,24);
+        return  QSize(22,22);
     else if(mSize<48)
         return  QSize(32,32);
 
