@@ -6,11 +6,6 @@
 
 ![Screenshots](https://github.com/zakariakov/qobbar/blob/master/example/qobbar1.png)
 
-<img src="https://gitlab.com/zakariakov/qobbar/blob/master/example/qobbar3.jpg">
-
-<img src="https://gitlab.com/zakariakov/qobbar/blob/master/example/qobbar4.png">
-
-<img src="https://gitlab.com/zakariakov/qobbar/blob/master/example/qobbar1.png">
 
 ### Dependencies
 
@@ -149,6 +144,7 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 				$ xprop -root _NET_DESKTOP_NAMES
 
 - IconsList			<list> list of icon 0 to 9
+- ActiveIcon          <string> if DesktopDesplay==icon default=NULL
   ~~~
 
 #### Status 
@@ -164,7 +160,6 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 - ClickRight			<string>   Command to exec
 - MouseWheelUp			<string>   Command to exec
 - MouseWheelDown		<string>   Command to exec
-- ActiveIcon          <string> if DesktopDesplay==icon default=NULL
   ~~~
 
 
@@ -185,7 +180,8 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 	ActiveForeground=#ffffff
 	ActiveOverline=#ffff00
 	DesktopDesplay="icon"
-	IconsList=,,,
+	IconsList=,,,,,,
+	ActiveIcon=
 	Foreground=#8A8383
 	Border=1
 	ActiveAlpha=0
