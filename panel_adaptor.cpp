@@ -26,9 +26,9 @@ void panel_adaptor::reconfigure()
      QMetaObject::invokeMethod(parent(), "reconfigure");
 }
 
- void panel_adaptor::showMenu()
+ void panel_adaptor::showHide()
  {
-      QMetaObject::invokeMethod(parent(), "showMenu");
+      QMetaObject::invokeMethod(parent(), "showHide");
  }
 
  void panel_adaptor::exit()

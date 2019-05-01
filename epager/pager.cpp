@@ -40,7 +40,7 @@ Pager::Pager(Setting *s, QWidget* parent, bool debug)
     this->setObjectName("Pager");
     this->setWindowTitle(tr("Desktop Switch"));
     this->setContentsMargins(0,0,0,0);
-    this->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
+    this->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred);
 
     m_GroupBtns = new QButtonGroup(this);
   //2  connect ( m_pSignalMapper, SIGNAL(mapped(int)), this, SLOT(setDesktop(int)));

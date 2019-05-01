@@ -145,6 +145,31 @@ int  Setting::paddingBottom()
      return value("PaddingBottom",0).toInt();
 }
 
+//___________________________________________________
+int  Setting::meginLeft()
+{
+     return value("MarginLeft",0).toInt();
+}
+//___________________________________________________
+int  Setting::meginTop()
+{
+     return value("MarginTop",0).toInt();
+}
+//___________________________________________________
+int  Setting::meginRight()
+{
+     return value("MarginRight",0).toInt();
+}
+//___________________________________________________
+int  Setting::meginBottom()
+{
+     return value("MarginBottom",0).toInt();
+}
+//___________________________________________________
+//int  Setting::panelHeight()
+//{
+//     return value("Height",0).toInt();
+//}
 bool Setting::showSystry()
 {
     return value("Systray",false).toBool();

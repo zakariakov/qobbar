@@ -16,6 +16,7 @@ void help()
     puts("                                 run \"qobbar -c top-bar\"  .");
     puts(" -d  --debug                     Print debug in termminal.");
     puts(" -r  --right                     right-to-left layout direction.");
+    puts(" -s  --showhide                  show or hide bar.");
     puts(" -l  --list                      Print list of available modules.");
 
 }
@@ -38,7 +39,7 @@ int main(int argc, char *argv[])
     a.setLayoutDirection(Qt::LeftToRight);
 
     QStringList args = a.arguments();
-
+    bool hide=false;
     bool debug=false;
     if(args.count()>1)
     {
@@ -61,6 +62,10 @@ int main(int argc, char *argv[])
                  debug=true;
              }
 
+             else if (arg == "-s" || arg == "--showhide" )  {
+                 hide=true;
+             }
+
              else if (arg == "-r" || arg == "--right" )  {
                 a.setLayoutDirection(Qt::RightToLeft);
              }
@@ -68,8 +73,9 @@ int main(int argc, char *argv[])
              else if (arg == "-l" || arg == "--list" )  {
                 {
                      mylist();
-                     return 1;}
-                 ;
+                     return 1;
+                 }
+
              }
         }//for
     }//if
@@ -77,8 +83,21 @@ int main(int argc, char *argv[])
     QDBusConnection connection = QDBusConnection::sessionBus();
     if (! QDBusConnection::sessionBus().registerService("org.elokab.panel."+a.applicationName()))
     {
+
         printf ("Unable to register 'org.elokab.qobbar' service - is another instance of elokab-qobbar running?\n");
-        return 1;
+       if(!hide)return 0;
+
+        QDBusInterface dbus("org.elokab.panel."+a.applicationName(),
+                            "/org/elokab/panel/"+a.applicationName(),
+                            "org.elokab.panel.Interface");
+
+       if (!dbus.isValid()) { printf ("QDBusInterface is not valid!");return 0; }
+
+         dbus.call("showHide");
+
+
+
+        return 0;
     }
 
     PanelWidget w(debug);

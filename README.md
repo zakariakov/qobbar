@@ -107,15 +107,19 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
   ~~~ sh
 - Top				<bool> panel top or bottom default=true
 - BorderColor			<string>  color Hex or xrdb.color<num>
-- BarLeft				<list> Ex:Systray,statu1,statu2
-- BarCenter				<list> Ex:Time,Date
-- BarRight				<list> Ex:Pager
+- BarLeft			<list> Ex:statu1,statu2
+- BarCenter			<list> Ex:Time,Date
+- BarRight			<list> Ex:Pager
 - BarLeftSpacing		<int>  default=0
 - BarRightSpacing		<int>  default=0
 - BarCenterSpacing		<int>  default=0
-- Systray				<bool>  default=false
+- MarginLeft                    <int>  default=0
+- MarginTop                     <int>  default=0
+- MarginRight                   <int>  default=0
+- MarginBottom                  <int>  default=0
+- Systray			<bool>  default=false
 
- -----padding has no effect in tilling wm -----
+ -----padding has no effect in tilling i3wm -----
 - PaddingBottom                 <int>  default=0
 - PaddingLeft                   <int>  default=0
 - PaddingRight                  <int>  default=0
@@ -144,7 +148,7 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 				$ xprop -root _NET_DESKTOP_NAMES
 
 - IconsList			<list> list of icon 0 to 9
-- ActiveIcon          <string> if DesktopDesplay==icon default=NULL
+- ActiveIcon                    <string> if DesktopDesplay==icon default=NULL
   ~~~
 
 #### Status 

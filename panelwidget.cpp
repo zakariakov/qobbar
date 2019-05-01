@@ -63,6 +63,11 @@ PanelWidget::~PanelWidget()
     delete ui;
 }
 
+void PanelWidget::showHide()
+{
+    if(isHidden())show();
+    else hide();
+}
 //-------------------------------------------------------------------------------
 void PanelWidget:: loadSettings(bool charge)
 {
@@ -90,13 +95,19 @@ void PanelWidget:: loadSettings(bool charge)
     int         _top            =mSetting->paddingTop();
     int         _rigt           =mSetting->paddingRight();
     int         _bot            =mSetting->paddingBottom();
+    int         m_left           =mSetting->meginLeft();
+    int         m_top            =mSetting->meginTop();
+    int         m_rigt           =mSetting->meginRight();
+    int         m_bot            =mSetting->meginBottom();
+
     mBorder                     =mSetting->border();
     m_topPos                    =mSetting->top();
     bool m_showSystry           =mSetting->showSystry();
-
-
+    //     m_height               =mSetting->panelHeight();
 
     mPaddingRect = QRect(QPoint(_left,_top),QPoint(_rigt,_bot));
+
+    mMarginRect = QRect(QPoint(m_left,m_top),QPoint(m_rigt,m_bot));
 
     mSetting->endGroup();
 
@@ -113,10 +124,12 @@ void PanelWidget:: loadSettings(bool charge)
     //    qDebug()<<"[==]"<<__FILE__<< __LINE__<<"font"<<font.substitutions();
     setFont(font);
 
-    ui->horizontalLayout->setMargin(mBorder);
+   // ui->horizontalLayout->setMargin(mBorder);
+
     ui->horizontalLayout_ceter->setSpacing(barCenterSpacing);
     ui->horizontalLayout_right->setSpacing(barRightSpacing);
     ui->horizontalLayout_left->setSpacing(barLeftSpacing);
+    ui->horizontalLayout->setContentsMargins(m_left,m_top+mBorder,m_rigt,m_bot+mBorder);
 
     // StyleSheet ________________________________________________
     QPalette pal=this->palette();
@@ -340,7 +353,7 @@ void PanelWidget::calculatSize()
     int heightSize=fm.height();
     foreach (StatusLabel *w, listStatus) {
         QFontMetrics fm(w->font());
-        qDebug()<<fm.height();
+       // qDebug()<<fm.height();
       heightSize=  qMax(heightSize,fm.height());
       border=  qMax(border,w->border());
 
@@ -353,8 +366,13 @@ void PanelWidget::calculatSize()
 //        if(wBorder>border)
 //            border=wBorder;
     }
-    setMaximumHeight(heightSize+(mBorder*2)+(border));
-   /*if(mdebug)*/  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"calculatSize:"<<"font height:"<< heightSize<<"border:"<<(mBorder)<<(border);
+
+    setMaximumHeight(heightSize
+                     +fm.leading()*2
+                     +(mBorder*2)+(border)
+                     +mMarginRect.top()
+                     +mMarginRect.bottom());
+   /*if(mdebug)*/  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"calculatSize:"<<"font height:"<< heightSize<<"border:"<<fm.xHeight()<<+fm.leading()*2;
 
 }
 
@@ -363,7 +381,7 @@ void PanelWidget::resizePanel()
 {
    if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"resizePanel()";
 
-   if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"Padding:"<<mPaddingRect.left()<< mPaddingRect.top()<<mPaddingRect.right()<<mPaddingRect.bottom();
+   if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"Padding:"<<mPaddingRect.left()<< mPaddingRect.top()<<mPaddingRect.right()<<mPaddingRect.bottom()<<mMarginRect.top()<<mMarginRect.bottom();
 
      int p_left=mPaddingRect.left();
      int p_top=mPaddingRect.top();
@@ -495,6 +513,7 @@ Atom XFatom(const char* atomName)
     Atom atom = XInternAtom(QX11Info::display(), atomName, false);
     hash[atomName] = atom;
     return atom;
+
 }
 
 //-----------------------------------------------------------------------------------

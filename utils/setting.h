@@ -50,6 +50,11 @@ public:
     int   paddingTop();
     int   paddingRight();
     int   paddingBottom();
+    int   meginLeft();
+    int   meginTop();
+    int   meginRight();
+    int   meginBottom();
+ //   int   panelHeight();
     bool  showSystry();
     //Pager
     int activeAlpha();

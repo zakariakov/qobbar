@@ -61,7 +61,7 @@ public slots:
     void setDock ();
     //unsigned int getWindowPID(Window winID) ;
 
-
+void showHide();
 private:
 
     Ui::PanelWidget *ui;
@@ -70,7 +70,7 @@ private:
     Pager *mPager;
     DtaskbarWidget *mTaskbar;
     Setting *mSetting;
-
+    //int m_height=0;
     enum Pos{LEFT,CENTER,RIGHT};
 
 
@@ -81,6 +81,8 @@ void chargeStatus(QStringList listLeft,QStringList listCenter,QStringList listRi
      QStringList listWidget;
     bool m_topPos;
     QRect mPaddingRect;
+    QRect mMarginRect;
+
     //QWindow *tlwWindow ;
     int mBorder;
     QFileSystemWatcher *mFileSystemWatcher;

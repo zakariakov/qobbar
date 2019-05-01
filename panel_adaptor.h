@@ -26,7 +26,7 @@ class panel_adaptor: public QDBusAbstractAdaptor
                                        "    </method>"
                                        "    <method name=\"reconfigure\">\n"
                                        "    </method>"
-                                       "    <method name=\"showMenu\">\n"
+                                       "    <method name=\"showHide\">\n"
                                        "    </method>"
                                        "    <method name=\"exit\">\n"
                                        "    </method>"
@@ -40,7 +40,7 @@ public:
 public Q_SLOTS: // METHODS
     void setShortcut(const QString &shortcut);
     void reconfigure();
-    void showMenu();
+    void showHide();
     void exit();
 };
 
