@@ -1,12 +1,15 @@
 #include "x11utills.h"
 
-#include <QApplication>
-#include <QX11Info>
-#include <QImage>
-#include <QHash>
+#include <array>
+#include <memory>
+#include <vector>
+#include <iostream>
+
+#include <QString>
+#include <QRect>
+#include <QtGlobal>
 
 // Keep all the X11 stuff with scary defines below normal headers.
-#include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 
@@ -148,7 +151,7 @@ bool X11UTILLS::isWindowForTaskbar(Window window)
         // Let's expect that _KDE_NET_WM_WINDOW_TYPE_OVERRIDE can be set for
         // regular windows too. If it should be hidden we should expect
         // one of atoms listed above.
-//                    << atom("_KDE_NET_WM_WINDOW_TYPE_OVERRIDE");
+        //          << atom("_KDE_NET_WM_WINDOW_TYPE_OVERRIDE");
 
         foreach (Atom i, ignoreList)
         {
@@ -240,27 +243,38 @@ bool X11UTILLS::getClientIcon(Window _wid, QPixmap& _pixreturn)
     XGetWindowProperty(QX11Info::display(), _wid, atom("_NET_WM_ICON"),
                        0, LONG_MAX, False, AnyPropertyType,
                        &type, &format, &nitems, &extra,
-                       (uchar**)&data);
+                       (unsigned char**) &data);
     if (!data)
     {
 
         return false;
     }
-
+    else
+    {
     QImage img (data[0], data[1], QImage::Format_ARGB32);
-
-    //TODO FIX deprecated
-    //img.sizeInBytes()
+    //
+    // Fixed: Here is the old code, not using the new  img.sizeInBytes() :
+    //
     //    for (int i=0; i<img.byteCount()/4; ++i)
-   //        ((uint*)img.bits())[i] = data[i+2];
-
-    for (int i=0; i<img.sizeInBytes()/4; ++i)
+    //       ((uint*)img.bits())[i] = data[i+2];
+    //
+    // The new code can only fulfil its job for Qt 5.10 and newer versions. What comes in here, is
+    // ssize_t that has to be regarded as a delivering-back data type representing a constant. But
+    // don't be mislead from the naming of ssize_t. It must not necessarily behave like a signed
+    // version of size_t. It may do so, but this is not a must. POSIX only garantees for
+    // a ssize_t range between [-1...(2^15)-1]. The range of ssize_t regarding values lower
+    // than -1 seems to be environment specific. Fortunately, the fact, that ssize_t is signed,
+    // doesn't pose a compiling problem here. The compiler informs us, if ssize_t is statically
+    // casted into an int, a long int has to be taken at least. And there's no problem with that.
+    {
+    for (long int i=0; i<(static_cast<long int>(ssize_t(img.sizeInBytes())))/4; ++i)
         ((uint*)img.bits())[i] = data[i+2];
 
-    _pixreturn = QPixmap::fromImage(img);
-    XFree(data);
-
+        _pixreturn = (QPixmap::fromImage(img));
+        XFree(data);
+        }
     return true;
+    }
 }
 
 
@@ -582,7 +596,7 @@ void X11UTILLS::setWindowLayer(unsigned long _wid, int layer)
                       2);
 
 }
-//alowed
+//allowed
 
 
 QHash<QString ,bool> X11UTILLS::states(unsigned long window)
@@ -612,7 +626,7 @@ QHash<QString ,bool>hash;
 
 
         }
- XFree(data);
+    XFree(data);
     }
 
     return hash;
@@ -648,12 +662,12 @@ QHash<QString ,bool>  X11UTILLS::allowed(unsigned long window)
 
   return hash;
 }
-/************************************************
- The Window Manager MUST set this property on the root window to be the ID of a child
- window created by himself, to indicate that a compliant window manager is active.
-
- http://standards.freedesktop.org/wm-spec/wm-spec-latest.html#id2550836
- ************************************************/
+//************************************************
+// The Window Manager MUST set this property on the root window to be the ID of a child
+// window created by himself, to indicate that a compliant window manager is active.
+//
+//    http://standards.freedesktop.org/wm-spec/wm-spec-latest.html#id2550836
+//************************************************
 
 bool X11UTILLS::isWindowManagerActive()
 {
@@ -687,7 +701,7 @@ QRect rect;
     XSizeHints hints;
     int rx, ry;
 
- //   QHash<QString ,int>hash;
+//   QHash<QString ,int>hash;
     Window junkwin;
     XWindowAttributes win_attributes;
     if (!XGetWindowAttributes(QX11Info::display(), window, &win_attributes)){
@@ -723,7 +737,7 @@ QRect rect;
         /* WM reparented, so find edges of the frame */
         /* Only works for ICCCM-compliant WMs, and then only if the
          window has corner gravity.  We would need to know the original width
-     of the window to correctly handle the other gravities. */
+         of the window to correctly handle the other gravities. */
 
         XWindowAttributes frame_attr;
 

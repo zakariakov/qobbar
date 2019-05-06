@@ -6,20 +6,32 @@
 
 ![Screenshots](https://github.com/zakariakov/qobbar/blob/master/example/qobbar1.png)
 
+<img src="https://gitlab.com/zakariakov/qobbar/blob/master/example/qobbar3.jpg">
+
+<img src="https://gitlab.com/zakariakov/qobbar/blob/master/example/qobbar4.png">
+
+<img src="https://gitlab.com/zakariakov/qobbar/blob/master/example/qobbar1.png">
+
+qobbar is a status bar based on Qt5, X11 and libGl. As a status indicating panel
+with menu control, the package of this desktop environment application is to be seen 
+as not yet fully functional, as it is a work in progress. Certain features or
+components of it work sufficiently but should still be improved, others remain 
+to be completed or augmented.
 
 ### Dependencies
 
 - libX11
 - libXcomposite
 - libXdamage
-- libQt5X11Extras
-- libQt5Widgets
-- libQt5Gui
-- libQt5Concurrent
-- libQt5DBus
-- libQt5Core
+- libQt5X11Extras  (its version has to be in accordance with Qt v5.10.0 or newer)
+- libQt5Widgets    (its version has to be in accordance with Qt v5.10.0 or newer)
+- libQt5Gui        (its version has to be in accordance with Qt v5.10.0 or newer)
+- libQt5Concurrent (its version has to be in accordance with Qt v5.10.0 or newer)
+- libQt5DBus       (its version has to be in accordance with Qt v5.10.0 or newer)
+- libQt5Core       (its version has to be in accordance with Qt v5.10.0 or newer)
 - libGL
 - libpthread
+- libstdc++
 
 
 ### Building from source
@@ -41,7 +53,7 @@
 
  The default UserScope paths "$HOME/.config/qobbar/qobbar.conf" 
 
- to create user configuration 
+ to create a user configuration 
 
   ~~~ sh
   $ mkdir -p "$HOME/.config/qobbar"
@@ -50,7 +62,9 @@
 
  or create any configuration file in "$HOME/.config/qobbar" 
 
- the suffix ".conf" is obligatoire ex;"myconf.conf"
+ from the name of the configuration file the suffix ".conf"
+
+ is obligatory; for example "myconf.conf" would be allright.
 
 ### Running the app
 
@@ -66,9 +80,9 @@
     " -r  --right                     right-to-left layout direction."
   ~~~
 
-to run the default configuration just run "qobbar".
+To run the default configuration, just run "qobbar"
 
-or cp any configuration in the example folder to $HOME/.config/qobbar.
+or cp any configuration in the example folder to $HOME/.config/qobbar
 
 to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 
@@ -107,19 +121,15 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
   ~~~ sh
 - Top				<bool> panel top or bottom default=true
 - BorderColor			<string>  color Hex or xrdb.color<num>
-- BarLeft			<list> Ex:statu1,statu2
-- BarCenter			<list> Ex:Time,Date
-- BarRight			<list> Ex:Pager
+- BarLeft				<list> Ex:Systray,statu1,statu2
+- BarCenter				<list> Ex:Time,Date
+- BarRight				<list> Ex:Pager
 - BarLeftSpacing		<int>  default=0
 - BarRightSpacing		<int>  default=0
 - BarCenterSpacing		<int>  default=0
-- MarginLeft                    <int>  default=0
-- MarginTop                     <int>  default=0
-- MarginRight                   <int>  default=0
-- MarginBottom                  <int>  default=0
-- Systray			<bool>  default=false
+- Systray				<bool>  default=false
 
- -----padding has no effect in tilling i3wm -----
+ -----padding has no effect in tiling WM -----
 - PaddingBottom                 <int>  default=0
 - PaddingLeft                   <int>  default=0
 - PaddingRight                  <int>  default=0
@@ -132,7 +142,7 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 
   ~~~ sh
 - ActiveBackground		<string>  default  window highlight
-- ActiveAlpha 			<int>     0-to-255 default=255
+- ActiveAlpha                   <int>     0-to-255 default=255
 - ActiveForeground		<string>  default  window highlightText
 - ActiveUnderline		<string>  color Hex or xrdb.color
 - ActiveOverline		<string>  color Hex or xrdb.color
@@ -142,19 +152,18 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 
   ~~~ sh
 - DesktopDesplay		<string>  "name" "index" "icon" default=index
- 				icon-[0-9]  ex: home,office,multimedia,
+                                icon-[0-9]  ex: home,office,multimedia,
 				NOTE: The desktop name needs to match the name configured by the WM
- 				You can get a list of the defined desktops using:
+                                You can get a list of the defined desktops using:
 				$ xprop -root _NET_DESKTOP_NAMES
 
 - IconsList			<list> list of icon 0 to 9
-- ActiveIcon                    <string> if DesktopDesplay==icon default=NULL
   ~~~
 
 #### Status 
 
   ~~~ sh
-- Command			<string>  Command to desplay
+- Command			<string>  Command to display
 - Interval			<int>     second default 1
 - MaxSize			<int>     default 100
 - Label				<string>  
@@ -164,6 +173,7 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 - ClickRight			<string>   Command to exec
 - MouseWheelUp			<string>   Command to exec
 - MouseWheelDown		<string>   Command to exec
+- ActiveIcon          <string> if DesktopDesplay==icon default=NULL
   ~~~
 
 
@@ -184,8 +194,7 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 	ActiveForeground=#ffffff
 	ActiveOverline=#ffff00
 	DesktopDesplay="icon"
-	IconsList=,,,,,,
-	ActiveIcon=
+	IconsList=,,,
 	Foreground=#8A8383
 	Border=1
 	ActiveAlpha=0
@@ -225,5 +234,3 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 NOTE : to use this qobmenu [**@zakariakov**](https://github.com/zakariakov/qobmenu)
 
 or jgmenu (https://github.com/johanmalm/jgmenu)
-
-
