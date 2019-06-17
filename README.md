@@ -64,6 +64,8 @@
     "                                 run \"qobbar -c top-bar\"  ."
     " -d  --debug                     Print debug in termminal."
     " -r  --right                     right-to-left layout direction."
+    " -s  --showhide                  show or hide bar. ex: qobbar -c top-bar -s"
+    " -l  --list                      Print list of available modules."
   ~~~
 
 to run the default configuration just run "qobbar".
