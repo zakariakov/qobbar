@@ -15,7 +15,7 @@ public:
     Thread(){}
 
     void setCommand(const QString &cmd){mCmd=cmd;}
-
+    QString command(){return mCmd;}
 signals:
     void terminated(const QString &result);
 
@@ -36,8 +36,8 @@ signals:
     void textReady(QString str);
 
 protected slots:
-    void on_textReady(QString str);
-    void on_render_finished();
+ //   void on_textReady(QString str);
+  //  void on_render_finished();
 
 public slots:
 
@@ -58,7 +58,7 @@ private:
 
     Thread *mThread;
     //_________________________________
-  //  QString mCommand;
+  // QString mCommand;
     QString mLabel;
     QString mSuffix;
     QString mPrefix;
@@ -76,12 +76,12 @@ Setting *mySetting;
     //________________________________
     QFutureWatcher< void >* m_render;
     QString m_string;
-    void render();
+   // void render();
     void startCommand(int interval);
     void execCmd(int type);
 bool mdebug;
 private slots:
-    QString updateCommand();
+   // QString updateCommand();
 
     void    startRender();
     //void    cancelRender();

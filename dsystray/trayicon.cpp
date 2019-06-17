@@ -67,6 +67,7 @@ TrayIcon::TrayIcon(Window iconId, QSize const & iconSize, QWidget* parent):
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 
+
     QTimer::singleShot(200, [this] { init(); update(); });
 }
 

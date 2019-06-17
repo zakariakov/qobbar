@@ -118,6 +118,9 @@ QString StyleColors::style( QString bgColor, QString fgColor,
     if(overline.startsWith("xrdb"))
         overline=loadXresourceColor(overline.section(".",1));
 
+    if(borderColor.startsWith("xrdb"))
+        borderColor=loadXresourceColor(borderColor.section(".",1));
+
     QColor bg(bgColor);
     bg.setAlpha(alpha);
 

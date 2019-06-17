@@ -17,7 +17,7 @@ QStringList XDesktop::names()
 {
     QStringList ret;
     unsigned long length;
-    unsigned char *data = 0;
+    unsigned char *data = nullptr;
 
     if (rootWindowProperty(atom("_NET_DESKTOP_NAMES"), atom("UTF8_STRING"), &length, &data))
     {

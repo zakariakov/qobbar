@@ -219,11 +219,15 @@ void StatusLabel::execCmd(int type)
         break;
     }
 
+    //تطبيق الامر اذا كان موجودا بمجرد النقر او الازاحة للعجلة
+if(!mThread->command().isEmpty())
+    startRender();
+
 }
 
 //________________________________________________________________ QFutureWatcher
-void StatusLabel::on_render_finished()
-{
+//void StatusLabel::on_render_finished()
+//{
 //    setToolTip(QString());
 //    if(m_string.length()>maxSize){
 //       setToolTip(m_string);
@@ -237,13 +241,13 @@ void StatusLabel::on_render_finished()
 //            .arg(m_string)
 //            .arg(mPrefix));
 // qDebug()<<mName<<m_string<<maxSize;
-}
+//}
 
-void StatusLabel::on_textReady(QString str)
-{
-    //********* old **********//
-    //if(!m_render->isCanceled()) m_string = str;
-}
+//void StatusLabel::on_textReady(QString str)
+//{
+//    //********* old **********//
+//    //if(!m_render->isCanceled()) m_string = str;
+//}
 
 void StatusLabel::startRender()
 {
@@ -266,8 +270,8 @@ void StatusLabel::cancelRender()
 
 }
 
-void StatusLabel::render()
-{
+//void StatusLabel::render()
+//{
 
     //********* old **********//
 //    if(m_render->isCanceled()) return;
@@ -278,10 +282,10 @@ void StatusLabel::render()
 
 //    emit textReady(str);
 
-}
+//}
 
-QString StatusLabel::updateCommand()
-{
+//QString StatusLabel::updateCommand()
+//{
     //qDebug()<<__FILE__<< __LINE__<<"updateCommand()"<<mName<<mCommand;
  /*
     QProcess pr;
@@ -310,7 +314,7 @@ QString StatusLabel::updateCommand()
 
  //   return s;
 
-}
+//}
 
 //***********************  THREAD ******************************
 void StatusLabel::updateCmd(QString result)
@@ -325,10 +329,10 @@ void StatusLabel::updateCmd(QString result)
 
 
     setText(QString("%1 %2 %3 %4")
-            .arg(mSuffix)
-            .arg(mLabel)
+            .arg(mSuffix.trimmed())
+            .arg(mLabel.trimmed())
             .arg(result.trimmed())
-            .arg(mPrefix));
+            .arg(mPrefix.trimmed()));
 
     if(mdebug)
         qDebug()<<"   [-]"<<__FILE__<< __LINE__<<mName<<mLabel<<result;

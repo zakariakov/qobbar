@@ -89,41 +89,41 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
   ~~~ sh
 - Background			<string>  color Hex or xrdb.color<num>
 - Foreground			<string>  color Hex or xrdb.color<num>
-- Underline			<string>  color Hex or xrdb.color<num>
-- Overline			<string>  color Hex or xrdb.color<num>
-				to get color from Xresource 
-				ex: 'Background=xrdb.background'
-				ex: 'Overline=xrdb.color5'
+- Underline				<string>  color Hex or xrdb.color<num>
+- Overline				<string>  color Hex or xrdb.color<num>
+						to get color from Xresource 
+						ex: 'Background=xrdb.background'
+						ex: 'Overline=xrdb.color5'
 
-- Border			<int>     default=0
-- Alpha				<int>     0-to-255 default=255
-- FontName			<string>  default parent fontfamily
-- FontSize			<int>     default parent font size
-- FontBold			<bool>    default  window fontbold
+- Border				<int>     default=0
+- Alpha					<int>     0-to-255 default=255
+- FontName				<string>  default parent fontfamily
+- FontSize				<int>     default parent font size
+- FontBold				<bool>    default  window fontbold
   ~~~
 
 #### Panel 
 
   ~~~ sh
-- Top				<bool> panel top or bottom default=true
+- Top					<bool> panel top or bottom default=true
 - BorderColor			<string>  color Hex or xrdb.color<num>
-- BarLeft			<list> Ex:statu1,statu2
-- BarCenter			<list> Ex:Time,Date
-- BarRight			<list> Ex:Pager
+- BarLeft				<list> Ex:statu1,statu2
+- BarCenter				<list> Ex:Time,Date
+- BarRight				<list> Ex:Pager
 - BarLeftSpacing		<int>  default=0
 - BarRightSpacing		<int>  default=0
 - BarCenterSpacing		<int>  default=0
-- MarginLeft                    <int>  default=0
-- MarginTop                     <int>  default=0
-- MarginRight                   <int>  default=0
-- MarginBottom                  <int>  default=0
-- Systray			<bool>  default=false
+- MarginLeft            <int>  default=0
+- MarginTop             <int>  default=0
+- MarginRight           <int>  default=0
+- MarginBottom          <int>  default=0
+- Systray				<bool>  default=false
 
  -----padding has no effect in tilling i3wm -----
-- PaddingBottom                 <int>  default=0
-- PaddingLeft                   <int>  default=0
-- PaddingRight                  <int>  default=0
-- PaddingTop                    <int>  default=0
+- PaddingBottom         <int>  default=0
+- PaddingLeft           <int>  default=0
+- PaddingRight          <int>  default=0
+- PaddingTop            <int>  default=0
 
   ~~~
 
@@ -142,25 +142,25 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 
   ~~~ sh
 - DesktopDesplay		<string>  "name" "index" "icon" default=index
- 				icon-[0-9]  ex: home,office,multimedia,
-				NOTE: The desktop name needs to match the name configured by the WM
- 				You can get a list of the defined desktops using:
-				$ xprop -root _NET_DESKTOP_NAMES
+ 						icon-[0-9]  ex: home,office,multimedia,
+						NOTE: The desktop name needs to match the name configured by the WM
+ 						You can get a list of the defined desktops using:
+						$ xprop -root _NET_DESKTOP_NAMES
 
-- IconsList			<list> list of icon 0 to 9
-- ActiveIcon                    <string> if DesktopDesplay==icon default=NULL
+- IconsList				<list> list of icon 0 to 9 ex: home,office,multimedia,...
+- ActiveIcon            <string> if DesktopDesplay==icon default=NULL
   ~~~
 
 #### Status 
 
   ~~~ sh
-- Command			<string>  Command to desplay
-- Interval			<int>     second default 1
-- MaxSize			<int>     default 100
-- Label				<string>  
-- Suffix			<string>  
-- Prefix			<string>  
-- ClickLeft			<string>   Command to exec
+- Command				<string>  Command to desplay
+- Interval				<int>     second default 1
+- MaxSize				<int>     default 100
+- Label					<string>  
+- Suffix				<string>  
+- Prefix				<string>  
+- ClickLeft				<string>   Command to exec
 - ClickRight			<string>   Command to exec
 - MouseWheelUp			<string>   Command to exec
 - MouseWheelDown		<string>   Command to exec

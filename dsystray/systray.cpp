@@ -59,19 +59,18 @@ SysTray::SysTray( QWidget *parent):
 //   setFont(font);
    setContentsMargins(0,0,0,0);
 
-
     mLayout = new QHBoxLayout(this);
     mLayout->setContentsMargins(3,0,3,0);
     mLayout->setSpacing(3);
     setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred);
 
     _NET_SYSTEM_TRAY_OPCODE = X11UTILLS::atom("_NET_SYSTEM_TRAY_OPCODE");
-    startTray();
+
    qApp->installNativeEventFilter(this);
     // Init the selection later just to ensure that no signals are sent until
     // after construction is done and the creating object has a chance to connect.
    // QTimer::singleShot(1500, this, SLOT(startTray()));
-
+  startTray();
 
 }
 
@@ -184,7 +183,7 @@ TrayIcon* SysTray::findIcon(Window id)
         if (icon->iconId() == id || icon->windowId() == id)
             return icon;
     }
-    return 0;
+    return nullptr;
 }
 
 

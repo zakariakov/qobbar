@@ -8,7 +8,7 @@
 void help()
 {
     printf("Usage: qobbar [OPTION]\n");
-    puts("qobbar v: 0.1 \n" );
+    puts("qobbar v: 0.2 \n" );
     puts("OPTION:\n");
     puts(" -h  --help                      Print this help.");
     puts(" -c  --config     <string>       config file name.");
@@ -16,7 +16,7 @@ void help()
     puts("                                 run \"qobbar -c top-bar\"  .");
     puts(" -d  --debug                     Print debug in termminal.");
     puts(" -r  --right                     right-to-left layout direction.");
-    puts(" -s  --showhide                  show or hide bar.");
+    puts(" -s  --showhide                  show or hide bar. ex: qobbar -c top-bar -s");
     puts(" -l  --list                      Print list of available modules.");
 
 }
@@ -53,7 +53,8 @@ int main(int argc, char *argv[])
                  if(i+1>args.count()-1){help();return 1;}
                  conf=QString(args.at(i+1));
                  conf.remove(".conf");
-                 if(QFile::exists(QDir::homePath()+"/.config/qobbar/"+conf+".conf")){
+                    if(QFile::exists(QDir::homePath()+"/.config/qobbar/"+conf+".conf")){
+
                      a.setApplicationName(conf);
                  }
              }
