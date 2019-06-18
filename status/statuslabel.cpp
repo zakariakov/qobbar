@@ -65,8 +65,13 @@ void StatusLabel::loadSettings()
     //    m_render->blockSignals(true);
 
   //  mThread->terminate();
-
-    mySetting->beginGroup(mName);
+    QString groupName=mName;
+     qDebug()<<"mName>>>>>>>>>>>>>>>>>>>>>"<<mName;
+    if(mName.contains(":")){
+        groupName=mName.section(":",0,0);
+        qDebug()<<"groupName>>>>>>>>>>>>>>>>>>>>>"<<groupName;
+    }
+    mySetting->beginGroup(groupName);
 
      QString mCommand           =mySetting->command();
      int     interval           =mySetting->interval();

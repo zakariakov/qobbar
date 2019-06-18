@@ -44,11 +44,11 @@ PanelWidget::PanelWidget(bool debug, QWidget *parent) :
 
     mFileSystemWatcher=new QFileSystemWatcher(this);
     mFileSystemWatcher->addPath(mSetting->fileName());
-    connect(mFileSystemWatcher,SIGNAL(fileChanged(QString)),this,SLOT(reconfigure(QString)));
+    connect(mFileSystemWatcher,SIGNAL(fileChanged(QString)),this,SLOT(reconfigure()));
 
 
 
-    loadSettings(true);
+  //  loadSettings(true);
 
     //-----------------------------------------------------------------
     connect(QApplication::desktop(),SIGNAL(workAreaResized(int)),this,SLOT(resizePanel()));
@@ -56,9 +56,10 @@ PanelWidget::PanelWidget(bool debug, QWidget *parent) :
     moveToAllDesktop();
 
 loadIconThems();
-   resizePanel();
+//resizePanel();
+
 //reconfigure();
-QTimer::singleShot(20,this,SLOT(reconfigure(QString())));
+QTimer::singleShot(20,this,SLOT(reconfigure()));
 }
 
 //-----------------------------------------------------------------------------------
@@ -183,7 +184,7 @@ void PanelWidget:: loadSettings(bool charge)
                                        m_radius);
 
     ui->widgetBg-> setStyleSheet("QWidget#widgetBg{"+mystyle+"}");
-    //qDebug()<<ui->widgetBg->styleSheet();
+
     // charge status ---------------------------------------------
     if(charge)
         chargeStatus( listLeft, listCenter, listRight);
@@ -213,7 +214,7 @@ void PanelWidget::chargeStatus(QStringList listLeft,QStringList listCenter,QStri
 
     QStringList list;
     list<<listLeft<<listCenter<<listRight;
-
+qDebug()<<"list>>>>>>>>>>>>>>>"<<list;
     // Delete non-existing Status ----------------------------
     QMutableHashIterator<QString , StatusLabel*> i(listStatus);
     while (i.hasNext())
@@ -286,7 +287,12 @@ void PanelWidget::addStatus(QStringList list,int pos)
         }//_TASKBAR
 
         else {
-            if(!mSetting->childGroups().contains(group))continue;
+
+            QString groupName=group;
+            if(group.contains(":")){
+                groupName=group.section(":",0,0);
+            }
+            if(!mSetting->childGroups().contains(groupName))continue;
 
             if(listStatus.contains(group)){
                 StatusLabel *statLab=listStatus.value(group);
@@ -295,6 +301,7 @@ void PanelWidget::addStatus(QStringList list,int pos)
                     statLab->loadSettings();
                 }
             }else{
+
                 StatusLabel *statLab=new StatusLabel(group,mSetting,this,mdebug);
                 listStatus.insert(group,statLab);
                 addWidget(statLab, pos);
@@ -328,7 +335,7 @@ void PanelWidget::addWidget(QWidget *w,int pos)
 }
 
 //-----------------------------------------------------------------------------------
-void PanelWidget::reconfigure(QString)
+void PanelWidget::reconfigure()
 {
     if(mdebug) qDebug()<<"[+]"<<__FILE__<< __LINE__<<"reconfigure()"<<listStatus.count();
     if(mdebug)qDebug()<<"[+]"<<__FILE__<< __LINE__<<"reconfigure()"<<listWidget.count();

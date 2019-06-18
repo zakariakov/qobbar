@@ -78,9 +78,9 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 
   ~~~ sh
     Panel         configured using this name 'Panel'.
-    Pager         configured using this name 'Pager'.
-    Taskbar       configured using this name 'Taskbar'.
-    Statu         configured using any name ex: 'Cpu' 'Mem'.
+    Pager         configured using this	name 'Pager'.
+    Taskbar       configured using this	name 'Taskbar'.
+    Statu         configured using any	name ex: 'Cpu' 'Mem'.
 
   ~~~ 
 
@@ -107,19 +107,21 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 #### Panel 
 
   ~~~ sh
-- Top			<bool> panel top or bottom default=true
-- BorderColor		<string>  color Hex or xrdb.color<num>
-- BarLeft		<list> Ex:statu1,statu2
-- BarCenter		<list> Ex:Time,Date
-- BarRight		<list> Ex:Pager
-- BarLeftSpacing	<int>  default=0
-- BarRightSpacing	<int>  default=0
-- BarCenterSpacing	<int>  default=0
+- Top					<bool> panel top or bottom default=true
+- BorderColor			<string>  color Hex or xrdb.color<num>
+- BarLeft				<list> Ex:statu1,statu2
+- BarCenter				<list> Ex:Time,Date
+- BarRight				<list> Ex:Pager
+-							To repeat the same statu, add ":" and then a number
+-							Ex: BarLeft=Sep:1,Cpu,Sep:2,Mem,Sep:3,Wifi
+- BarLeftSpacing		<int>  default=0
+- BarRightSpacing		<int>  default=0
+- BarCenterSpacing		<int>  default=0
 - MarginLeft            <int>  default=0
 - MarginTop             <int>  default=0
 - MarginRight           <int>  default=0
 - MarginBottom          <int>  default=0
-- Systray		<bool>  default=false
+- Systray				<bool>  default=false
 
  -----padding has no effect in tilling i3wm -----
 - PaddingBottom         <int>  default=0
@@ -133,7 +135,7 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 #### Pager and Taskbar
 
   ~~~ sh
-- ActiveBackground       	<string>  default  window highlight
+- ActiveBackground      <string>  default  window highlight
 - ActiveAlpha 			<int>     0-to-255 default=255
 - ActiveForeground		<string>  default  window highlightText
 - ActiveUnderline		<string>  color Hex or xrdb.color
@@ -143,14 +145,14 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 #### Pager 
 
   ~~~ sh
-- DesktopDesplay	<string>  "name" "index" "icon" default=index
+- DesktopDesplay	<string>   	"name" "index" "icon" default=index
                                 icon-[0-9]  ex: home,office,multimedia,
                                 NOTE: The desktop name needs to match the name configured by the WM
                                 You can get a list of the defined desktops using:
                                 $ xprop -root _NET_DESKTOP_NAMES
 
-- IconsList		<list> list of icon 0 to 9 ex: home,office,multimedia,...
-- ActiveIcon            <string> if DesktopDesplay==icon default=NULL
+- IconsList			<list> 		list of icon 0 to 9 ex: home,office,multimedia,...
+- ActiveIcon        <string> 	if DesktopDesplay==icon default=NULL
   ~~~
 
 #### Status 
@@ -162,10 +164,10 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 - Label				<string>
 - Suffix			<string>
 - Prefix			<string>
-- ClickLeft                     <string>   Command to exec
-- ClickRight			<string>   Command to exec
-- MouseWheelUp			<string>   Command to exec
-- MouseWheelDown		<string>   Command to exec
+- ClickLeft         <string>   Command to exec
+- ClickRight		<string>   Command to exec
+- MouseWheelUp		<string>   Command to exec
+- MouseWheelDown	<string>   Command to exec
   ~~~
 
 

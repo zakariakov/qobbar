@@ -89,7 +89,7 @@ void chargeStatus(QStringList listLeft,QStringList listCenter,QStringList listRi
 
 
 private slots:
-    void reconfigure(QString);
+    void reconfigure();
     void resizePanel();
     void calculatSize();
     //X11
