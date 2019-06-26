@@ -35,6 +35,7 @@ INCLUDEPATH +=build
 SOURCES += main.cpp\
         panelwidget.cpp \
         panel_adaptor.cpp \
+    status/conkystatu.cpp \
         status/statuslabel.cpp \
         etaskbar/dtaskbarwidget.cpp \
         etaskbar/dactiontaskbar.cpp \
@@ -51,6 +52,7 @@ SOURCES += main.cpp\
 
 HEADERS  += panelwidget.h \
             panel_adaptor.h \
+    status/conkystatu.h \
             status/statuslabel.h \
 #           utils/desktopfile.h \
             utils/x11utills.h \

@@ -49,7 +49,8 @@ protected:
 public:
     StatusLabel(QString group,Setting *s, QWidget *parent=nullptr,bool debug=false);
       ~StatusLabel();
-int border(){return mBoreder;}
+int heightSize(){return mHeight;}
+
     QString name(){return mName;}
 
 void    cancelRender();
@@ -73,6 +74,7 @@ Setting *mySetting;
     QString mMouseWheelUpCmd;
     QString mMouseWheelDownCmd;
     int mBoreder;
+    int mHeight;
     //________________________________
     QFutureWatcher< void >* m_render;
     QString m_string;

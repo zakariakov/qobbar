@@ -88,8 +88,7 @@ QString StyleColors::loadXresourceColor(const QString &colorName)
 
      for (int i = 0; i < 16; ++i) {
            QRegExp rx("xrdb.color"+QString::number(i)+"(\\s*)(;)");
-        // QString color="xrdb.color"+QString::number(i)+";";
-       //   qDebug()<< "StyleColors::xrdbget========"<<rx;
+
          if(txt.contains(rx)){
              QString newCol=loadXresourceColor("color"+QString::number(i));
              txt.replace(rx,newCol+";");
@@ -100,6 +99,7 @@ qDebug()<<"   [*]"<<__FILE__<<__LINE__<< "StyleColors::xrdbget return="<<txt;
      return txt;
 
  }
+
 QString StyleColors::style( QString bgColor, QString fgColor,
                       QString underline, QString overline,
                      int border,int alpha,QString borderColor,int radius)

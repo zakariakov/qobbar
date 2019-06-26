@@ -4,7 +4,7 @@
 #include "utils/stylecolors.h"
 #include <QSettings>
 #include <QtPlatformHeaders/QXcbWindowFunctions>
-#include <QProcess>
+#include <QDesktopWidget>
 PanelWidget::PanelWidget(bool debug, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::PanelWidget),mdebug(debug),
@@ -13,9 +13,9 @@ PanelWidget::PanelWidget(bool debug, QWidget *parent) :
 
     QByteArray sS=qgetenv("DESKTOP_SESSION");
 
-    /* if(mdebug) */ qDebug()<<"[+]"<<__FILE__<< __LINE__<<"  Env="<<sS;
+     qDebug()<<"[+]"<<__FILE__<< __LINE__<<"Screens"<<QApplication::screens().count();
 
-
+     qDebug()<<"[+]"<<__FILE__<< __LINE__<<"  Env="<<sS;
 
     //    if(sS=="i3")
     //        setWindowFlags( Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
@@ -52,6 +52,7 @@ PanelWidget::PanelWidget(bool debug, QWidget *parent) :
 
     //-----------------------------------------------------------------
     connect(QApplication::desktop(),SIGNAL(workAreaResized(int)),this,SLOT(resizePanel()));
+    connect(QApplication::desktop(),SIGNAL(resized(int)),this,SLOT(resizePanel()));
 
     moveToAllDesktop();
 
@@ -62,6 +63,19 @@ loadIconThems();
 QTimer::singleShot(20,this,SLOT(reconfigure()));
 }
 
+QRect PanelWidget::desktopRect()
+{
+     QRect desktop;
+
+    if(m_Screen<0 || m_Screen>QApplication::screens().count()-1){
+        m_Screen=0;
+        desktop=QApplication::primaryScreen()->geometry();
+    }else{
+      desktop=QApplication::screens().at(m_Screen)->geometry();
+    }
+
+    return desktop;
+}
 //-----------------------------------------------------------------------------------
 PanelWidget::~PanelWidget()
 {
@@ -78,8 +92,6 @@ void PanelWidget::showHide()
     }else{
 
         hide();
-        QRect desktop =QApplication::primaryScreen()->geometry();
-        qDebug()<< "desktop:"<<desktop;
 
             setStrut(0, 0,
                        0, 0,
@@ -123,6 +135,7 @@ void PanelWidget:: loadSettings(bool charge)
     m_topPos                    =mSetting->top();
     bool m_showSystry           =mSetting->showSystry();
     int  m_radius               =mSetting->radius();
+    m_Screen                    =mSetting->screen();
     //     m_height               =mSetting->panelHeight();
 
     mPaddingRect = QRect(QPoint(_left,_top),QPoint(_rigt,_bot));
@@ -214,7 +227,7 @@ void PanelWidget::chargeStatus(QStringList listLeft,QStringList listCenter,QStri
 
     QStringList list;
     list<<listLeft<<listCenter<<listRight;
-qDebug()<<"list>>>>>>>>>>>>>>>"<<list;
+
     // Delete non-existing Status ----------------------------
     QMutableHashIterator<QString , StatusLabel*> i(listStatus);
     while (i.hasNext())
@@ -233,7 +246,7 @@ qDebug()<<"list>>>>>>>>>>>>>>>"<<list;
     foreach (QString e, listWidget) {
         if(!list.contains(e)){
             if     (e==MPAGER)  {if(mPager)  {delete mPager; mPager=nullptr; listWidget.removeOne(MPAGER);}}
-            //           else if(e==MSYSTRAY){if(mSysTray){delete mSysTray;mSysTray=nullptr;listWidget.removeOne(MSYSTRAY);}}
+            else if(e==MCONKY)  {if(mConky){delete mConky;mConky=nullptr;listWidget.removeOne(MCONKY);}}
             else if(e==MTASKBAR){if(mTaskbar){delete mTaskbar;mTaskbar=nullptr;listWidget.removeOne(MTASKBAR);}}
         }
     }
@@ -269,14 +282,14 @@ void PanelWidget::addStatus(QStringList list,int pos)
             addWidget(mPager, pos);
         }//_PAGER
 
-        //        else if(group==MSYSTRAY){
-        //            if(!mSysTray){
-        //                mSysTray=new SysTray(this);
-        //                listWidget.append(group);
-        //            }
-        //             ui->horizontalLayout_tray->addWidget(mSysTray);
-        //           // addWidget(mSysTray, pos);
-        //        }//_SYSTRAY
+                else if(group==MCONKY){
+                    if(!mConky){
+                        mConky=new conkyStatu(mSetting,this);
+                        listWidget.append(group);
+                    }
+
+                   addWidget(mConky, pos);
+                }//_SYSTRAY
 
         else if(group==MTASKBAR){
             if(!mTaskbar){
@@ -338,7 +351,7 @@ void PanelWidget::addWidget(QWidget *w,int pos)
 void PanelWidget::reconfigure()
 {
     if(mdebug) qDebug()<<"[+]"<<__FILE__<< __LINE__<<"reconfigure()"<<listStatus.count();
-    if(mdebug)qDebug()<<"[+]"<<__FILE__<< __LINE__<<"reconfigure()"<<listWidget.count();
+    if(mdebug) qDebug()<<"[+]"<<__FILE__<< __LINE__<<"reconfigure()"<<listWidget.count();
 
     mSetting->sync();
 
@@ -352,6 +365,9 @@ void PanelWidget::reconfigure()
     if(mTaskbar)
         mTaskbar->loadSettings();
 
+    if(mConky)
+        mConky->loadSettings();
+
     foreach (StatusLabel *w, listStatus) {
         //  w->setPalette(this->palette());
         w->loadSettings();
@@ -360,6 +376,8 @@ void PanelWidget::reconfigure()
     calculatSize();
 
     resizePanel();
+
+    moveToAllDesktop();
 
     mFileSystemWatcher->addPath(mSetting->fileName());
 
@@ -375,23 +393,20 @@ void PanelWidget::reconfigure()
 void PanelWidget::calculatSize()
 {
 
-    int border=0;
-    QFontMetrics fm(font());
-    int heightSize=fm.height()+fm.leading()*2;
-    foreach (StatusLabel *w, listStatus) {
-        QFontMetrics fm(w->font());
-        // qDebug()<<fm.height();
-        heightSize=  qMax(heightSize,fm.height()+fm.leading()*2);
-        border=  qMax(border,w->border());
 
+    QFontMetrics fm(font());
+    int heightSize=fm.height()+(fm.leading()*2)+(mBorder*2);
+    foreach (StatusLabel *w, listStatus) {
+         heightSize=  qMax(heightSize,w->heightSize());
     }
 
+    if(mConky){
+         heightSize=  qMax(heightSize,mConky->heightSize());
+    }
     setMaximumHeight(heightSize
-
-                     +(mBorder*2)+(border)
                      +mMarginRect.top()
                      +mMarginRect.bottom());
-    /*if(mdebug)*/  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"calculatSize:"<<"font height:"<< heightSize<<"border:"<<fm.xHeight()<<+fm.leading()*2;
+    if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"calculatSize:"<<"MaximumHeight:"<< heightSize+mMarginRect.top()+mMarginRect.bottom();
 
 }
 
@@ -414,8 +429,8 @@ void PanelWidget::resizePanel()
     //        mSysTray->setIconSize(QSize(panelHeight-4,panelHeight-4));
     //    }
 
-    // QRect screen(QApplication::desktop()->screen(0)->geometry());
-    QRect screen=QApplication::primaryScreen()->geometry();
+   QRect screen=desktopRect();
+    //QRect screen=QApplication::primaryScreen()->geometry();
     if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"   screen  :"<<screen;
     QRect rect;
 
@@ -451,16 +466,15 @@ void PanelWidget::resizePanel()
 
     this->move(rect.left()+p_left,rect.top()+p_top);
 
-    //    int mScreenNum= QApplication::desktop()->primaryScreen();
-    //    QRect desktop = QApplication::desktop()->screen(mScreenNum)->geometry();
-    QRect desktop =QApplication::primaryScreen()->geometry();
+    // QRect desktop=desktopRect();
+    //QRect desktop =QApplication::primaryScreen()->geometry();
     if (m_topPos==true){
         setStrut(  rect.bottom(), 0,
                    rect.left(), rect.right(),
                    0, 0
                    );
     }else{
-        setStrut(   0, desktop.height() - rect.y(),
+        setStrut(   0, rect.height() - rect.y(),
                     0, 0,
                     rect.left(), rect.right()
                     );
@@ -585,7 +599,7 @@ void PanelWidget::moveToAllDesktop()
     msg.format = 32;
     msg.data.l[0] = -1;
     //TODO FIX This
-    XSendEvent(QX11Info::display(), QX11Info::appRootWindow(0), 0, (SubstructureRedirectMask | SubstructureNotifyMask) , (XEvent *) &msg);
+    XSendEvent(QX11Info::display(), QX11Info::appRootWindow(m_Screen), 0, (SubstructureRedirectMask | SubstructureNotifyMask) , (XEvent *) &msg);
 
 }
 

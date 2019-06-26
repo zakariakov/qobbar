@@ -22,7 +22,7 @@ void panel_adaptor::setShortcut(const QString &shortcut)
 }
 void panel_adaptor::reconfigure()
 {
-  qDebug()<<"parent dbus"<< parent()->objectName();
+     qDebug()<<"parent dbus"<< parent()->objectName();
      QMetaObject::invokeMethod(parent(), "reconfigure");
 }
 

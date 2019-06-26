@@ -174,6 +174,11 @@ bool Setting::showSystry()
 {
     return value("Systray",false).toBool();
 }
+//___________________________________________________
+int Setting::screen()
+{
+    return value("Monitor",0).toInt();
+}
 /*---------------------------------------------------*
 *                       Pager                        *
 *---------------------------------------------------*/

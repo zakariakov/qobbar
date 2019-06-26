@@ -80,6 +80,7 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
     Panel         configured using this name 'Panel'.
     Pager         configured using this	name 'Pager'.
     Taskbar       configured using this	name 'Taskbar'.
+    Conky         configured using this name 'Conky'.
     Statu         configured using any	name ex: 'Cpu' 'Mem'.
 
   ~~~ 
@@ -224,6 +225,39 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 	;Overline=#40BF4D
 	Border=1
 	Foreground=xrdb.foreground
+  ~~~
+
+### Conky Example
+  ~~~ sh
+myconkyrc file
+
+conky.config = {
+    out_to_x = false,
+    own_window = false,
+    out_to_console = true,
+    background = false,
+    update_interval = 5.0,
+    temperature_unit = celsius,
+};
+
+conky.text = [[
+         &nbsp; &nbsp;   ${time %a %d %b %Y} &nbsp;    ${time %H:%M}\
+        <span style='color:\#BEFF99;'> &nbsp;   ${uptime_short}  </span>\
+        <span style='color:\#00D7FF;'> &nbsp;  ${battery BAT1}  </span>\
+        <span style='color:\#FE0059;'> &nbsp;   ${acpitemp}      </span>\
+        <span style='color:\#63C68C;'> &nbsp;   ${memperc}%     </span>\
+        <span style='color:\#FF8C00;'> &nbsp;   ${cpu cpu}%     </span>\
+        <span style='color:\#00D7FF;'> &nbsp;    ${upspeedf wlp2s0}    ${downspeedf wlp2s0} </span>\
+]];
+
+...............
+qobbar.conf
+...............
+[Conky]
+Command=conky -c $HOME/.config/qobbar/myconkyrc
+Background=xrdb.color0
+FontName="xos4 Terminus"
+..............
   ~~~
 
 NOTE : to use this qobmenu [**@zakariakov**](https://github.com/zakariakov/qobmenu)

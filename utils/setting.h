@@ -34,6 +34,7 @@ public:
     QString borderColor();
     int fontSize(int defaultValue);
     int radius(int defaultValue=0);
+    int screen();
     int border();
     bool fontBold(bool defaultValue);
     int alpha();

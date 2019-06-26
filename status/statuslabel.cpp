@@ -66,10 +66,10 @@ void StatusLabel::loadSettings()
 
   //  mThread->terminate();
     QString groupName=mName;
-     qDebug()<<"mName>>>>>>>>>>>>>>>>>>>>>"<<mName;
+
     if(mName.contains(":")){
         groupName=mName.section(":",0,0);
-        qDebug()<<"groupName>>>>>>>>>>>>>>>>>>>>>"<<groupName;
+
     }
     mySetting->beginGroup(groupName);
 
@@ -87,6 +87,7 @@ void StatusLabel::loadSettings()
      QString fgColor            =mySetting->foreground(mParent->palette().windowText().color().name());
      QString underline          =mySetting->underline();
      QString overline           =mySetting->overline();
+     QString borderColor        =mySetting->borderColor();
              mBoreder           =mySetting->border();
      int     alpha              =mySetting->alpha();
      QString fontName           =mySetting->fontName(mParent->font().family());
@@ -100,8 +101,9 @@ void StatusLabel::loadSettings()
        font.setPointSize(fontSize);
        font.setFamily(fontName);
        font.setBold(fontBold);
-
        setFont(font);
+       QFontMetrics fm(font);
+       mHeight=fm.height()+(fm.leading()*2)+(mBoreder*2);
 
     if(mSuffix.contains("xrdb."))
         mSuffix=StyleColors::xrdbget(mSuffix);
@@ -134,7 +136,7 @@ void StatusLabel::loadSettings()
                                        overline,
                                        mBoreder,
                                        alpha,
-                                       QString(),
+                                       borderColor,
                                        radius);
 
     setStyleSheet(mystyle);
@@ -339,8 +341,8 @@ void StatusLabel::updateCmd(QString result)
             .arg(result.trimmed())
             .arg(mPrefix.trimmed()));
 
-    if(mdebug)
-        qDebug()<<"   [-]"<<__FILE__<< __LINE__<<mName<<mLabel<<result;
+
+    if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<mName<<mLabel<<result;
 
 }
 
@@ -359,6 +361,7 @@ void Thread::run()
     QString err=pr.readAllStandardError();
        if(!err.isEmpty())
          qDebug()<<"Error command:"<<err;
+
     QStringList list=result.split("\n",QString::SkipEmptyParts);
 
     if(list.count() >0){

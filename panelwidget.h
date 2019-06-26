@@ -20,6 +20,7 @@
 #ifndef PANELWIDGET_H
 #define PANELWIDGET_H
 #include "status/statuslabel.h"
+#include "status/conkystatu.h"
 #include "utils/setting.h"
 //#include <QWindow>
 
@@ -46,7 +47,7 @@ class PanelWidget;
 #define MSYSTRAY "Systray"
 #define MPAGER "Pager"
 #define MTASKBAR "Taskbar"
-
+#define MCONKY   "Conky"
 class PanelWidget : public QWidget
 {
     Q_OBJECT
@@ -68,9 +69,10 @@ private:
     bool mdebug;
     SysTray *mSysTray;
     Pager *mPager;
+  conkyStatu  *mConky ;
     DtaskbarWidget *mTaskbar;
     Setting *mSetting;
-    //int m_height=0;
+    int m_Screen=0;
     enum Pos{LEFT,CENTER,RIGHT};
 
 
@@ -99,7 +101,7 @@ private slots:
     void addStatus(QStringList list,int pos);
     void addWidget(QWidget *w,int pos);
     void loadIconThems();
-
+      QRect desktopRect();
 };
 
 #endif // PANELWIDGET_H
