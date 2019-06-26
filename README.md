@@ -6,6 +6,8 @@
 
 ![Screenshots](https://github.com/zakariakov/qobbar/blob/master/example/qobbar1.png)
 
+![Screenshots](https://github.com/zakariakov/screenshots/blob/master/qobbar-gento.png)
+
 
 ### Dependencies
 

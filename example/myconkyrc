@@ -1,0 +1,38 @@
+background no
+out_to_x no
+own_window no
+out_to_console yes
+ update_interval 5
+#cpu_avg_samples 2
+#net_avg_samples 2
+#override_utf8_locale yes
+#no_buffers yes
+temperature_unit celsius
+#draw_shades no
+#draw_outline no
+#draw_borders no
+#draw_graph_borders no
+#total_run_times  0
+# Text settings #
+#override_utf8_locale yes
+
+TEXT
+
+  &nbsp; &nbsp;   ${time %a %d %b %Y} &nbsp;    ${time %H:%M}\
+	<span style='color:\#BEFF99;'> &nbsp;   ${uptime_short}  </span> \
+	#---------------------------------------Battery---------------------------------------------------------------------------------------------------------------------------------
+	 ${if_match ${battery_percent BAT1} < 15}          <span style='color:\#FE0059;'> &nbsp;   ${battery BAT1} </span>\
+	${else}${if_match ${battery_percent BAT1} < 30} <span style='color:\#FF6E03;'> &nbsp;   ${battery BAT1} </span>\
+	${else}${if_match ${battery_percent BAT1} < 60} <span style='color:\#E0FE2A;'> &nbsp;   ${battery BAT1} </span>\
+	${else}${if_match ${battery_percent BAT1} < 90} <span style='color:\#2AFE3B;'> &nbsp;   ${battery BAT1} </span>\
+	${else}  <span style='color:\#00D7FF;'> &nbsp;   ${battery BAT1}  </span>${endif}${endif}${endif}${endif}\
+	#---------------------------------------Temperatur---------------------------------------------------------------------------------------------------------------------------------	
+	${if_match ${acpitemp} < 50}           <span style='color:\#00FEB5;'> &nbsp;  ${acpitemp}  </span>\
+	${else}${if_match ${acpitemp} < 60} <span style='color:\#38C138;'> &nbsp;  ${acpitemp} </span>\
+	${else}${if_match ${acpitemp} < 70} <span style='color:\#E0FE2A;'> &nbsp;  ${acpitemp} </span>\
+	${else}<span style='color:\#FE0059;'> &nbsp;  ${acpitemp} </span>${endif}${endif}${endif} \
+	#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	<span style='color:\#63C68C;'> &nbsp;  ${memperc}%     </span> \
+	<span style='color:\#FF8C00;'> &nbsp;  ${cpu cpu}%        </span> \
+	<span style='color:\#00D7FF;'> &nbsp;    ${upspeedf wlp2s0}    ${downspeedf wlp2s0}   &nbsp; </span>\
+ 
