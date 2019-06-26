@@ -157,6 +157,13 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 - IconsList			<list> 		list of icon 0 to 9 ex: home,office,multimedia,...
 - ActiveIcon        <string> 	if DesktopDesplay==icon default=NULL
   ~~~
+  
+#### Conky 
+
+  ~~~ sh
+- Command			<string>  Command to desplay
+							Ex:Command=conky -c ~/conky/myconkyrc
+  ~~~
 
 #### Status 
 
