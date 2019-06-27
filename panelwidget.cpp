@@ -8,7 +8,7 @@
 PanelWidget::PanelWidget(bool debug, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::PanelWidget),mdebug(debug),
-    mSysTray(nullptr),mPager(nullptr),mTaskbar(nullptr)
+    mSysTray(nullptr),mPager(nullptr),mConky(nullptr),mTaskbar(nullptr)
 {
 
     QByteArray sS=qgetenv("DESKTOP_SESSION");
@@ -18,9 +18,9 @@ PanelWidget::PanelWidget(bool debug, QWidget *parent) :
      qDebug()<<"[+]"<<__FILE__<< __LINE__<<"  Env="<<sS;
 
     //    if(sS=="i3")
-    //        setWindowFlags( Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+         setWindowFlags( Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     //    else
-    setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint /*| Qt::WindowStaysOnTopHint*/);
+  //  setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint /*| Qt::WindowStaysOnTopHint*/);
 
     //TODO FIX This
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
@@ -48,7 +48,7 @@ PanelWidget::PanelWidget(bool debug, QWidget *parent) :
 
 
 
-  //  loadSettings(true);
+   // loadSettings(true);
 
     //-----------------------------------------------------------------
     connect(QApplication::desktop(),SIGNAL(workAreaResized(int)),this,SLOT(resizePanel()));
@@ -58,7 +58,6 @@ PanelWidget::PanelWidget(bool debug, QWidget *parent) :
 
 loadIconThems();
 //resizePanel();
-
 //reconfigure();
 QTimer::singleShot(20,this,SLOT(reconfigure()));
 }
@@ -145,6 +144,7 @@ void PanelWidget:: loadSettings(bool charge)
     mSetting->endGroup();
 
     if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"loadSettings():endGroup(Panel)";
+    if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"loadSettings():endGroup(Panel):m_showSystry"<<m_showSystry;
 
     // INIT ______________________________________________________
     QFont font;
@@ -403,6 +403,7 @@ void PanelWidget::calculatSize()
     if(mConky){
          heightSize=  qMax(heightSize,mConky->heightSize());
     }
+
     setMaximumHeight(heightSize
                      +mMarginRect.top()
                      +mMarginRect.bottom());
