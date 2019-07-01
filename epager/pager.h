@@ -89,6 +89,7 @@ private:
     int m_DeskCount;
     QWidget *mParent;
     Setting *mSetting;
+  QWidget *widgetContent;
     /*!< قائمة بمجموعة ازرار */
         QButtonGroup * m_GroupBtns;
     /*!< قائمة ياسماء اسطح المكتب */

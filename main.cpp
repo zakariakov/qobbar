@@ -27,6 +27,7 @@ void mylist()
 {
     puts("Panel         configured using this name 'Panel'.");
     puts("Pager         configured using this name 'Pager'.");
+    puts("Systray       configured using this name 'Systray'.");
     puts("Taskbar       configured using this name 'Taskbar'.");
     puts("Conky         configured using this name 'Conky'.");
     puts("Statu         configured using any name ex: 'Cpu' 'Mem'.");

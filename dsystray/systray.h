@@ -25,7 +25,7 @@ original code  http://razor-qt.org
 #include <QPainter>
 #include <QBitmap>
 #include <QAbstractNativeEventFilter>
-
+#include "utils/setting.h"
 #include "trayicon.h"
 #include <X11/X.h>
 #include <X11/Xlib.h>
@@ -39,7 +39,7 @@ class SysTray: public  QWidget, QAbstractNativeEventFilter
 
 
   public:
-      SysTray(QWidget* parent = 0);
+      SysTray(Setting *s, QWidget* parent = nullptr);
       ~SysTray();
 
 
@@ -48,7 +48,7 @@ class SysTray: public  QWidget, QAbstractNativeEventFilter
 
       bool nativeEventFilter(const QByteArray &eventType, void *message, long *);
 
-
+      void loadSettings();
 
   signals:
       void iconSizeChanged(int iconSize);
@@ -60,7 +60,7 @@ class SysTray: public  QWidget, QAbstractNativeEventFilter
 
   private:
       VisualID getVisual();
-
+QWidget *mWidgetContent;
       void clientMessageEvent(xcb_generic_event_t *e);
 
       int clientMessage(WId _wid, Atom _msg,
@@ -73,7 +73,7 @@ class SysTray: public  QWidget, QAbstractNativeEventFilter
 
       void addIcon(Window id);
       TrayIcon* findIcon(Window trayId);
-
+Setting *mSetting;
       bool mValid;
       Window mTrayId;
       QList<TrayIcon*> mIcons;

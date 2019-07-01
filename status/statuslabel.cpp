@@ -129,6 +129,8 @@ void StatusLabel::loadSettings()
         qDebug()<<"   [-]"<<__FILE__<< __LINE__<<mName<<"MouseWheelUpCmd:"<<mMouseWheelUpCmd;
         qDebug()<<"   [-]"<<__FILE__<< __LINE__<<mName<<"MouseWheelDownCmd:"<<mMouseWheelDownCmd;
     }
+    if(radius>0)
+     setContentsMargins((radius/2)+1,0,(radius/2)+1,0);
     //_________________________________________________ STYLESHEET
     QString mystyle=StyleColors::style(bgColor,
                                        fgColor,

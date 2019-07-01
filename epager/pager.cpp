@@ -42,10 +42,23 @@ Pager::Pager(Setting *s, QWidget* parent, bool debug)
     this->setContentsMargins(0,0,0,0);
     this->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred);
 
-    m_GroupBtns = new QButtonGroup(this);
+   widgetContent=new QWidget;
+   widgetContent->setObjectName("WidgetContent");
+   widgetContent->setWindowTitle(tr("Desktop Switch"));
+   widgetContent->setContentsMargins(0,0,0,0);
+   widgetContent->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred);
+
+   QHBoxLayout *Layout = new QHBoxLayout(this);
+   Layout->setSpacing(0);
+   Layout->setContentsMargins(0, 0, 0, 0);
+   Layout->setObjectName(QString::fromUtf8("horizontalLayout"));
+
+   Layout->addWidget(widgetContent);
+
+    m_GroupBtns = new QButtonGroup(widgetContent);
   //2  connect ( m_pSignalMapper, SIGNAL(mapped(int)), this, SLOT(setDesktop(int)));
 
-    mHBoxLayout = new QHBoxLayout(this);
+    mHBoxLayout = new QHBoxLayout(widgetContent);
     mHBoxLayout->setSpacing(0);
     mHBoxLayout->setContentsMargins(0, 0, 0, 0);
     mHBoxLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
@@ -84,6 +97,8 @@ void Pager::loadSettings()
     QString activeunderline =mSetting->activeUnderline();
     QString activeoverline  =mSetting->activeOverline();
     int     border          =mSetting->border();
+    QString borderColor      =mSetting->borderColor();
+    int     radius          =mSetting->radius();
     QString fontName        =mSetting->fontName(mParent->font().family());
     int     fontSize        =mSetting->fontSize(mParent->font().pointSize());
     bool    fontBold        =mSetting->fontBold(mParent->font().bold());
@@ -115,13 +130,18 @@ void Pager::loadSettings()
     mSetting->endGroup();
 
     //-------------------------------------------------------STYLESHEET
-    //QtoolButton Normale
+        widgetContent->setContentsMargins((radius+1),0,(radius+1),0);
+        QString mStylebg="QWidget#WidgetContent{";
+        mStylebg+=StyleColors::style(bgColor,fgColor,QString(),QString(),border,alpha,borderColor,radius)+"\n}";
+
+     //QtoolButton Normale
     QString mStyleSheet="QToolButton{";
-    mStyleSheet+=StyleColors::style(bgColor,fgColor,underline,overline,border,alpha)+"\n}";
+    mStyleSheet+=StyleColors::style(bgColor,fgColor,underline,overline,border,alpha,borderColor,0)+"\n}";
+
     //QtoolButton Active
     QString activeStyleSheet="QToolButton:checked{\n";
-    activeStyleSheet+=StyleColors::style(activebgColor,activefgColor,activeunderline,activeoverline,border,activeAlpha)+"\n}";
-    setStyleSheet(mStyleSheet+activeStyleSheet);
+    activeStyleSheet+=StyleColors::style(activebgColor,activefgColor,activeunderline,activeoverline,border,activeAlpha,QString(),0)+"\n}";
+    setStyleSheet(mStylebg+mStyleSheet+activeStyleSheet);
 
     setupBtns();
 

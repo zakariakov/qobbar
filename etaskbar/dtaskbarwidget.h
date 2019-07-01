@@ -22,7 +22,7 @@ class DtaskbarWidget : public QWidget,public QAbstractNativeEventFilter
 
 public:
           // DtaskbarWidget();
-      explicit DtaskbarWidget(Setting *s,QWidget *parent = 0,bool debug=false);
+      explicit DtaskbarWidget(Setting *s,QWidget *parent = nullptr,bool debug=false);
 
       bool nativeEventFilter(const QByteArray &eventType, void *message, long *);
       void windowPropertyChanged(unsigned long window, unsigned long atom);
@@ -47,6 +47,7 @@ private slots:
 private:
           QWidget *m_parent;
           Setting *mSetting;
+          QWidget *widgetContent;
           bool mDebug;
          // QMap<unsigned long, Client*> m_clients;
           QHash<unsigned long, DActionTaskbar*> mButtonsHash;

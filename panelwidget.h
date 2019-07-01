@@ -73,6 +73,7 @@ private:
     DtaskbarWidget *mTaskbar;
     Setting *mSetting;
     int m_Screen=0;
+    int m_height=0;
     enum Pos{LEFT,CENTER,RIGHT};
 
 
@@ -93,7 +94,7 @@ void chargeStatus(QStringList listLeft,QStringList listCenter,QStringList listRi
 private slots:
     void reconfigure();
     void resizePanel();
-    void calculatSize();
+    int calculatSize();
     //X11
     void moveToAllDesktop();
     void setStrut(int top,  int bottom, int topStartX,int topEndX,int bottomStartX, int bottomEndX );

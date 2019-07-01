@@ -88,7 +88,11 @@ int Setting::alpha()
 /*---------------------------------------------------*
 *                       Panel                        *
 *---------------------------------------------------*/
-
+//___________________________________________________
+int Setting::spacing()
+{
+    return value("Spacing",0).toInt();
+}
 //___________________________________________________
 int Setting::barLeftSpacing()
 {
@@ -146,17 +150,17 @@ int  Setting::paddingBottom()
 }
 
 //___________________________________________________
-int  Setting::meginLeft()
+int  Setting::marginLeft()
 {
      return value("MarginLeft",0).toInt();
 }
 //___________________________________________________
-int  Setting::meginTop()
+int  Setting::marginTop()
 {
      return value("MarginTop",0).toInt();
 }
 //___________________________________________________
-int  Setting::meginRight()
+int  Setting::marginRight()
 {
      return value("MarginRight",0).toInt();
 }
@@ -166,10 +170,10 @@ int  Setting::meginBottom()
      return value("MarginBottom",0).toInt();
 }
 //___________________________________________________
-//int  Setting::panelHeight()
-//{
-//     return value("Height",0).toInt();
-//}
+int  Setting::panelHeight()
+{
+     return value("Height",0).toInt();
+}
 bool Setting::showSystry()
 {
     return value("Systray",false).toBool();

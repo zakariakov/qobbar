@@ -8,7 +8,7 @@
 //
 
 #include "systray.h"
-
+#include "utils/stylecolors.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
@@ -40,8 +40,9 @@ QSize getIconSize(QSize size)
     return QSize(16,16);
 }
 
-SysTray::SysTray( QWidget *parent):
+SysTray::SysTray(Setting *s, QWidget *parent):
     QWidget(parent),
+    mSetting(s),
     mValid(false),
     mTrayId(0),
     mDamageEvent(0),
@@ -58,8 +59,18 @@ SysTray::SysTray( QWidget *parent):
 //   font.setPointSize(parent->font().pointSize());
 //   setFont(font);
    setContentsMargins(0,0,0,0);
+   mWidgetContent=new QWidget;
+   mWidgetContent->setObjectName("WWidgetContent");
+   mWidgetContent->setContentsMargins(0,0,0,0);
+   mWidgetContent->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred);
 
-    mLayout = new QHBoxLayout(this);
+   QHBoxLayout *Layout = new QHBoxLayout(this);
+   Layout->setSpacing(0);
+   Layout->setContentsMargins(0, 0, 0, 0);
+   Layout->setObjectName(QString::fromUtf8("horizontalLayout"));
+   Layout->addWidget(mWidgetContent);
+
+    mLayout = new QHBoxLayout(mWidgetContent);
     mLayout->setContentsMargins(3,0,3,0);
     mLayout->setSpacing(3);
     setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred);
@@ -71,7 +82,7 @@ SysTray::SysTray( QWidget *parent):
     // after construction is done and the creating object has a chance to connect.
    // QTimer::singleShot(1500, this, SLOT(startTray()));
   startTray();
-
+ loadSettings();
 }
 
 
@@ -81,6 +92,39 @@ SysTray::SysTray( QWidget *parent):
 SysTray::~SysTray()
 {
     stopTray();
+}
+
+//__________________________________________________________________________________
+void SysTray::loadSettings()
+{
+   //if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"loadSettings()";
+
+
+    //_________________________________________________ Settings
+
+    if(!mSetting->childGroups().contains("Systray")) return;
+    mSetting->beginGroup("Systray");
+
+    QString bgColor         =mSetting->background();
+    int     alpha           =mSetting->alpha();//
+    QString underline       =mSetting->underline();
+    QString overline        =mSetting->overline();
+    int     border          =mSetting->border();
+    QString borderColor      =mSetting->borderColor();
+    int     radius          =mSetting->radius();
+    //_________________________________________________ INIT
+       mSetting->endGroup();
+
+    //-------------------------------------------------------STYLESHEET
+
+
+       mWidgetContent->setContentsMargins((radius+1),0,(radius+1),0);
+
+       QString mStylebg="QWidget#WWidgetContent{";
+    mStylebg+=StyleColors::style(bgColor,QString(),underline,overline,border,alpha,borderColor,radius)+"\n}";
+    setStyleSheet(mStylebg);
+
+
 }
 
 

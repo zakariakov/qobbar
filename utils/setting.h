@@ -41,6 +41,7 @@ public:
 
     //Panel
     bool top();
+    int   spacing();
     int barLeftSpacing();
     int barRightSpacing();
     int barCenterSpacing();
@@ -51,11 +52,11 @@ public:
     int   paddingTop();
     int   paddingRight();
     int   paddingBottom();
-    int   meginLeft();
-    int   meginTop();
-    int   meginRight();
+    int   marginLeft();
+    int   marginTop();
+    int   marginRight();
     int   meginBottom();
- //   int   panelHeight();
+    int   panelHeight();
     bool  showSystry();
     //Pager
     int activeAlpha();

@@ -47,8 +47,7 @@ PanelWidget::PanelWidget(bool debug, QWidget *parent) :
     connect(mFileSystemWatcher,SIGNAL(fileChanged(QString)),this,SLOT(reconfigure()));
 
 
-
-   // loadSettings(true);
+ //loadSettings(true);
 
     //-----------------------------------------------------------------
     connect(QApplication::desktop(),SIGNAL(workAreaResized(int)),this,SLOT(resizePanel()));
@@ -60,6 +59,8 @@ loadIconThems();
 //resizePanel();
 //reconfigure();
 QTimer::singleShot(20,this,SLOT(reconfigure()));
+
+
 }
 
 QRect PanelWidget::desktopRect()
@@ -115,6 +116,7 @@ void PanelWidget:: loadSettings(bool charge)
     QString     fontName        =mSetting->fontName(qApp->font().family());
     int         fontSize        =mSetting->fontSize(qApp->font().pointSize());
     bool        fontBold        =mSetting->fontBold(qApp->font().bold());
+    int         spacing         =mSetting->spacing();
     int         barLeftSpacing  =mSetting->barLeftSpacing();
     int         barRightSpacing =mSetting->barRightSpacing();
     int         barCenterSpacing=mSetting->barCenterSpacing();
@@ -126,16 +128,16 @@ void PanelWidget:: loadSettings(bool charge)
     int         _top            =mSetting->paddingTop();
     int         _rigt           =mSetting->paddingRight();
     int         _bot            =mSetting->paddingBottom();
-    int         m_left          =mSetting->meginLeft();
-    int         m_top           =mSetting->meginTop();
-    int         m_rigt          =mSetting->meginRight();
+    int         m_left          =mSetting->marginLeft();
+    int         m_top           =mSetting->marginTop();
+    int         m_rigt          =mSetting->marginRight();
     int         m_bot           =mSetting->meginBottom();
     mBorder                     =mSetting->border();
     m_topPos                    =mSetting->top();
     bool m_showSystry           =mSetting->showSystry();
     int  m_radius               =mSetting->radius();
     m_Screen                    =mSetting->screen();
-    //     m_height               =mSetting->panelHeight();
+    m_height                    =mSetting->panelHeight();
 
     mPaddingRect = QRect(QPoint(_left,_top),QPoint(_rigt,_bot));
 
@@ -163,7 +165,7 @@ void PanelWidget:: loadSettings(bool charge)
     ui->horizontalLayout_right->setSpacing(barRightSpacing);
     ui->horizontalLayout_left->setSpacing(barLeftSpacing);
     ui->horizontalLayout->setContentsMargins(m_left+(m_radius/2),m_top+mBorder,m_rigt+(m_radius/2),m_bot+mBorder);
-
+    ui->horizontalLayout->setSpacing(spacing);
     // StyleSheet ________________________________________________
     QPalette pal=this->palette();
 
@@ -204,7 +206,7 @@ void PanelWidget:: loadSettings(bool charge)
 
     if(m_showSystry){
         if(!mSysTray){
-            mSysTray=new SysTray(this);
+            mSysTray=new SysTray(mSetting,this);
             // listWidget.append(group);
             ui->horizontalLayout_tray->addWidget(mSysTray);
         }
@@ -215,7 +217,8 @@ void PanelWidget:: loadSettings(bool charge)
 
     }
 
-    calculatSize();
+moveToAllDesktop();
+resizePanel();
     //    ui->widgetBg-> setAutoFillBackground(false);
     //    ui->widgetBg-> setWindowOpacity(alpha);
 
@@ -359,25 +362,19 @@ void PanelWidget::reconfigure()
 
     loadSettings(true);
 
-    if(mPager)
-        mPager->loadSettings();
-
-    if(mTaskbar)
-        mTaskbar->loadSettings();
-
-    if(mConky)
-        mConky->loadSettings();
+    if(mPager)   mPager->loadSettings();
+    if(mTaskbar) mTaskbar->loadSettings();
+    if(mConky)   mConky->loadSettings();
+    if(mSysTray) mSysTray->loadSettings();
 
     foreach (StatusLabel *w, listStatus) {
-        //  w->setPalette(this->palette());
         w->loadSettings();
     }
 
-    calculatSize();
 
-    resizePanel();
+   moveToAllDesktop();
+   resizePanel();
 
-    moveToAllDesktop();
 
     mFileSystemWatcher->addPath(mSetting->fileName());
 
@@ -390,12 +387,12 @@ void PanelWidget::reconfigure()
 }
 
 //------------------------------------------------------------------------------------------
-void PanelWidget::calculatSize()
+int PanelWidget::calculatSize()
 {
 
 
     QFontMetrics fm(font());
-    int heightSize=fm.height()+(fm.leading()*2)+(mBorder*2);
+    int heightSize=fm.height()+(fm.leading()*2)+(mBorder*4);
     foreach (StatusLabel *w, listStatus) {
          heightSize=  qMax(heightSize,w->heightSize());
     }
@@ -404,10 +401,13 @@ void PanelWidget::calculatSize()
          heightSize=  qMax(heightSize,mConky->heightSize());
     }
 
-    setMaximumHeight(heightSize
-                     +mMarginRect.top()
-                     +mMarginRect.bottom());
+    heightSize=  qMax(heightSize,m_height);
+    heightSize=heightSize+mMarginRect.top()+mMarginRect.bottom();
+    setMaximumHeight(heightSize);
     if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"calculatSize:"<<"MaximumHeight:"<< heightSize+mMarginRect.top()+mMarginRect.bottom();
+
+    return  heightSize ;
+
 
 }
 
@@ -425,7 +425,7 @@ void PanelWidget::resizePanel()
 
     // QFontMetrics fm(font());
     //  int size=fm.height();
-    int panelHeight=this->maximumHeight();
+    int panelHeight=calculatSize();
     //    if(mSysTray){
     //        mSysTray->setIconSize(QSize(panelHeight-4,panelHeight-4));
     //    }

@@ -23,9 +23,9 @@
 #define  NORMAL 1
 #define  BELOW 2
 
-#define _MaximizeHoriz 0
-#define _MaximizeVert 1
-#define _MaximizeBoth 2
+#define MMaximizeHoriz 0
+#define MMaximizeVert  1
+#define MMaximizeBoth  2
 DActionTaskbar::DActionTaskbar(const Window window, QWidget *parent) :
           QToolButton(parent),
           m_Window(window)
@@ -204,7 +204,7 @@ void DActionTaskbar::contextMenuEvent(QContextMenuEvent* event)
           a = menu.addAction(QIcon(style()->standardPixmap(QStyle::SP_TitleBarMaxButton)),tr("Ma&ximize"));
           a->setEnabled((wAllow["MaximizeHoriz"] && wAllow["MaximizeVert"]) &&
                         (!wState["MaximizedHoriz"] || !wState["MaximizedVert"] /*|| wState["Hidden"]*/));
-       a->setData(_MaximizeBoth);
+       a->setData(MMaximizeBoth);
           connect(a, SIGNAL(triggered(bool)), this, SLOT(maximizeWindow()));
 
           if (event->modifiers() & Qt::ShiftModifier)
@@ -212,12 +212,12 @@ void DActionTaskbar::contextMenuEvent(QContextMenuEvent* event)
 
                     a = menu.addAction(QIcon(style()->standardPixmap(QStyle::SP_TitleBarMaxButton)),tr("Maximize vertically"));
               a->setEnabled((wAllow["MaximizeVert"]) && (!wState["MaximizedVert"] || wState["Hidden"]));
-                    a->setData(_MaximizeVert);
+                    a->setData(MMaximizeVert);
                     connect(a, SIGNAL(triggered(bool)), this, SLOT(maximizeWindow()));
 
                     a = menu.addAction(QIcon(style()->standardPixmap(QStyle::SP_TitleBarMaxButton)),tr("Maximize horizontally"));
             a->setEnabled((wAllow["MaximizeHoriz"]) && (!wState["MaximizedHoriz"] || wState["Hidden"]));
-                    a->setData(_MaximizeHoriz);
+                    a->setData(MMaximizeHoriz);
                     connect(a, SIGNAL(triggered(bool)), this, SLOT(maximizeWindow()));
           }
 

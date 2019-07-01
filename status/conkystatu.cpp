@@ -55,6 +55,7 @@ void conkyStatu::loadSettings()
     m_Height=fm.height()+(fm.leading()*2)+(border*2);
     qDebug()<<"conky height>>>>>>>>>>>>>>>>>>>>>>>"<<m_Height;
     //_________________________________________________ STYLESHEET
+    setContentsMargins((radius/2)+1,0,(radius/2)+1,0);
     QString mystyle=StyleColors::style(bgColor,
                                        fgColor,
                                        underline,

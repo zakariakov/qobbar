@@ -20,7 +20,7 @@ original code  http://razor-qt.org
 #define ICONONLY 1
 
 DtaskbarWidget::DtaskbarWidget(Setting *s, QWidget *parent, bool debug):
-    mSetting(s),QWidget(parent),mDebug(debug)
+    QWidget(parent),mSetting(s),mDebug(debug)
 {
 m_parent=parent;
     QFont font=parent->font();
@@ -29,13 +29,26 @@ m_parent=parent;
     this->setObjectName("dtaskbar");
     this->setContentsMargins(0,0,0,0);
     this->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred);
-    m_rootWindow = QX11Info::appRootWindow();
-    m_horizontalLayout = new QHBoxLayout(this);
+
+    widgetContent=new QWidget;
+    widgetContent->setObjectName("WidgetContent");
+    widgetContent->setWindowTitle(tr("Desktop Switch"));
+    widgetContent->setContentsMargins(0,0,0,0);
+    widgetContent->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred);
+
+    QHBoxLayout *Layout = new QHBoxLayout(this);
+    Layout->setSpacing(0);
+    Layout->setContentsMargins(0, 0, 0, 0);
+    Layout->setObjectName(QString::fromUtf8("horizontalLayout"));
+
+    Layout->addWidget(widgetContent);
+
+    m_horizontalLayout = new QHBoxLayout(widgetContent);
     m_horizontalLayout->setSpacing(0);
     m_horizontalLayout->setContentsMargins(0,0,0,0);
     m_horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-   // m_horizontalLayout->addSpacing(3);
-//setMinimumHeight(m_parent->height());
+
+      m_rootWindow = QX11Info::appRootWindow();
     loadSettings();
 
     qApp->installNativeEventFilter(this);
@@ -104,6 +117,7 @@ void DtaskbarWidget::loadSettings()
     QString fgColor         =mSetting->foreground(m_parent->palette().windowText().color().name());
     QString activebgColor   =mSetting->activeBackground(highlight);
     QString activefgColor   =mSetting->activeForeground(highlightTxt);
+    QString borderColor     =mSetting->borderColor();
     int     alpha           =mSetting->alpha();//
     int     activeAlpha     =mSetting->activeAlpha();
     QString underline       =mSetting->underline();
@@ -111,28 +125,28 @@ void DtaskbarWidget::loadSettings()
     QString activeunderline =mSetting->activeUnderline();
     QString activeoverline  =mSetting->activeOverline();
     int     border          =mSetting->border();
-    QString fontName        =mSetting->fontName(m_parent->font().family());
-    int     fontSize        =mSetting->fontSize(m_parent->font().pointSize());
-    bool    fontBold        =mSetting->fontBold(m_parent->font().bold());
+    int     radius          =mSetting->radius();
 
-      mSetting->endGroup();
+    mSetting->endGroup();
     //_________________________________________________ INIT
-    QFont font;
-    font.setPointSize(fontSize);
-    font.setBold(fontBold);
-    font.setFamily(fontName);
-    setFont(font);
 
     //-------------------------------------------------------STYLESHEET
+    widgetContent->setContentsMargins((radius+1),0,(radius+1),0);
+    QString mStylebg="QWidget#WidgetContent{";
+    mStylebg+=StyleColors::style(bgColor,fgColor,QString(),QString(),border,alpha,borderColor,radius)+"\n}";
+
     //QtoolButton Normale
     QString mStyleSheet="QToolButton{";
-    mStyleSheet+=StyleColors::style(bgColor,fgColor,underline,overline,border,alpha)+"\n}";
+    mStyleSheet+=StyleColors::style(bgColor,fgColor,underline,overline,border,alpha,borderColor,0)+"\n}";
+
     //QtoolButton Active
     QString activeStyleSheet="QToolButton:checked{\n";
-    activeStyleSheet+=StyleColors::style(activebgColor,activefgColor,activeunderline,activeoverline,border,activeAlpha)+"\n}";
-
-
-    setStyleSheet(mStyleSheet+activeStyleSheet);
+    activeStyleSheet+=StyleColors::style(activebgColor,activefgColor,activeunderline,activeoverline,border,activeAlpha,QString(),0)+"\n}";
+    setStyleSheet(mStylebg+mStyleSheet+activeStyleSheet);
+    qDebug()<<"   [-]"<<__FILE__<< __LINE__<<" loadSettings()\n"<<mStylebg+mStyleSheet+activeStyleSheet;
+    foreach (DActionTaskbar *btn,mButtonsHash){
+         btn->setStyleSheet(mStyleSheet+activeStyleSheet);
+    }
 
     refreshTaskList();
 }
