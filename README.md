@@ -10,6 +10,8 @@
 
 ![Screenshots](https://github.com/zakariakov/qobbar/blob/master/example/qobbar2.jpg)
 
+![Screenshots](https://github.com/zakariakov/qobbar/blob/master/example/qobbar5.jpg)
+
 ### Dependencies
 
 - libX11
