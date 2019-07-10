@@ -28,7 +28,7 @@ PanelWidget::PanelWidget(/*bool debug,*/ QWidget *parent) :
      qDebug()<<"\033[36m[+] PanelWidget"<< __LINE__<<"  Env=\033[0m"<<sS;
 
     //    if(sS=="i3")
-         setWindowFlags( Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+         setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     //    else
   //  setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint /*| Qt::WindowStaysOnTopHint*/);
 
@@ -502,7 +502,7 @@ void PanelWidget::resizePanel()
 
    QRect screen=desktopRect();
     //QRect screen=QApplication::primaryScreen()->geometry();
-    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"   screen  :\033[0m"<<screen;
+    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"   screen  :\033[0m";
     QRect rect;
 
     rect.moveLeft(screen.left());
@@ -538,24 +538,36 @@ void PanelWidget::resizePanel()
     this->move(rect.left()+p_left,rect.top()+p_top);
 
     // QRect desktop=desktopRect();
-    //QRect desktop =QApplication::primaryScreen()->geometry();
+
+//    if (m_topPos){
+//        setStrut(  rect.bottom(), 0,
+//                   rect.left(), rect.right(),
+//                   0, 0
+//                   );
+//    }else{
+//        setStrut(   0, panelHeight,
+//                    0, 0,
+//                    rect.left(), rect.right()
+//                    );
+
+//    }
+
     if (m_topPos){
         setStrut(  rect.bottom(), 0,
                    rect.left(), rect.right(),
-                   0, 0
+                   rect.left(), rect.right()
                    );
     }else{
-        setStrut(   0, rect.height() - rect.y(),
-                    0, 0,
+        setStrut(   0, panelHeight,
+                    rect.left(), rect.right(),
                     rect.left(), rect.right()
                     );
 
     }
-
     //    this->setGeometry(rect);
     //    this->resize(rect.width(),rect.height());
 
-    if(Defines::degug())   qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"   widget panel resized: \033[0m"<<rect;
+   /* if(Defines::degug()) */  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"   widget panel resized: \033[0m"<< rect<<QApplication::primaryScreen()->availableGeometry();
     setMaximumWidth(rect.width()-(p_left+p_right));
     setMinimumHeight(panelHeight);
     //  m_rootWindow = QX11Info::appRootWindow();

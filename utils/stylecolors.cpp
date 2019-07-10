@@ -22,7 +22,7 @@
 #include <QTextStream>
 #include <QTextCodec>
 #include <QDir>
-#include <QDebug>
+//#include <QDebug>
 QString StyleColors::loadXresourceColor(const QString &colorName)
 {
     QString xresourceFile=QDir::homePath()+"/.Xresources";
@@ -95,7 +95,7 @@ QString StyleColors::loadXresourceColor(const QString &colorName)
          }
 
      }
-qDebug()<<"   [*]"<<__FILE__<<__LINE__<< "StyleColors::xrdbget return="<<txt;
+//qDebug()<<"   [*]"<<__FILE__<<__LINE__<< "StyleColors::xrdbget return="<<txt;
      return txt;
 
  }
