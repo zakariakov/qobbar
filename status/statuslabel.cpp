@@ -1,10 +1,12 @@
 ﻿#include "statuslabel.h"
 #include "utils/stylecolors.h"
+#include "utils/defines.h"
 #include <QDebug>
 #include <QApplication>
 #include <QtConcurrent>
 #include <QSettings>
 #include <QMouseEvent>
+
 QString fixCommand(QString cmd)
 {
     if(cmd.contains("$HOME/") || cmd.contains("~/")){
@@ -15,11 +17,11 @@ QString fixCommand(QString cmd)
     return cmd.trimmed();
 }
 //Constructor
-StatusLabel::StatusLabel(QString group, Setting *s, QWidget *parent,bool debug):QLabel(parent),
-    mName(group),mParent(parent),mySetting(s),mdebug(debug)
+StatusLabel::StatusLabel(QString group, QWidget *parent):QLabel(parent),
+    mName(group),mParent(parent)/*,mySetting(s),mdebug(debug)*/
 {
 
-    if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"Name:"<<mName;
+    if(Defines::degug())  qDebug()<<"\033[32m   [-] statu : "<<mName<< __LINE__<<"Name:\033[0m"<<mName;
 
     mTimer=new QTimer;
     setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred);
@@ -55,7 +57,7 @@ StatusLabel::~StatusLabel()
 //________________________________________________________________Settings
 void StatusLabel::loadSettings()
 {
-   if(mdebug) qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"loadSettings:"<<mName;
+   if(Defines::degug()) qDebug()<<"\033[32m   [-] statu : "<<mName<< __LINE__<<"loadSettings:\033[0m"<<mName;
 
    //
     mTimer->stop();
@@ -71,31 +73,55 @@ void StatusLabel::loadSettings()
         groupName=mName.section(":",0,0);
 
     }
-    mySetting->beginGroup(groupName);
+    Setting::instance()->beginGroup(groupName);
 
-     QString mCommand           =mySetting->command();
-     int     interval           =mySetting->interval();
-             mLabel             =mySetting->label();
-             mSuffix            =mySetting->suffix();
-             mPrefix            =mySetting->prefix();
-             mMouseLeftCmd      =mySetting->clickLeft();
-             mMouseRightCmd     =mySetting->clickRight();
-             mMouseWheelUpCmd   =mySetting->mouseWheelUp();
-             mMouseWheelDownCmd =mySetting->mouseWheelDown();
-             maxSize            =mySetting->maxSize();
-     QString bgColor            =mySetting->background();
-     QString fgColor            =mySetting->foreground(mParent->palette().windowText().color().name());
-     QString underline          =mySetting->underline();
-     QString overline           =mySetting->overline();
-     QString borderColor        =mySetting->borderColor();
-             mBoreder           =mySetting->border();
-     int     alpha              =mySetting->alpha();
-     QString fontName           =mySetting->fontName(mParent->font().family());
-     int     fontSize           =mySetting->fontSize(mParent->font().pointSize());
-     bool    fontBold           =mySetting->fontBold(mParent->font().bold());
-     int     radius             =mySetting->radius();
-     mySetting->endGroup();
+     QString mCommand           =Setting::command();
+     int     interval           =Setting::interval();
+             mLabel             =Setting::label();
+             mSuffix            =Setting::suffix();
+             mPrefix            =Setting::prefix();
+             mMouseLeftCmd      =Setting::clickLeft();
+             mMouseRightCmd     =Setting::clickRight();
+             mMouseWheelUpCmd   =Setting::mouseWheelUp();
+             mMouseWheelDownCmd =Setting::mouseWheelDown();
+             maxSize            =Setting::maxSize();
+     QString bgColor            =Setting::background();
+     QString fgColor            =Setting::foreground(mParent->palette().windowText().color().name());
+     QString underline          =Setting::underline();
+     QString overline           =Setting::overline();
+     QString borderColor        =Setting::borderColor();
+             mBoreder           =Setting::border();
+     int     alpha              =Setting::alpha();
+     QString fontName           =Setting::fontName(mParent->font().family());
+     int     fontSize           =Setting::fontSize(mParent->font().pointSize());
+     bool    fontBold           =Setting::fontBold(mParent->font().bold());
+     int     radius             =Setting::radius();
+     Setting::instance()->endGroup();
 
+//     mySetting->beginGroup(groupName);
+
+//      QString mCommand           =mySetting->command();
+//      int     interval           =mySetting->interval();
+//              mLabel             =mySetting->label();
+//              mSuffix            =mySetting->suffix();
+//              mPrefix            =mySetting->prefix();
+//              mMouseLeftCmd      =mySetting->clickLeft();
+//              mMouseRightCmd     =mySetting->clickRight();
+//              mMouseWheelUpCmd   =mySetting->mouseWheelUp();
+//              mMouseWheelDownCmd =mySetting->mouseWheelDown();
+//              maxSize            =mySetting->maxSize();
+//      QString bgColor            =mySetting->background();
+//      QString fgColor            =mySetting->foreground(mParent->palette().windowText().color().name());
+//      QString underline          =mySetting->underline();
+//      QString overline           =mySetting->overline();
+//      QString borderColor        =mySetting->borderColor();
+//              mBoreder           =mySetting->border();
+//      int     alpha              =mySetting->alpha();
+//      QString fontName           =mySetting->fontName(mParent->font().family());
+//      int     fontSize           =mySetting->fontSize(mParent->font().pointSize());
+//      bool    fontBold           =mySetting->fontBold(mParent->font().bold());
+//      int     radius             =mySetting->radius();
+//      mySetting->endGroup();
     //_________________________________________________ INIT
        QFont font;
        font.setPointSize(fontSize);
@@ -122,12 +148,14 @@ void StatusLabel::loadSettings()
     mMouseWheelDownCmd  =fixCommand(mMouseWheelDownCmd);
     mCommand            =fixCommand(mCommand);
 
-    if(mdebug){
-        qDebug()<<"   [-]"<<__FILE__<< __LINE__<<mName<<"Command:"<<mCommand;
-        qDebug()<<"   [-]"<<__FILE__<< __LINE__<<mName<<"MouseRightCmd:"<<mMouseRightCmd;
-        qDebug()<<"   [-]"<<__FILE__<< __LINE__<<mName<<"MouseLeftCmd:"<<mMouseLeftCmd;
-        qDebug()<<"   [-]"<<__FILE__<< __LINE__<<mName<<"MouseWheelUpCmd:"<<mMouseWheelUpCmd;
-        qDebug()<<"   [-]"<<__FILE__<< __LINE__<<mName<<"MouseWheelDownCmd:"<<mMouseWheelDownCmd;
+    if(Defines::degug()){
+
+        qDebug()<<"\033[32m   [-] statu : "<<mName<< __LINE__<<"Command:"<<mCommand;
+        qDebug()<<"   [-] statu : "<<mName<< __LINE__<<"MouseRightCmd:"<<mMouseRightCmd;
+        qDebug()<<"   [-] statu : "<<mName<< __LINE__<<"MouseLeftCmd:"<<mMouseLeftCmd;
+        qDebug()<<"   [-] statu : "<<mName<< __LINE__<<"MouseWheelUpCmd:"<<mMouseWheelUpCmd;
+        qDebug()<<"   [-] statu : "<<mName<< __LINE__<<"MouseWheelDownCmd:"<<mMouseWheelDownCmd<<"\033[0m";
+
     }
     if(radius>0)
      setContentsMargins((radius/2)+1,0,(radius/2)+1,0);
@@ -269,7 +297,7 @@ void StatusLabel::startRender()
 
 void StatusLabel::cancelRender()
 {
-       qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"close"<<mName;
+    if(Defines::degug())   qDebug()<<"\033[32m   [-] statu : "<<mName<< __LINE__<<"close \033[0m"<<mName;
     mTimer->stop();
     mThread->terminate();
             //********* old **********//
@@ -344,7 +372,7 @@ void StatusLabel::updateCmd(QString result)
             .arg(mPrefix.trimmed()));
 
 
-    if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<mName<<mLabel<<result;
+    if(Defines::degug())  qDebug()<<"\033[32m   [-] Statu : "<<mName<< __LINE__<<mName<<mLabel<<result<<"\033[0m";
 
 }
 
@@ -362,7 +390,7 @@ void Thread::run()
     QString result=pr.readAllStandardOutput();
     QString err=pr.readAllStandardError();
        if(!err.isEmpty())
-         qDebug()<<"Error command:"<<err;
+         qDebug()<<"\033[31m   statu Error command:\033[0m"<<err;
 
     QStringList list=result.split("\n",QString::SkipEmptyParts);
 

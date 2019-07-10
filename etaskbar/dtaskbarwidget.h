@@ -2,14 +2,9 @@
 #define DTASKBARWIDGET_H
 
 #include "dactiontaskbar.h"
-#include "utils/setting.h"
 #include <QWidget>
-
 #include <QLayout>
 #include <QSpacerItem>
-//#include <KF5/KWindowSystem/KWindowSystem>
-//#include <KF5/KWindowSystem/KWindowInfo>
-//#include <KF5/KWindowSystem/NETWM>
 
 #include "X11/Xlib.h"
 #include <X11/Xatom.h>
@@ -22,7 +17,7 @@ class DtaskbarWidget : public QWidget,public QAbstractNativeEventFilter
 
 public:
           // DtaskbarWidget();
-      explicit DtaskbarWidget(Setting *s,QWidget *parent = nullptr,bool debug=false);
+      explicit DtaskbarWidget(QWidget *parent = nullptr);
 
       bool nativeEventFilter(const QByteArray &eventType, void *message, long *);
       void windowPropertyChanged(unsigned long window, unsigned long atom);
@@ -46,9 +41,9 @@ private slots:
 
 private:
           QWidget *m_parent;
-          Setting *mSetting;
+        //  Setting *mSetting;
           QWidget *widgetContent;
-          bool mDebug;
+        //  bool mDebug;
          // QMap<unsigned long, Client*> m_clients;
           QHash<unsigned long, DActionTaskbar*> mButtonsHash;
           unsigned long m_rootWindow;

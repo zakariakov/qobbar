@@ -20,17 +20,16 @@ original code  http://razor-qt.org
 #include <QX11Info>
 #include <QTimer>
 #include <QIcon>
-#include <QDebug>
 #include <QResizeEvent>
 #include <QPainter>
 #include <QBitmap>
 #include <QAbstractNativeEventFilter>
-#include "utils/setting.h"
+
 #include "trayicon.h"
+
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <xcb/xcb.h>
-
 
 class SysTray: public  QWidget, QAbstractNativeEventFilter
 {
@@ -39,7 +38,7 @@ class SysTray: public  QWidget, QAbstractNativeEventFilter
 
 
   public:
-      SysTray(Setting *s, QWidget* parent = nullptr);
+      SysTray(/*Setting *s, */QWidget* parent = nullptr);
       ~SysTray();
 
 
@@ -73,7 +72,7 @@ QWidget *mWidgetContent;
 
       void addIcon(Window id);
       TrayIcon* findIcon(Window trayId);
-Setting *mSetting;
+//Setting *mSetting;
       bool mValid;
       Window mTrayId;
       QList<TrayIcon*> mIcons;

@@ -1,21 +1,31 @@
 #include "panel_adaptor.h"
 #include "ui_panelwidget.h"
 #include "panelwidget.h"
+#include "utils/setting.h"
 #include "utils/stylecolors.h"
-#include <QSettings>
+#include "utils/defines.h"
 #include <QtPlatformHeaders/QXcbWindowFunctions>
 #include <QDesktopWidget>
-PanelWidget::PanelWidget(bool debug, QWidget *parent) :
+PanelWidget::PanelWidget(/*bool debug,*/ QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::PanelWidget),mdebug(debug),
-    mSysTray(nullptr),mPager(nullptr),mConky(nullptr),mTaskbar(nullptr)
+    ui(new Ui::PanelWidget)/*,mdebug(debug)*/,
+    mSysTray(nullptr),mPager(nullptr),mConky(nullptr),mTaskbar(nullptr),m_timer(nullptr)
 {
+
 
     QByteArray sS=qgetenv("DESKTOP_SESSION");
 
-     qDebug()<<"[+]"<<__FILE__<< __LINE__<<"Screens"<<QApplication::screens().count();
+ qDebug()<<"\033[36m #####################################################";
+ qDebug()<<"	  ___        _     _					";
+ qDebug()<<"	 / _ \  ___ | |__ | |__   __ _ _ __		";
+ qDebug()<<"	| | | |/ _ \| '_ \| '_ \ / _` | '__|	";
+ qDebug()<<"	| |_| | (_) | |_) | |_) | (_| | |		";
+ qDebug()<<"	 \__\_\\___/|_.__/|_.__/ \__,_|_|		";
+ qDebug()<<"\033[36m #####################################################";
 
-     qDebug()<<"[+]"<<__FILE__<< __LINE__<<"  Env="<<sS;
+     qDebug()<<"\033[36m[+] PanelWidget"<< __LINE__<<"Screens\033[0m"<<QApplication::screens().count();
+
+     qDebug()<<"\033[36m[+] PanelWidget"<< __LINE__<<"  Env=\033[0m"<<sS;
 
     //    if(sS=="i3")
          setWindowFlags( Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
@@ -38,12 +48,12 @@ PanelWidget::PanelWidget(bool debug, QWidget *parent) :
 
     ui->setupUi(this);
 
-    mSetting=new Setting();
+   // mSetting=new Setting();
 
-    if(mdebug)   qDebug()<<"[+]"<<__FILE__<<__LINE__<<"setting.fileName:"<<mSetting->fileName();
+    if(Defines::degug())   qDebug()<<"\033[36m  [+] PanelWidget"<<__LINE__<<"setting.fileName:\033[0m"<<Setting::instance()->fileName();
 
     mFileSystemWatcher=new QFileSystemWatcher(this);
-    mFileSystemWatcher->addPath(mSetting->fileName());
+    mFileSystemWatcher->addPath(Setting::instance()->fileName());
     connect(mFileSystemWatcher,SIGNAL(fileChanged(QString)),this,SLOT(reconfigure()));
 
 
@@ -84,12 +94,19 @@ PanelWidget::~PanelWidget()
 
 void PanelWidget::showHide()
 {
+    if(!m_timer)  m_timer=new QTimer;
+
+
     if(isHidden()){
+//        connect(m_timer,SIGNAL(	timeout()),this,SLOT(moveToShow()));
+//        m_timer->start(1000);
         show();
         moveToAllDesktop();
         resizePanel();
 
     }else{
+//        connect(m_timer,SIGNAL(	timeout()),this,SLOT(moveToHide()));
+//        m_timer->start(1000);
 
         hide();
 
@@ -100,53 +117,97 @@ void PanelWidget::showHide()
 
     }
 }
+/*****************************************************************************************************
+ *                    TODO FIX ANIMATION SHOW HID
+ *****************************************************************************************************/
+void PanelWidget::moveToShow()
+{
+    if(m_topPos){
+        this->move(this->pos().x(),this->pos().y()+5);
+        if(this->pos().y()>=0) {
+           this->move(this->pos().x(),0);
+            m_timer->stop();
+
+            moveToAllDesktop();
+            resizePanel();
+        }
+     }else{
+         this->move(this->pos().x(),this->pos().y()-5);
+        //Todo fix me
+        if(this->pos().y()>=0) {
+           this->move(this->pos().x(),0);
+        }
+    }
+
+}
+
+void PanelWidget::moveToHide()
+{
+    if(m_topPos){
+        this->move(this->pos().x(),this->pos().y()-5);
+        if(this->pos().y()<=-m_height) {
+           this->move(this->pos().x(),-m_height);
+             m_timer->stop();
+             hide();
+        }
+     }else{
+         this->move(this->pos().x(),this->pos().y()+5);
+        //Todo fix me
+        if(this->pos().y()>=0) {
+           this->move(this->pos().x(),0);
+        }
+    }
+}
+
 //-------------------------------------------------------------------------------
 void PanelWidget:: loadSettings(bool charge)
 {
 
-    if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"loadSettings():beginGroup(Panel)";
+    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"loadSettings():beginGroup(Panel)\033[0m";
 
-    mSetting->beginGroup("Panel");
+    Setting::instance()->beginGroup("Panel");
 
-    QString     bgColor         =mSetting->background(this->palette().window().color().name());
-    QString     fgColor         =mSetting->foreground(this->palette().windowText().color().name());
-    QString     underline       =mSetting->underline();
-    QString     overline        =mSetting->overline();
-    QString     borderColor     =mSetting->borderColor();
-    QString     fontName        =mSetting->fontName(qApp->font().family());
-    int         fontSize        =mSetting->fontSize(qApp->font().pointSize());
-    bool        fontBold        =mSetting->fontBold(qApp->font().bold());
-    int         spacing         =mSetting->spacing();
-    int         barLeftSpacing  =mSetting->barLeftSpacing();
-    int         barRightSpacing =mSetting->barRightSpacing();
-    int         barCenterSpacing=mSetting->barCenterSpacing();
-    int         alpha           =mSetting->alpha();
-    QStringList listLeft        =mSetting->barLeft();
-    QStringList listCenter      =mSetting->barCenter();
-    QStringList listRight       =mSetting->barRight();
-    int         _left           =mSetting->paddingLeft();
-    int         _top            =mSetting->paddingTop();
-    int         _rigt           =mSetting->paddingRight();
-    int         _bot            =mSetting->paddingBottom();
-    int         m_left          =mSetting->marginLeft();
-    int         m_top           =mSetting->marginTop();
-    int         m_rigt          =mSetting->marginRight();
-    int         m_bot           =mSetting->meginBottom();
-    mBorder                     =mSetting->border();
-    m_topPos                    =mSetting->top();
-    bool m_showSystry           =mSetting->showSystry();
-    int  m_radius               =mSetting->radius();
-    m_Screen                    =mSetting->screen();
-    m_height                    =mSetting->panelHeight();
+    QString     bgColor         =Setting::background(this->palette().window().color().name());
+    QString     fgColor         =Setting::foreground(this->palette().windowText().color().name());
+    QString     underline       =Setting::underline();
+    QString     overline        =Setting::overline();
+    QString     borderColor     =Setting::borderColor();
+    QString     fontName        =Setting::fontName(qApp->font().family());
+    int         fontSize        =Setting::fontSize(qApp->font().pointSize());
+    bool        fontBold        =Setting::fontBold(qApp->font().bold());
+    int         spacing         =Setting::spacing();
+    int         barLeftSpacing  =Setting::barLeftSpacing();
+    int         barRightSpacing =Setting::barRightSpacing();
+    int         barCenterSpacing=Setting::barCenterSpacing();
+    int         alpha           =Setting::alpha();
+    QStringList listLeft        =Setting::barLeft();
+    QStringList listCenter      =Setting::barCenter();
+    QStringList listRight       =Setting::barRight();
+    int         _left           =Setting::paddingLeft();
+    int         _top            =Setting::paddingTop();
+    int         _rigt           =Setting::paddingRight();
+    int         _bot            =Setting::paddingBottom();
+    int         m_left          =Setting::marginLeft();
+    int         m_top           =Setting::marginTop();
+    int         m_rigt          =Setting::marginRight();
+    int         m_bot           =Setting::meginBottom();
+    m_Border                     =Setting::border();
+    m_topPos                    =Setting::top();
+    bool m_showSystry           =Setting::showSystry();
+    int  m_radius               =Setting::radius();
+    m_Screen                    =Setting::screen();
+    m_height                    =Setting::panelHeight();
 
-    mPaddingRect = QRect(QPoint(_left,_top),QPoint(_rigt,_bot));
+    m_PaddingRect = QRect(QPoint(_left,_top),QPoint(_rigt,_bot));
 
-    mMarginRect = QRect(QPoint(m_left,m_top),QPoint(m_rigt,m_bot));
+    m_MarginRect = QRect(QPoint(m_left,m_top),QPoint(m_rigt,m_bot));
 
-    mSetting->endGroup();
+    Setting::instance()->endGroup();
 
-    if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"loadSettings():endGroup(Panel)";
-    if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"loadSettings():endGroup(Panel):m_showSystry"<<m_showSystry;
+
+
+    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"loadSettings():endGroup(Panel)\033[0m";
+    //if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"loadSettings():endGroup(Panel):m_showSystry\033[0m"<<m_showSystry;
 
     // INIT ______________________________________________________
     QFont font;
@@ -156,15 +217,15 @@ void PanelWidget:: loadSettings(bool charge)
     //    font.insertSubstitution("Font Awesome","Font Awesome");
     //    font.insertSubstitution("Ubuntu","Font Awesome");
     //    font.insertSubstitution("Sans","Font Awesome");
-    //    qDebug()<<"[==]"<<__FILE__<< __LINE__<<"font"<<font.substitutions();
+    //    qDebug()<<"[==]"<<"PanelWidget"<< __LINE__<<"font"<<font.substitutions();
     setFont(font);
 
-    // ui->horizontalLayout->setMargin(mBorder);
+    // ui->horizontalLayout->setMargin(m_Border);
 
     ui->horizontalLayout_ceter->setSpacing(barCenterSpacing);
     ui->horizontalLayout_right->setSpacing(barRightSpacing);
     ui->horizontalLayout_left->setSpacing(barLeftSpacing);
-    ui->horizontalLayout->setContentsMargins(m_left+(m_radius/2),m_top+mBorder,m_rigt+(m_radius/2),m_bot+mBorder);
+    ui->horizontalLayout->setContentsMargins(m_left+(m_radius/2),m_top+m_Border,m_rigt+(m_radius/2),m_bot+m_Border);
     ui->horizontalLayout->setSpacing(spacing);
     // StyleSheet ________________________________________________
     QPalette pal=this->palette();
@@ -193,12 +254,21 @@ void PanelWidget:: loadSettings(bool charge)
                                        fgColor,
                                        underline,
                                        overline,
-                                       mBorder,
+                                       m_Border,
                                        alpha,
                                        borderColor,
                                        m_radius);
 
     ui->widgetBg-> setStyleSheet("QWidget#widgetBg{"+mystyle+"}");
+
+    qDebug()<<"\033[36m[-] PanelWidget :------------------------------ "<< __LINE__;
+    qDebug()<<"[+] PanelWidget : LeftList: "<<listLeft;
+    qDebug()<<"[+] PanelWidget : CenterList: "<<listCenter;
+    qDebug()<<"[+] PanelWidget : RightList: "<<listRight;
+    qDebug()<<"[+] PanelWidget : Systry :"<<m_showSystry;
+    qDebug()<<"[+] PanelWidget : fontName: "<<fontName;
+    qDebug()<<"[+] PanelWidget : fontSize: "<<fontSize<<"\033[0m";
+
 
     // charge status ---------------------------------------------
     if(charge)
@@ -206,7 +276,7 @@ void PanelWidget:: loadSettings(bool charge)
 
     if(m_showSystry){
         if(!mSysTray){
-            mSysTray=new SysTray(mSetting,this);
+            mSysTray=new SysTray(/*mSetting,*/this);
             // listWidget.append(group);
             ui->horizontalLayout_tray->addWidget(mSysTray);
         }
@@ -237,7 +307,7 @@ void PanelWidget::chargeStatus(QStringList listLeft,QStringList listCenter,QStri
     {
         i.next();
         if(!list.contains(i.key())){
-            qDebug()<<"remove"<<i.key();
+            qDebug()<<"\033[34m remove \033[0m"<<i.key();
             i.value()->cancelRender();
             // i.value()->close();
             delete i.value();
@@ -275,11 +345,11 @@ void PanelWidget::addStatus(QStringList list,int pos)
 
         if(group.isEmpty())continue;
 
-        if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<" addWidget:"<<group<<posString;
+        if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<" addWidget:\033[0m"<<group<<posString;
 
         if(group==MPAGER){
             if(!mPager){
-                mPager=new Pager(mSetting,this,mdebug);
+                mPager=new Pager(/*mSetting,*/this/*,mdebug*/);
                 listWidget.append(group);
             }
             addWidget(mPager, pos);
@@ -287,7 +357,7 @@ void PanelWidget::addStatus(QStringList list,int pos)
 
                 else if(group==MCONKY){
                     if(!mConky){
-                        mConky=new conkyStatu(mSetting,this);
+                        mConky=new conkyStatu(/*mSetting,*/this);
                         listWidget.append(group);
                     }
 
@@ -296,7 +366,7 @@ void PanelWidget::addStatus(QStringList list,int pos)
 
         else if(group==MTASKBAR){
             if(!mTaskbar){
-                mTaskbar=new  DtaskbarWidget(mSetting,this,mdebug);
+                mTaskbar=new  DtaskbarWidget(/*mSetting,*/this/*,mdebug*/);
                 listWidget.append(group);
             }
             addWidget(mTaskbar, pos);
@@ -308,7 +378,7 @@ void PanelWidget::addStatus(QStringList list,int pos)
             if(group.contains(":")){
                 groupName=group.section(":",0,0);
             }
-            if(!mSetting->childGroups().contains(groupName))continue;
+            if(!Setting::instance()->childGroups().contains(groupName))continue;
 
             if(listStatus.contains(group)){
                 StatusLabel *statLab=listStatus.value(group);
@@ -318,7 +388,7 @@ void PanelWidget::addStatus(QStringList list,int pos)
                 }
             }else{
 
-                StatusLabel *statLab=new StatusLabel(group,mSetting,this,mdebug);
+                StatusLabel *statLab=new StatusLabel(group,this/*,mSetting,this,mdebug*/);
                 listStatus.insert(group,statLab);
                 addWidget(statLab, pos);
             }
@@ -353,10 +423,10 @@ void PanelWidget::addWidget(QWidget *w,int pos)
 //-----------------------------------------------------------------------------------
 void PanelWidget::reconfigure()
 {
-    if(mdebug) qDebug()<<"[+]"<<__FILE__<< __LINE__<<"reconfigure()"<<listStatus.count();
-    if(mdebug) qDebug()<<"[+]"<<__FILE__<< __LINE__<<"reconfigure()"<<listWidget.count();
+    if(Defines::degug()) qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"reconfigure()\033[0m"<<listStatus.count();
+    if(Defines::degug()) qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"reconfigure()\033[0m"<<listWidget.count();
 
-    mSetting->sync();
+    Setting::instance()->sync();
 
     mFileSystemWatcher->blockSignals(true);
 
@@ -376,13 +446,13 @@ void PanelWidget::reconfigure()
    resizePanel();
 
 
-    mFileSystemWatcher->addPath(mSetting->fileName());
+    mFileSystemWatcher->addPath(Setting::instance()->fileName());
 
     mFileSystemWatcher->blockSignals(false);
 
-    if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<" reconfigure Setting FileName"<<mSetting->fileName();
-    if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"reconfigure()"<<listStatus.count();
-    if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"reconfigure()"<<listWidget.count();
+    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<" reconfigure Setting FileName\033[0m"<<Setting::instance()->fileName();
+    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"reconfigure()\033[0m"<<listStatus.count();
+    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"reconfigure()\033[0m"<<listWidget.count();
 
 }
 
@@ -392,7 +462,7 @@ int PanelWidget::calculatSize()
 
 
     QFontMetrics fm(font());
-    int heightSize=fm.height()+(fm.leading()*2)+(mBorder*4);
+    int heightSize=fm.height()+(fm.leading()*2)+(m_Border*4);
     foreach (StatusLabel *w, listStatus) {
          heightSize=  qMax(heightSize,w->heightSize());
     }
@@ -402,10 +472,10 @@ int PanelWidget::calculatSize()
     }
 
     heightSize=  qMax(heightSize,m_height);
-    heightSize=heightSize+mMarginRect.top()+mMarginRect.bottom();
+    heightSize=heightSize+m_MarginRect.top()+m_MarginRect.bottom();
     setMaximumHeight(heightSize);
-    if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"calculatSize:"<<"MaximumHeight:"<< heightSize+mMarginRect.top()+mMarginRect.bottom();
-
+    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"calculatSize()"<<"MaximumHeight:\033[0m"<< heightSize+m_MarginRect.top()+m_MarginRect.bottom();
+    qDebug()<<"\033[36m[+] PanelWidget : height :\033[0m"<<heightSize;
     return  heightSize ;
 
 
@@ -414,14 +484,14 @@ int PanelWidget::calculatSize()
 //------------------------------------------------------------------------------------------
 void PanelWidget::resizePanel()
 {
-    if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"resizePanel()";
+    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"resizePanel()\033[0m";
 
-    if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"Padding:"<<mPaddingRect.left()<< mPaddingRect.top()<<mPaddingRect.right()<<mPaddingRect.bottom()<<mMarginRect.top()<<mMarginRect.bottom();
+    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"Padding:\033[0m"<<m_PaddingRect.left()<< m_PaddingRect.top()<<m_PaddingRect.right()<<m_PaddingRect.bottom()<<m_MarginRect.top()<<m_MarginRect.bottom();
 
-    int p_left=mPaddingRect.left();
-    int p_top=mPaddingRect.top();
-    int p_right=mPaddingRect.right();
-    int p_bot=mPaddingRect.bottom();
+    int p_left=m_PaddingRect.left();
+    int p_top=m_PaddingRect.top();
+    int p_right=m_PaddingRect.right();
+    int p_bot=m_PaddingRect.bottom();
 
     // QFontMetrics fm(font());
     //  int size=fm.height();
@@ -432,7 +502,7 @@ void PanelWidget::resizePanel()
 
    QRect screen=desktopRect();
     //QRect screen=QApplication::primaryScreen()->geometry();
-    if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"   screen  :"<<screen;
+    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"   screen  :\033[0m"<<screen;
     QRect rect;
 
     rect.moveLeft(screen.left());
@@ -469,7 +539,7 @@ void PanelWidget::resizePanel()
 
     // QRect desktop=desktopRect();
     //QRect desktop =QApplication::primaryScreen()->geometry();
-    if (m_topPos==true){
+    if (m_topPos){
         setStrut(  rect.bottom(), 0,
                    rect.left(), rect.right(),
                    0, 0
@@ -485,7 +555,7 @@ void PanelWidget::resizePanel()
     //    this->setGeometry(rect);
     //    this->resize(rect.width(),rect.height());
 
-    if(mdebug)   qDebug()<<"[+]"<<__FILE__<< __LINE__<<"   widget panel resized: "<<rect;
+    if(Defines::degug())   qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"   widget panel resized: \033[0m"<<rect;
     setMaximumWidth(rect.width()-(p_left+p_right));
     setMinimumHeight(panelHeight);
     //  m_rootWindow = QX11Info::appRootWindow();
@@ -496,45 +566,47 @@ void PanelWidget::resizePanel()
 /*----------------------------------------------------------------------------------------
                               Begin       X11 LIBr
 -----------------------------------------------------------------------------------------*/
-void PanelWidget::setDock ()
-{
-    if (winId() == 0)
-        return ;
 
-    if (!QX11Info::display())
-        return ;
-    //unsigned int wid=getWindowPID(winId());
 
-    Atom a[2] = { None, None };
-    a[0] = XInternAtom (QX11Info::display(), "_NET_WM_WINDOW_TYPE_DOCK", false);
-    Atom a2 = XInternAtom (QX11Info::display(), "_NET_WM_WINDOW_TYPE", false);
+//void PanelWidget::setDock ()
+//{
+//    if (winId() == 0)
+//        return ;
 
-    XChangeProperty (QX11Info::display(),
-                     /*tlwWindow->*/winId(),
-                     a2, XA_ATOM, 32, PropModeReplace, (unsigned char *) a, 1);
+//    if (!QX11Info::display())
+//        return ;
+//    //unsigned int wid=getWindowPID(winId());
 
-    //TODO for XCB
-    {
-        //---------------------------------------------------------------------------TODO
-        //return;
-        //    xcb_connection_t *c = XGetXCBConnection( QX11Info::display());
-        //    xcb_ewmh_connection_t EWMH;
-        //    xcb_intern_atom_cookie_t *EWMHCookie = xcb_ewmh_init_atoms(c, &EWMH);
-        //    if (! xcb_ewmh_init_atoms_replies(&EWMH, EWMHCookie, NULL)) {
-        //        return ;
-        //    }
-        //    xcb_change_property(c,       /* Connection to the X server */
-        //                        XCB_PROP_MODE_REPLACE,     /* Property mode */
-        //                        wid,   /* Window */
-        //                        EWMH._NET_WM_WINDOW_TYPE, /* Property to change */
-        //                        XCB_ATOM_ATOM,     /* Type of the property */
-        //                        32,   /* Format of the property (8, 16, 32) */
-        //                        1, /* Length of the data parameter */
-        //                        &(EWMH._NET_WM_WINDOW_TYPE_DOCK));    /* Data */
-        //----------------------------------------------------------------------------
-    }
+//    Atom a[2] = { None, None };
+//    a[0] = XInternAtom (QX11Info::display(), "_NET_WM_WINDOW_TYPE_DOCK", false);
+//    Atom a2 = XInternAtom (QX11Info::display(), "_NET_WM_WINDOW_TYPE", false);
 
-}
+//    XChangeProperty (QX11Info::display(),
+//                     /*tlwWindow->*/winId(),
+//                     a2, XA_ATOM, 32, PropModeReplace, (unsigned char *) a, 1);
+
+//    //TODO for XCB
+//    {
+//        //---------------------------------------------------------------------------TODO
+//        //return;
+//        //    xcb_connection_t *c = XGetXCBConnection( QX11Info::display());
+//        //    xcb_ewmh_connection_t EWMH;
+//        //    xcb_intern_atom_cookie_t *EWMHCookie = xcb_ewmh_init_atoms(c, &EWMH);
+//        //    if (! xcb_ewmh_init_atoms_replies(&EWMH, EWMHCookie, NULL)) {
+//        //        return ;
+//        //    }
+//        //    xcb_change_property(c,       /* Connection to the X server */
+//        //                        XCB_PROP_MODE_REPLACE,     /* Property mode */
+//        //                        wid,   /* Window */
+//        //                        EWMH._NET_WM_WINDOW_TYPE, /* Property to change */
+//        //                        XCB_ATOM_ATOM,     /* Type of the property */
+//        //                        32,   /* Format of the property (8, 16, 32) */
+//        //                        1, /* Length of the data parameter */
+//        //                        &(EWMH._NET_WM_WINDOW_TYPE_DOCK));    /* Data */
+//        //----------------------------------------------------------------------------
+//    }
+
+//}
 
 //-----------------------------------------------------------------------------------
 Atom XFatom(const char* atomName)
@@ -650,8 +722,9 @@ void PanelWidget::loadIconThems()
     if(icnThem.isEmpty())
         icnThem="hicolor";
 
-    if(mdebug)  qDebug()<<"[+]"<<__FILE__<< __LINE__<<"icon theme :"<< icnThem;
+    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"icon theme :\033[0m"<< icnThem;
     QIcon::setThemeName(icnThem);
 
 
 }
+

@@ -10,18 +10,17 @@ class conkyStatu : public QLabel
 {
         Q_OBJECT
 public:
-    conkyStatu(Setting *s, QWidget *parent=nullptr);
+    conkyStatu(/*Setting *s,*/ QWidget *parent=nullptr);
 
 
    void loadSettings();
    int heightSize(){return m_Height;}
 private slots:
    void startConky();
-
 private:
 
      QWidget  *m_Parent;
-     Setting  *m_Setting;
+    // Setting  *m_Setting;
      QProcess *m_process;
      int       m_Height;
 };

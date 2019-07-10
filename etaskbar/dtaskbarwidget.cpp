@@ -8,19 +8,22 @@ original code  http://razor-qt.org
 #include "dactiontaskbar.h"
 //#include "taskbarsettingdialog.h"
 #include "utils/stylecolors.h"
+#include "utils/defines.h"
+#include "utils/setting.h"
 #include <QtGui>
 #include <QX11Info>
 #include <QDesktopWidget>
 #include <QMenu>
-#include <QDebug>
+
 #include "utils/x11utills.h"
 #include "xcb/xcb.h"
 
 #define TEXTBICON 0
 #define ICONONLY 1
 
-DtaskbarWidget::DtaskbarWidget(Setting *s, QWidget *parent, bool debug):
-    QWidget(parent),mSetting(s),mDebug(debug)
+
+DtaskbarWidget::DtaskbarWidget(/*Setting *s,*/ QWidget *parent/*, bool debug*/):
+    QWidget(parent)/*,mSetting(s),mDebug(debug)*/
 {
 m_parent=parent;
     QFont font=parent->font();
@@ -105,29 +108,48 @@ void DtaskbarWidget::windowPropertyChanged(unsigned long window, unsigned long a
 //_________________________________________________________________________________________
 void DtaskbarWidget::loadSettings()
 {
-    if(mDebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<" loadSettings()";
+    if(Defines::degug())  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<" loadSettings()";
 
     //_________________________________________________ Settings
     QString highlight=qApp->palette().highlight().color().name();
     QString highlightTxt=qApp->palette().highlightedText().color().name();
 
-    mSetting->beginGroup("Taskbar");
+    Setting::instance()->beginGroup("Taskbar");
 
-    QString bgColor         =mSetting->background();
-    QString fgColor         =mSetting->foreground(m_parent->palette().windowText().color().name());
-    QString activebgColor   =mSetting->activeBackground(highlight);
-    QString activefgColor   =mSetting->activeForeground(highlightTxt);
-    QString borderColor     =mSetting->borderColor();
-    int     alpha           =mSetting->alpha();//
-    int     activeAlpha     =mSetting->activeAlpha();
-    QString underline       =mSetting->underline();
-    QString overline        =mSetting->overline();
-    QString activeunderline =mSetting->activeUnderline();
-    QString activeoverline  =mSetting->activeOverline();
-    int     border          =mSetting->border();
-    int     radius          =mSetting->radius();
+    QString bgColor         =Setting::background();
+    QString fgColor         =Setting::foreground(m_parent->palette().windowText().color().name());
+    QString activebgColor   =Setting::activeBackground(highlight);
+    QString activefgColor   =Setting::activeForeground(highlightTxt);
+    QString borderColor     =Setting::borderColor();
+    int     alpha           =Setting::alpha();//
+    int     activeAlpha     =Setting::activeAlpha();
+    QString underline       =Setting::underline();
+    QString overline        =Setting::overline();
+    QString activeunderline =Setting::activeUnderline();
+    QString activeoverline  =Setting::activeOverline();
+    int     border          =Setting::border();
+    int     radius          =Setting::radius();
 
-    mSetting->endGroup();
+    Setting::instance()->endGroup();
+
+//    mSetting->beginGroup("Taskbar");
+
+//    QString bgColor         =mSetting->background();
+//    QString fgColor         =mSetting->foreground(m_parent->palette().windowText().color().name());
+//    QString activebgColor   =mSetting->activeBackground(highlight);
+//    QString activefgColor   =mSetting->activeForeground(highlightTxt);
+//    QString borderColor     =mSetting->borderColor();
+//    int     alpha           =mSetting->alpha();//
+//    int     activeAlpha     =mSetting->activeAlpha();
+//    QString underline       =mSetting->underline();
+//    QString overline        =mSetting->overline();
+//    QString activeunderline =mSetting->activeUnderline();
+//    QString activeoverline  =mSetting->activeOverline();
+//    int     border          =mSetting->border();
+//    int     radius          =mSetting->radius();
+
+//    mSetting->endGroup();
+
     //_________________________________________________ INIT
 
     //-------------------------------------------------------STYLESHEET
@@ -143,7 +165,7 @@ void DtaskbarWidget::loadSettings()
     QString activeStyleSheet="QToolButton:checked{\n";
     activeStyleSheet+=StyleColors::style(activebgColor,activefgColor,activeunderline,activeoverline,border,activeAlpha,QString(),0)+"\n}";
     setStyleSheet(mStylebg+mStyleSheet+activeStyleSheet);
-    qDebug()<<"   [-]"<<__FILE__<< __LINE__<<" loadSettings()\n"<<mStylebg+mStyleSheet+activeStyleSheet;
+if(Defines::degug()) qDebug()<<"   [-]"<<__FILE__<< __LINE__<<" loadSettings()\n"<<mStylebg+mStyleSheet+activeStyleSheet;
     foreach (DActionTaskbar *btn,mButtonsHash){
          btn->setStyleSheet(mStyleSheet+activeStyleSheet);
     }
@@ -154,7 +176,7 @@ void DtaskbarWidget::loadSettings()
 //_________________________________________________________________________تحديث النوافذ
 void DtaskbarWidget::refreshTaskList()
 {
-    if(mDebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<" refreshTaskList()";
+    if(Defines::degug())  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<" refreshTaskList()";
 
 
 
@@ -194,7 +216,7 @@ void DtaskbarWidget::refreshTaskList()
 
        //        اضافة الزر للبنال
         m_horizontalLayout->addWidget(btn);
-        if(mDebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<" addWidget()"<<btn->text();
+        if(Defines::degug())  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<" addWidget()"<<btn->text();
 
     }
 
@@ -210,7 +232,7 @@ void DtaskbarWidget::refreshTaskList()
 //____________________________________________________________________________النافذة المفعلة
 void DtaskbarWidget::activeWindowChanged()
 {
-    if(mDebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<" activeWindowChanged()";
+    if(Defines::degug())  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<" activeWindowChanged()";
 
     //        البحث عن النافذة المفعلة
     unsigned long window =X11UTILLS::getActiveAppWindow();

@@ -6,6 +6,7 @@
 #include <QProcess>
 #include <QFutureWatcher>
 #include <QThread>
+
 //*********************THREAD**************************
 class Thread : public QThread
 {
@@ -47,7 +48,7 @@ protected:
     void wheelEvent(QWheelEvent* e);
     //__________________________________________
 public:
-    StatusLabel(QString group,Setting *s, QWidget *parent=nullptr,bool debug=false);
+    StatusLabel(QString group,/*Setting *s,*/ QWidget *parent=nullptr/*,bool debug=false*/);
       ~StatusLabel();
 int heightSize(){return mHeight;}
 
@@ -68,7 +69,7 @@ private:
     int maxSize=100;
     QTimer *mTimer;
 QWidget *mParent;
-Setting *mySetting;
+//Setting *mySetting;
     QString mMouseLeftCmd;
     QString mMouseRightCmd;
     QString mMouseWheelUpCmd;
@@ -81,7 +82,7 @@ Setting *mySetting;
    // void render();
     void startCommand(int interval);
     void execCmd(int type);
-bool mdebug;
+//bool mdebug;
 private slots:
    // QString updateCommand();
 

@@ -7,8 +7,11 @@
 *********************************************************************/
 //
 
+
 #include "systray.h"
 #include "utils/stylecolors.h"
+#include "utils/defines.h"
+#include "utils/setting.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
@@ -40,9 +43,9 @@ QSize getIconSize(QSize size)
     return QSize(16,16);
 }
 
-SysTray::SysTray(Setting *s, QWidget *parent):
+SysTray::SysTray(QWidget *parent):
     QWidget(parent),
-    mSetting(s),
+   // mSetting(s),
     mValid(false),
     mTrayId(0),
     mDamageEvent(0),
@@ -54,7 +57,7 @@ SysTray::SysTray(Setting *s, QWidget *parent):
      QFontMetrics fm(parent->font());
      int size=fm.height();
      mIconSize=getIconSize(QSize(size,size));
-     qDebug()<<"   [-]"<<__FILE__<< __LINE__ << "IconSize:"<<mIconSize;
+   if(Defines::degug())  qDebug()<<"\033[35m   [+] Systray :"<< __LINE__ << "IconSize:\033[0m"<<mIconSize;
 
 //   font.setPointSize(parent->font().pointSize());
 //   setFont(font);
@@ -97,23 +100,23 @@ SysTray::~SysTray()
 //__________________________________________________________________________________
 void SysTray::loadSettings()
 {
-   //if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"loadSettings()";
+   //if(mdebug)  qDebug()<<"   [+] "<<__FILE__<< __LINE__<<"loadSettings()";
 
 
     //_________________________________________________ Settings
 
-    if(!mSetting->childGroups().contains("Systray")) return;
-    mSetting->beginGroup("Systray");
+    if(!Setting::instance()->childGroups().contains("Systray")) return;
+    Setting::instance()->beginGroup("Systray");
 
-    QString bgColor         =mSetting->background();
-    int     alpha           =mSetting->alpha();//
-    QString underline       =mSetting->underline();
-    QString overline        =mSetting->overline();
-    int     border          =mSetting->border();
-    QString borderColor      =mSetting->borderColor();
-    int     radius          =mSetting->radius();
+    QString bgColor         =Setting::background();
+    int     alpha           =Setting::alpha();//
+    QString underline       =Setting::underline();
+    QString overline        =Setting::overline();
+    int     border          =Setting::border();
+    QString borderColor      =Setting::borderColor();
+    int     radius           =Setting::radius();
     //_________________________________________________ INIT
-       mSetting->endGroup();
+    Setting::instance()->endGroup();
 
     //-------------------------------------------------------STYLESHEET
 
@@ -204,7 +207,7 @@ void SysTray::clientMessageEvent(xcb_generic_event_t *e)
 
         case SYSTEM_TRAY_BEGIN_MESSAGE:
         case SYSTEM_TRAY_CANCEL_MESSAGE:
-            qDebug()<<"   [-]"<<__FILE__<< __LINE__ << "we don't show balloon messages.";
+             if(Defines::degug())  qDebug()<<"\033[35m   [+] Systray :"<< __LINE__ << "we don't show balloon messages.\033[0m";
             break;
 
 
@@ -239,7 +242,7 @@ void SysTray::setIconSize(QSize iconSize)
 
 
     mIconSize = getIconSize(iconSize);
-       qDebug()<<"   [-]"<<__FILE__<< __LINE__ << "IconSize:"<<mIconSize;
+        if(Defines::degug())  qDebug()<<"\033[35m   [+] Systray :"<< __LINE__ << "IconSize:\033[0m"<<mIconSize;
     unsigned long size = qMin(mIconSize.width(), mIconSize.height());
     XChangeProperty(mDisplay,
                     mTrayId,
@@ -303,7 +306,7 @@ void SysTray::startTray()
 
     if (XGetSelectionOwner(dsp, _NET_SYSTEM_TRAY_S) != None)
     {
-       qDebug()<<"   [-]"<<__FILE__<< __LINE__<< " Another systray is running";
+        if(Defines::degug())  qDebug()<<"\033[35m   [+] Systray :"<< __LINE__<< " Another systray is running \033[0m";
         mValid = false;
         return;
     }
@@ -314,7 +317,7 @@ void SysTray::startTray()
     XSetSelectionOwner(dsp, _NET_SYSTEM_TRAY_S, mTrayId, CurrentTime);
     if (XGetSelectionOwner(dsp, _NET_SYSTEM_TRAY_S) != mTrayId)
     {
-        qDebug()<<"   [-]"<<__FILE__<< __LINE__ << " Can't get systray manager";
+         if(Defines::degug())  qDebug()<<"\033[35m   [+] Systray :"<< __LINE__ << " Can't get systray manager\033[0m";
         stopTray();
         mValid = false;
         return;
@@ -361,7 +364,7 @@ void SysTray::startTray()
 
     XDamageQueryExtension(mDisplay, &mDamageEvent, &mDamageError);
 
-    qDebug()<<"   [-]"<<__FILE__<< __LINE__ << "Systray started";
+     if(Defines::degug())  qDebug()<<"\033[35m   [+] Systray :"<< __LINE__ << "Systray started\033[0m";
     mValid = true;
 
 
@@ -407,5 +410,5 @@ void SysTray::addIcon(Window winId)
     mIcons.append(icon);
     mLayout->addWidget(icon);
     connect(icon, &QObject::destroyed, this, &SysTray::onIconDestroyed);
-    qDebug()<<"   [-]"<<__FILE__<< __LINE__ << "addIcon"<<icon->toolTip()<<mIconSize;
+     if(Defines::degug())  qDebug()<<"\033[35m   [+] "<< __LINE__ << "addIcon\033[0m"<<icon->toolTip()<<mIconSize;
 }

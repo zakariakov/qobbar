@@ -14,7 +14,6 @@ panel_adaptor::~panel_adaptor()
 
 }
 
-
 void panel_adaptor::setShortcut(const QString &shortcut)
 {
     // handle method call org.tawhid.session.org.logout

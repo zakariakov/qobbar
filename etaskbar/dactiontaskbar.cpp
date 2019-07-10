@@ -8,7 +8,6 @@
 
 #include "dactiontaskbar.h"
 
-
 #include <QtGui/QContextMenuEvent>
 
 #include <QDir>

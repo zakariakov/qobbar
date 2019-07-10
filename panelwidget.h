@@ -21,15 +21,12 @@
 #define PANELWIDGET_H
 #include "status/statuslabel.h"
 #include "status/conkystatu.h"
-#include "utils/setting.h"
-//#include <QWindow>
 
 #include <QWidget>
 //#include <QX11Info>
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QLabel>
-#include <QDebug>
 #include <QProcess>
 #include <QLayout>
 #include <QFileSystemWatcher>
@@ -43,35 +40,36 @@ class PanelWidget;
 #include "etaskbar/dtaskbarwidget.h"
 #include "dsystray/systray.h"
 #include "epager/pager.h"
-
+#include  <QTimer>
 #define MSYSTRAY "Systray"
 #define MPAGER "Pager"
 #define MTASKBAR "Taskbar"
 #define MCONKY   "Conky"
+
 class PanelWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit PanelWidget(bool debug=false,QWidget *parent = nullptr);
+    explicit PanelWidget(QWidget *parent = nullptr);
     ~PanelWidget();
 public slots:
     // void reconfigure();
     void exit(){qApp->quit();}
 
-    void setDock ();
+//    void setDock ();
     //unsigned int getWindowPID(Window winID) ;
 
 void showHide();
 private:
 
     Ui::PanelWidget *ui;
-    bool mdebug;
+  //  bool mdebug;
     SysTray *mSysTray;
     Pager *mPager;
   conkyStatu  *mConky ;
     DtaskbarWidget *mTaskbar;
-    Setting *mSetting;
+    //Setting *mSetting;
     int m_Screen=0;
     int m_height=0;
     enum Pos{LEFT,CENTER,RIGHT};
@@ -83,13 +81,13 @@ void chargeStatus(QStringList listLeft,QStringList listCenter,QStringList listRi
      QHash<QString , StatusLabel*> listStatus;
      QStringList listWidget;
     bool m_topPos;
-    QRect mPaddingRect;
-    QRect mMarginRect;
+    QRect m_PaddingRect;
+    QRect m_MarginRect;
 
     //QWindow *tlwWindow ;
-    int mBorder;
+    int m_Border;
     QFileSystemWatcher *mFileSystemWatcher;
-
+QTimer *m_timer;
 
 private slots:
     void reconfigure();
@@ -103,6 +101,9 @@ private slots:
     void addWidget(QWidget *w,int pos);
     void loadIconThems();
       QRect desktopRect();
+
+    void  moveToShow();
+       void  moveToHide();
 };
 
 #endif // PANELWIDGET_H

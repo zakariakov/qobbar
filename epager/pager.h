@@ -25,12 +25,10 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
-
 #ifndef DESKTOPSWITCH_H
 #define DESKTOPSWITCH_H
-#include "utils/setting.h"
-#include <QWidget>
 
+#include <QWidget>
 #include <QAbstractNativeEventFilter>
 #include <QToolButton>
 #include <QLayout>
@@ -75,7 +73,7 @@ class Pager : public QWidget,public QAbstractNativeEventFilter
     Q_OBJECT
 
 public:
-    explicit    Pager(Setting *s,QWidget* parent = nullptr,bool debug=false);
+    explicit    Pager(QWidget* parent = nullptr);
     bool nativeEventFilter(const QByteArray &eventType, void *message, long *);
     ~Pager();
 
@@ -88,7 +86,7 @@ private:
     QSignalMapper *m_pSignalMapper;
     int m_DeskCount;
     QWidget *mParent;
-    Setting *mSetting;
+ //   Setting *mSetting;
   QWidget *widgetContent;
     /*!< قائمة بمجموعة ازرار */
         QButtonGroup * m_GroupBtns;
@@ -96,7 +94,7 @@ private:
     QStringList m_desktopNames;
     /*!< حجم الزر */
     QSize m_size;
-bool mdebug;
+
     /**
      * @brief wheelEvent تحريك مؤشر العجلة
      * @param e

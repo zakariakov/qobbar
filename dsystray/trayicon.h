@@ -24,7 +24,6 @@ class TrayIcon: public QWidget
   Q_OBJECT
 
 
-
 public:
     TrayIcon(Window iconId, QSize const & iconSize, QWidget* parent);
     virtual ~TrayIcon();

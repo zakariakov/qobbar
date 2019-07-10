@@ -2,6 +2,9 @@
 
 #include <QApplication>
 #include "panel_adaptor.h"
+#include "utils/defines.h"
+
+
 //#include <QAbstractNativeEventFilter>
 #include <QDBusConnection>
 
@@ -92,7 +95,8 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    PanelWidget w(debug);
+   Defines::setDeguging(debug);
+    PanelWidget w;
 
     new panel_adaptor(&w);
 

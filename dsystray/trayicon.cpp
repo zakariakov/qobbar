@@ -5,8 +5,8 @@
   modified by abou zakaria
 *********************************************************************/
 
+
 #include <QTimer>
-#include <QDebug>
 #include <QApplication>
 #include <QResizeEvent>
 #include <QPainter>
@@ -14,6 +14,7 @@
 #include <QStyle>
 #include <QScreen>
 #include "trayicon.h"
+#include "utils/defines.h"
 #include <X11/Xatom.h>
 #include <X11/extensions/Xcomposite.h>
 #include <X11/Xutil.h>
@@ -86,13 +87,15 @@ void TrayIcon::init()
         deleteLater();
         return;
     }
+ if(Defines::degug()){
 
-//    qDebug() << "New tray icon ***********************************";
-//    qDebug() << "  * window id:  " << hex << mIconId;
-//    qDebug() << "  * window name:" << xfitMan().getName(mIconId);
-//    qDebug() << "  * size (WxH): " << attr.width << "x" << attr.height;
+    qDebug() << "\033[37m       [-] New tray icon ***********************"<<__LINE__<<"\033[0m";
+    qDebug() << "       [-]\033[0m   * window id:  " << hex << mIconId;
+    qDebug() << "       [-]\033[0m   * window name:" << X11UTILLS::getWindowTitle(mIconId);
+    qDebug() << "       [-]\033[0m   * size (WxH): " << attr.width << "x" << attr.height;
+
 //    qDebug() << "  * color depth:" << attr.depth;
-
+}
     unsigned long mask = 0;
     XSetWindowAttributes set_attr;
 
@@ -309,25 +312,29 @@ void TrayIcon::draw(QPaintEvent* /*event*/)
         image = qApp->primaryScreen()->grabWindow(mIconId).toImage();
     }
 
-//    qDebug() << "Paint icon **************************************";
-//    qDebug() << "  * XComposite: " << isXCompositeAvailable();
-//    qDebug() << "  * Icon geometry:" << iconGeometry();
-//    qDebug() << "  Icon";
-//    qDebug() << "    * window id:  " << hex << mIconId;
-//    qDebug() << "    * window name:" << xfitMan().getName(mIconId);
-//    qDebug() << "    * size (WxH): " << attr.width << "x" << attr.height;
-//    qDebug() << "    * pos (XxY):  " << attr.x << attr.y;
-//    qDebug() << "    * color depth:" << attr.depth;
-//    qDebug() << "  XImage";
-//    qDebug() << "    * size (WxH):  " << ximage->width << "x" << ximage->height;
-//    switch (ximage->format)
-//    {
-//        case XYBitmap: qDebug() << "    * format:   XYBitmap"; break;
-//        case XYPixmap: qDebug() << "    * format:   XYPixmap"; break;
-//        case ZPixmap:  qDebug() << "    * format:   ZPixmap"; break;
-//    }
-//    qDebug() << "    * color depth:  " << ximage->depth;
-//    qDebug() << "    * bits per pixel:" << ximage->bits_per_pixel;
+    if(Defines::degug()){
+
+        qDebug() <<"\033[37m       [-] Tray icon Paint icon ******************"<<__LINE__<<"\033[0m";
+        qDebug() <<"       [-]   * XComposite: " << isXCompositeAvailable();
+        qDebug() <<"       [-]   * Icon geometry:" << iconGeometry();
+        qDebug() <<"       [-]   Icon";
+        qDebug() <<"       [-]   * window id:  " << hex << mIconId;
+        qDebug() <<"       [-]   * window name:" << X11UTILLS::getWindowTitle(mIconId);
+        qDebug() <<"       [-]   * size (WxH): " << attr.width << "X" << attr.height;
+        qDebug() <<"       [-]   * pos (XxY):  " << attr.x << attr.y;
+        qDebug() <<"       [-]   * color depth:" << attr.depth;
+        qDebug() <<"       [-]   XImage";
+        qDebug() <<"       [-]   * size (WxH):  " << ximage->width << "X" << ximage->height;
+        switch (ximage->format)
+        {
+        case XYBitmap: qDebug() <<"       [-]   * format:   XYBitmap"; break;
+        case XYPixmap: qDebug() <<"       [-]   * format:   XYPixmap"; break;
+        case ZPixmap:  qDebug() <<"       [-]   * format:   ZPixmap"; break;
+        }
+        qDebug() <<"       [-]   * color depth:  " << ximage->depth;
+        qDebug() <<"       [-]   * bits per pixel:" << ximage->bits_per_pixel;
+
+    }
 
     // Draw QImage ...........................
     QPainter painter(this);
@@ -339,7 +346,7 @@ void TrayIcon::draw(QPaintEvent* /*event*/)
         r.moveCenter(iconRect.center());
         iconRect = r;
     }
-//    qDebug() << " Draw rect:" << iconRect;
+    //    qDebug() << " Draw rect:" << iconRect;
 
     painter.drawImage(iconRect, image);
 

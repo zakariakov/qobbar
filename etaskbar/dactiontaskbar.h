@@ -42,7 +42,6 @@ private slots:
           void maximizeWindow();        //تكبير التافذة
           void setApplicationLayer();             //وضع النافذة فوق تحت عادي
 
-
           void activateWithDraggable();
 public slots:
 

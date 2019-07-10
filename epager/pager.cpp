@@ -21,20 +21,22 @@
 #include <QButtonGroup>
 #include <QToolButton>
 #include <QWheelEvent>
-#include <QtDebug>
 #include <QFontMetrics>
 #include <QSignalMapper>
 #include "utils/stylecolors.h"
 #include "utils/xdesktoputils.h"
+#include "utils/setting.h"
+#include "utils/defines.h"
 #include "pager.h"
 
+
 //_________________________________________________________________________________
-Pager::Pager(Setting *s, QWidget* parent, bool debug)
+Pager::Pager(QWidget* parent)
     : QWidget( parent),
-      m_DeskCount(1),mParent(parent),mSetting(s),mdebug(debug)
+      m_DeskCount(1),mParent(parent)
 {
 
-   if(mdebug) qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"Pager()";
+   if(Defines::degug()) qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"Pager()\033[0m";
    //TODO FIX deprecated
    //1 m_pSignalMapper=new QSignalMapper;
     this->setObjectName("Pager");
@@ -76,32 +78,32 @@ Pager::Pager(Setting *s, QWidget* parent, bool debug)
 //__________________________________________________________________________________
 void Pager::loadSettings()
 {
-   if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"loadSettings()";
+   if(Defines::degug())  qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"loadSettings()\033[0m";
 
 
     //_________________________________________________ Settings
     QString highlight=qApp->palette().highlight().color().name();
     QString highlightTxt=qApp->palette().highlightedText().color().name();
 
-    mSetting->beginGroup("Pager");
+    Setting::instance()->beginGroup("Pager");
 
-    QString bgColor         =mSetting->background();
-    QString fgColor         =mSetting->foreground(mParent->palette().windowText().color().name());
-    QString activebgColor   =mSetting->activeBackground(highlight);
-    QString activefgColor   =mSetting->activeForeground(mParent->palette().windowText().color().name());
-            mActiveIcon     =mSetting->activeIcon();
-    int     alpha           =mSetting->alpha();//
-    int     activeAlpha     =mSetting->activeAlpha();
-    QString underline       =mSetting->underline();
-    QString overline        =mSetting->overline();
-    QString activeunderline =mSetting->activeUnderline();
-    QString activeoverline  =mSetting->activeOverline();
-    int     border          =mSetting->border();
-    QString borderColor      =mSetting->borderColor();
-    int     radius          =mSetting->radius();
-    QString fontName        =mSetting->fontName(mParent->font().family());
-    int     fontSize        =mSetting->fontSize(mParent->font().pointSize());
-    bool    fontBold        =mSetting->fontBold(mParent->font().bold());
+    QString bgColor         =Setting::background();
+    QString fgColor         =Setting::foreground(mParent->palette().windowText().color().name());
+    QString activebgColor   =Setting::activeBackground(highlight);
+    QString activefgColor   =Setting::activeForeground(mParent->palette().windowText().color().name());
+            mActiveIcon     =Setting::activeIcon();
+    int     alpha           =Setting::alpha();//
+    int     activeAlpha     =Setting::activeAlpha();
+    QString underline       =Setting::underline();
+    QString overline        =Setting::overline();
+    QString activeunderline =Setting::activeUnderline();
+    QString activeoverline  =Setting::activeOverline();
+    int     border          =Setting::border();
+    QString borderColor      =Setting::borderColor();
+    int     radius          =Setting::radius();
+    QString fontName        =Setting::fontName(mParent->font().family());
+    int     fontSize        =Setting::fontSize(mParent->font().pointSize());
+    bool    fontBold        =Setting::fontBold(mParent->font().bold());
 
     //_________________________________________________ INIT
     QFont font;
@@ -110,12 +112,12 @@ void Pager::loadSettings()
     font.setFamily(fontName);
     setFont(font);
 
-    QString dname=mSetting->desktopDesplay();
+    QString dname=Setting::desktopDesplay();
     if(dname=="name")
         mDesktopType=DESKNAME;
     else if(dname=="icon"){
         mDesktopType=DESKICON;
-        QStringList list= mSetting->iconsList();
+        QStringList list= Setting::iconsList();
         listIcons.clear();
         listIcons<<"0"<<"1"<<"2"<<"3"<<"4"<<"5"<<"6"<<"7"<<"8"<<"9";
         for (int i = 0; i < list.count(); ++i) {
@@ -127,7 +129,7 @@ void Pager::loadSettings()
         mDesktopType=DESKINDEX;
     }
 
-    mSetting->endGroup();
+     Setting::instance()->endGroup();
 
     //-------------------------------------------------------STYLESHEET
         widgetContent->setContentsMargins((radius+1),0,(radius+1),0);
@@ -150,7 +152,7 @@ void Pager::loadSettings()
 //__________________________________________________________________________________
 bool Pager::nativeEventFilter(const QByteArray &eventType, void *message, long *)
 {
-    // qDebug()<<__FILE__<< __LINE__<<"nativeEventFilter()";
+    // qDebug()<<"Pager:"<< __LINE__<<"nativeEventFilter()";
     if (eventType == "xcb_generic_event_t") {
         xcb_generic_event_t* event = static_cast<xcb_generic_event_t *>(message);
 
@@ -160,11 +162,11 @@ bool Pager::nativeEventFilter(const QByteArray &eventType, void *message, long *
             xcb_property_notify_event_t *property = reinterpret_cast<xcb_property_notify_event_t*>(event);
             //TODO fix atom name
             if(property->atom==XDesktop::atom("_NET_DESKTOP_NAMES"))
-            {if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"_NET_DESKTOP_NAMES"<<property->atom; rechargeDesktop();}
+            {if(Defines::degug())  qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"_NET_DESKTOP_NAMES\033[0m"<<property->atom; rechargeDesktop();}
             else if(property->atom==XDesktop::atom("_NET_CURRENT_DESKTOP"))
-            {if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"_NET_CURRENT_DESKTOP"<<property->atom; actvateBtnDesktop();}
+            {if(Defines::degug())  qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"_NET_CURRENT_DESKTOP\033[0m"<<property->atom; actvateBtnDesktop();}
             else if(property->atom==XDesktop::atom("_NET_NUMBER_OF_DESKTOPS"))
-            { if(mdebug) qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"_NET_NUMBER_OF_DESKTOPS"<<property->atom; rechargeDesktop();}
+            { if(Defines::degug()) qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"_NET_NUMBER_OF_DESKTOPS\033[0m"<<property->atom; rechargeDesktop();}
 
             break;
         }
@@ -177,7 +179,7 @@ bool Pager::nativeEventFilter(const QByteArray &eventType, void *message, long *
 //__________________________________________________________________________________
 void Pager::rechargeDesktop()
 {
-    if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"rechargeDesktop()";
+    if(Defines::degug())  qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"rechargeDesktop()\033[0m";
     int count = qMax(XDesktop::count(), 1);
 
     if (m_DeskCount != count)
@@ -195,7 +197,7 @@ void Pager::rechargeDesktop()
 
     int activeDesk = qMax(XDesktop::active(), 0);
 
-    if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<" activeDesk: "<<activeDesk<<"DeskCountt: "<<m_DeskCount;
+    if(Defines::degug())  qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<" activeDesk: "<<activeDesk<<"DeskCountt: \033[0m"<<m_DeskCount;
     if(m_GroupBtns->buttons().count()>0 &&  activeDesk < m_GroupBtns->buttons().count()){
 
         m_GroupBtns->button(activeDesk)->setChecked(true);
@@ -208,7 +210,7 @@ void Pager::rechargeDesktop()
 //__________________________________________________________________________________
 void Pager::setupBtns()
 {
-   if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"setupBtns()";
+   if(Defines::degug())  qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"setupBtns()\033[0m";
     foreach (QAbstractButton * b, m_GroupBtns->buttons())
     {
        //3  m_pSignalMapper->removeMappings(b);
@@ -216,7 +218,7 @@ void Pager::setupBtns()
         delete b;
     }
 
-   if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"m_DeskCount"<<m_DeskCount;
+   if(Defines::degug())  qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"m_DeskCount<<"""<<m_DeskCount;
 
     for (int i = 0; i < m_DeskCount; ++i)
     {
@@ -322,7 +324,7 @@ void Pager::wheelEvent(QWheelEvent* e)
 void Pager::actvateBtnDesktop()
 {
     int activeDesk = qMax(XDesktop::active(), 0);
-   if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"activeDesk"<<activeDesk;
+   if(Defines::degug())  qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"activeDesk\033[0m"<<activeDesk;
 
    if(mDesktopType==DESKICON  && !mActiveIcon.isEmpty() ){
        for (int i = 0; i < m_DeskCount; ++i)
@@ -353,7 +355,7 @@ void Pager::actvateBtnDesktop()
 void Pager::goDesktop(int arg)
 {
 
-   if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"goDesktop"<<arg;
+   if(Defines::degug())  qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"goDesktop\033[0m"<<arg;
     int max = XDesktop::count()- 1;
 
     int current = XDesktop::active()+arg;
@@ -363,7 +365,7 @@ void Pager::goDesktop(int arg)
     else if (current < 0)
         current =max;
 
-   if(mdebug)  qDebug()<<"   [-]"<<__FILE__<< __LINE__<<"current"<<current<<max;
+   if(Defines::degug())  qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"current\033[0m"<<current<<max;
     XDesktop::setCurrent(current);
 
 }

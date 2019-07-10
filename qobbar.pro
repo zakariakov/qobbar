@@ -39,6 +39,7 @@ SOURCES += main.cpp\
         status/statuslabel.cpp \
         etaskbar/dtaskbarwidget.cpp \
         etaskbar/dactiontaskbar.cpp \
+    utils/defines.cpp \
         utils/x11utills.cpp \
 #        utils/edir.cpp \
 #       utils/desktopfile.cpp \
@@ -55,6 +56,7 @@ HEADERS  += panelwidget.h \
     status/conkystatu.h \
             status/statuslabel.h \
 #           utils/desktopfile.h \
+    utils/defines.h \
             utils/x11utills.h \
 #            utils/edir.h \
 #            utils/mystyle.h \

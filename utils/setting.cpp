@@ -19,8 +19,13 @@
 
 #include "setting.h"
 #include <QTextCodec>
-#include <QDebug>
 #include <QDir>
+Q_GLOBAL_STATIC(Setting, SettingInstance)
+Setting *Setting::instance()
+{
+    return SettingInstance();
+}
+
 Setting::Setting()
 {
     setDefaultFormat(QSettings::NativeFormat);
@@ -28,61 +33,62 @@ Setting::Setting()
     sync();
 }
 
+
 //___________________________________________________
 QString Setting::background(const QString &defaultValue)
 {
-    return value("Background",defaultValue).toString();
+    return instance()->value("Background",defaultValue).toString();
 }
 //___________________________________________________
 QString Setting::foreground(const QString &defaultValue)
 {
-    return value("Foreground",defaultValue).toString();
+    return instance()->value("Foreground",defaultValue).toString();
 }
 //___________________________________________________
 QString Setting::underline()
 {
-    return value("Underline").toString();
+    return instance()->value("Underline").toString();
 }
 //___________________________________________________
 QString Setting::overline()
 {
-    return value("Overline").toString();
+    return instance()->value("Overline").toString();
 }
 //___________________________________________________
 QString Setting::borderColor()
 {
-    return value("BorderColor").toString();
+    return instance()->value("BorderColor").toString();
 }
 //___________________________________________________
 QString Setting::fontName(const QString &defaultValue)
 {
-    return value("FontName",defaultValue).toString();
+    return instance()->value("FontName",defaultValue).toString();
 }
 //___________________________________________________
 int Setting::fontSize(int defaultValue)
 {
-    return value("FontSize",defaultValue).toInt();
+    return instance()->value("FontSize",defaultValue).toInt();
 }
 //___________________________________________________
 int Setting::radius(int defaultValue)
 {
-    return value("BorderRadius",defaultValue).toInt();
+    return instance()->value("BorderRadius",defaultValue).toInt();
 }
 
 //___________________________________________________
 bool Setting::fontBold(bool defaultValue)
 {
-    return value("FontBold",defaultValue).toBool();
+    return instance()->value("FontBold",defaultValue).toBool();
 }
 //___________________________________________________
 int Setting::border()
 {
-    return value("Border",0).toInt();
+    return instance()->value("Border",0).toInt();
 }
 //___________________________________________________
 int Setting::alpha()
 {
-    return value("Alpha",255).toInt();
+    return instance()->value("Alpha",255).toInt();
 }
 
 /*---------------------------------------------------*
@@ -91,97 +97,97 @@ int Setting::alpha()
 //___________________________________________________
 int Setting::spacing()
 {
-    return value("Spacing",0).toInt();
+    return instance()->value("Spacing",0).toInt();
 }
 //___________________________________________________
 int Setting::barLeftSpacing()
 {
-    return value("BarLeftSpacing",0).toInt();
+    return instance()->value("BarLeftSpacing",0).toInt();
 }
 //___________________________________________________
 int Setting::barRightSpacing()
 {
-    return value("BarRightSpacing",0).toInt();
+    return instance()->value("BarRightSpacing",0).toInt();
 }
 //___________________________________________________
 int Setting::barCenterSpacing()
 {
-    return value("BarCenterSpacing",0).toInt();
+    return instance()->value("BarCenterSpacing",0).toInt();
 }
 //___________________________________________________
 bool Setting::top()
 {
-    return value("Top",true).toBool();
+    return instance()->value("Top",true).toBool();
 }
 //___________________________________________________
 QStringList Setting::barLeft()
 {
-    return value("BarLeft").toStringList();
+    return instance()->value("BarLeft").toStringList();
 }
 //___________________________________________________
 QStringList Setting::barRight()
 {
-    return value("BarRight").toStringList();
+    return instance()->value("BarRight").toStringList();
 }
 //___________________________________________________
 QStringList Setting::barCenter()
 {
-    return value("BarCenter").toStringList();
+    return instance()->value("BarCenter").toStringList();
 }
 //___________________________________________________
 int  Setting::paddingLeft()
 {
-     return value("PaddingLeft",0).toInt();
+     return instance()->value("PaddingLeft",0).toInt();
 }
 //___________________________________________________
 int  Setting::paddingTop()
 {
-     return value("PaddingTop",0).toInt();
+     return instance()->value("PaddingTop",0).toInt();
 }
 //___________________________________________________
 int  Setting::paddingRight()
 {
-     return value("PaddingRight",0).toInt();
+     return instance()->value("PaddingRight",0).toInt();
 }
 //___________________________________________________
 int  Setting::paddingBottom()
 {
-     return value("PaddingBottom",0).toInt();
+     return instance()->value("PaddingBottom",0).toInt();
 }
 
 //___________________________________________________
 int  Setting::marginLeft()
 {
-     return value("MarginLeft",0).toInt();
+     return instance()->value("MarginLeft",0).toInt();
 }
 //___________________________________________________
 int  Setting::marginTop()
 {
-     return value("MarginTop",0).toInt();
+     return instance()->value("MarginTop",0).toInt();
 }
 //___________________________________________________
 int  Setting::marginRight()
 {
-     return value("MarginRight",0).toInt();
+     return instance()->value("MarginRight",0).toInt();
 }
 //___________________________________________________
 int  Setting::meginBottom()
 {
-     return value("MarginBottom",0).toInt();
+     return instance()->value("MarginBottom",0).toInt();
 }
 //___________________________________________________
 int  Setting::panelHeight()
 {
-     return value("Height",0).toInt();
+     return instance()->value("Height",0).toInt();
 }
 bool Setting::showSystry()
 {
-    return value("Systray",false).toBool();
+    return instance()->value("Systray",false).toBool();
 }
 //___________________________________________________
 int Setting::screen()
 {
-    return value("Monitor",0).toInt();
+    return instance()->value("Monitor",0).toInt();
 }
 /*---------------------------------------------------*
 *                       Pager                        *
@@ -190,47 +196,47 @@ int Setting::screen()
 //___________________________________________________
 int Setting::activeAlpha()
 {
-     return value("ActiveAlpha",255).toInt();
+     return instance()->value("ActiveAlpha",255).toInt();
 }
 //___________________________________________________
 QString Setting::activeBackground(const QString &defaultValue)
 {
-    return value("ActiveBackground",defaultValue).toString();
+    return instance()->value("ActiveBackground",defaultValue).toString();
 }
 //___________________________________________________
 QString Setting::activeForeground(const QString &defaultValue)
 {
-    return value("ActiveForeground",defaultValue).toString();
+    return instance()->value("ActiveForeground",defaultValue).toString();
 }
 QString Setting::activeIcon(const QString &defaultValue)
 {
-    return value("ActiveIcon",defaultValue).toString();
+    return instance()->value("ActiveIcon",defaultValue).toString();
 }
 //___________________________________________________
 QString Setting::activeText(const QString &defaultValue)
 {
-    return value("ActiveText",defaultValue).toString();
+    return instance()->value("ActiveText",defaultValue).toString();
 }
 
 //___________________________________________________
 QString Setting::activeUnderline()
 {
-    return value("ActiveUnderline").toString();
+    return instance()->value("ActiveUnderline").toString();
 }
 //___________________________________________________
 QString Setting::activeOverline()
 {
-    return value("ActiveOverline").toString();
+    return instance()->value("ActiveOverline").toString();
 }
 //___________________________________________________
 QString Setting::desktopDesplay()
 {
-    return value("DesktopDesplay","index").toString();
+    return instance()->value("DesktopDesplay","index").toString();
 }
 //___________________________________________________
 QStringList Setting::iconsList()
 {
-    return value("IconsList").toStringList();
+    return instance()->value("IconsList").toStringList();
 }
 
 /*---------------------------------------------------*
@@ -240,52 +246,52 @@ QStringList Setting::iconsList()
 //___________________________________________________
 QString Setting::command()
 {
-     return value("Command").toString();
+     return instance()->value("Command").toString();
 }
 //___________________________________________________
 int Setting::interval()
 {
-     return value("Interval",1).toInt()*1000;
+     return instance()->value("Interval",1).toInt()*1000;
 }
 //___________________________________________________
 int Setting::maxSize()
 {
-     return value("MaxSize",100).toInt();
+     return instance()->value("MaxSize",100).toInt();
 }
 
 //___________________________________________________
 QString Setting::label()
 {
-     return value("Label").toString();
+     return instance()->value("Label").toString();
 }
 //___________________________________________________
 QString Setting::suffix()
 {
-     return value("Suffix").toString();
+     return instance()->value("Suffix").toString();
 }
 //___________________________________________________
 QString Setting::prefix()
 {
-     return value("Prefix").toString();
+     return instance()->value("Prefix").toString();
 }
 //___________________________________________________
 QString Setting::clickLeft()
 {
-     return value("ClickLeft").toString();
+     return instance()->value("ClickLeft").toString();
 }
 //___________________________________________________
 QString Setting::clickRight()
 {
-     return value("ClickRight").toString();
+     return instance()->value("ClickRight").toString();
 }
 //___________________________________________________
 QString Setting::mouseWheelUp()
 {
-     return value("MouseWheelUp").toString();
+     return instance()->value("MouseWheelUp").toString();
 }
 //___________________________________________________
 QString Setting::mouseWheelDown()
 {
-     return value("MouseWheelDown").toString();
+     return instance()->value("MouseWheelDown").toString();
 }
 //___________________________________________________

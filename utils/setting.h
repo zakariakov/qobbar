@@ -19,68 +19,69 @@
 
 #ifndef SETTING_H
 #define SETTING_H
-
 #include <QSettings>
+
 class Setting : public QSettings
 {
 public:
     Setting();
+    static Setting *instance();
     // Commun
-    QString background(const QString &defaultValue=QString());
-    QString foreground(const QString &defaultValue=QString());
-    QString fontName(const QString &defaultValue);
-    QString underline();
-    QString overline();
-    QString borderColor();
-    int fontSize(int defaultValue);
-    int radius(int defaultValue=0);
-    int screen();
-    int border();
-    bool fontBold(bool defaultValue);
-    int alpha();
+    static  QString background(const QString &defaultValue=QString());
+    static QString foreground(const QString &defaultValue=QString());
+     static QString fontName(const QString &defaultValue);
+    static  QString underline();
+     static QString overline();
+     static QString borderColor();
+     static int fontSize(int defaultValue);
+     static int radius(int defaultValue=0);
+     static int screen();
+     static int border();
+     static bool fontBold(bool defaultValue);
+     static int alpha();
 
     //Panel
-    bool top();
-    int   spacing();
-    int barLeftSpacing();
-    int barRightSpacing();
-    int barCenterSpacing();
-    QStringList barLeft();
-    QStringList barCenter();
-    QStringList barRight();
-    int   paddingLeft();
-    int   paddingTop();
-    int   paddingRight();
-    int   paddingBottom();
-    int   marginLeft();
-    int   marginTop();
-    int   marginRight();
-    int   meginBottom();
-    int   panelHeight();
-    bool  showSystry();
+     static bool top();
+     static int   spacing();
+     static int barLeftSpacing();
+     static int barRightSpacing();
+     static int barCenterSpacing();
+     static QStringList barLeft();
+    static  QStringList barCenter();
+    static  QStringList barRight();
+     static int   paddingLeft();
+     static int   paddingTop();
+     static int   paddingRight();
+     static int   paddingBottom();
+     static int   marginLeft();
+     static int   marginTop();
+     static int   marginRight();
+     static int   meginBottom();
+     static int   panelHeight();
+     static bool  showSystry();
     //Pager
-    int activeAlpha();
-    QString activeBackground(const QString &defaultValue=QString());
-    QString activeForeground(const QString &defaultValue=QString());
-    QString activeText(const QString &defaultValue=QString());
-    QString activeIcon(const QString &defaultValue=QString());
+     static int activeAlpha();
+    static  QString activeBackground(const QString &defaultValue=QString());
+    static  QString activeForeground(const QString &defaultValue=QString());
+    static  QString activeText(const QString &defaultValue=QString());
+    static  QString activeIcon(const QString &defaultValue=QString());
 
-    QString activeUnderline();
-    QString activeOverline();
-    QString desktopDesplay();
-    QStringList iconsList();
+     static QString activeUnderline();
+     static QString activeOverline();
+     static QString desktopDesplay();
+     static QStringList iconsList();
 
     //Statu
-    QString command();
-    int interval();
-    int maxSize();
-    QString label();
-    QString suffix();
-    QString prefix();
-    QString clickLeft();
-    QString clickRight();
-    QString mouseWheelUp();
-    QString mouseWheelDown();
+    static  QString command();
+    static  int interval();
+    static  int maxSize();
+    static  QString label();
+    static  QString suffix();
+    static  QString prefix();
+    static  QString clickLeft();
+    static  QString clickRight();
+    static  QString mouseWheelUp();
+    static  QString mouseWheelDown();
 
 
 private:
