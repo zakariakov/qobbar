@@ -103,7 +103,8 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 						ex: 'Background=xrdb.background'
 						ex: 'Overline=xrdb.color5'
 
-- Border				<int>     default=0
+- Border					<int>     default=0
+- BorderRadius			<int>     default 0
 - Alpha					<int>     0-to-255 default=255
 - FontName				<string>  default parent fontfamily
 - FontSize				<int>     default parent font size
@@ -113,6 +114,7 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 #### Panel 
 
   ~~~ sh
+- Monitor				<int>     default 0
 - Top					<bool> panel top or bottom default=true
 - BorderColor			<string>  color Hex or xrdb.color<num>
 - BarLeft				<list> Ex:statu1,statu2
