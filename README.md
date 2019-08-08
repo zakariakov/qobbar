@@ -124,18 +124,18 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 -							Ex: BarLeft=Sep:1,Cpu,Sep:2,Mem,Sep:3,Wifi
 - BarLeftSpacing		<int>  default=0
 - BarRightSpacing		<int>  default=0
-- BarCenterSpacing		<int>  default=0
-- MarginLeft            <int>  default=0
-- MarginTop             <int>  default=0
-- MarginRight           <int>  default=0
+- BarCenterSpacing	<int>  default=0
+- MarginLeft            	<int>  default=0
+- MarginTop             	<int>  default=0
+- MarginRight           	<int>  default=0
 - MarginBottom          <int>  default=0
 - Systray				<bool>  default=false
 
  -----padding has no effect in tilling i3wm -----
 - PaddingBottom         <int>  default=0
-- PaddingLeft           <int>  default=0
-- PaddingRight          <int>  default=0
-- PaddingTop            <int>  default=0
+- PaddingLeft           	<int>  default=0
+- PaddingRight         	 <int>  default=0
+- PaddingTop            	<int>  default=0
 
   ~~~
 
@@ -143,11 +143,11 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 #### Pager and Taskbar
 
   ~~~ sh
-- ActiveBackground      <string>  default  window highlight
-- ActiveAlpha 			<int>     0-to-255 default=255
+- ActiveBackground     	 <string>  default  window highlight
+- ActiveAlpha 			    	<int>     0-to-255 default=255
 - ActiveForeground		<string>  default  window highlightText
-- ActiveUnderline		<string>  color Hex or xrdb.color
-- ActiveOverline		<string>  color Hex or xrdb.color
+- ActiveUnderline			<string>  color Hex or xrdb.color
+- ActiveOverline			<string>  color Hex or xrdb.color
   ~~~
 
 #### Pager 
@@ -169,6 +169,16 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 - Command			<string>  Command to desplay
 							Ex:Command=conky -c ~/conky/myconkyrc
   ~~~
+#### ActiveWindow
+
+  ~~~ sh
+  -CloseColor 			<string>  color Hex or xrdb.color<num>
+   -MaxColor 			<string>  color Hex or xrdb.color<num>
+   -MinColor 			     <string>  color Hex or xrdb.color<num>
+  -CloseText				<string>  default="x"
+   -MaxText				<string>  default="+"
+   -MinText 			     <string>  default="-"
+
 
 #### Status 
 
@@ -176,9 +186,7 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 - Command			<string>  Command to desplay
 - Interval			<int>     second default 1
 - MaxSize			<int>     default 100
-- Label				<string>
-- Suffix			<string>
-- Prefix			<string>
+- Label				<string> default $Command  ex:"  $Command "
 - ClickLeft         <string>   Command to exec
 - ClickRight		<string>   Command to exec
 - MouseWheelUp		<string>   Command to exec
