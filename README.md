@@ -82,12 +82,12 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 ### Available modules
 
   ~~~ sh
-    Panel         configured using this name 'Panel'.
-    Pager         configured using this	name 'Pager'.
-    Taskbar       configured using this	name 'Taskbar'.
-    Conky         configured using this name 'Conky'.
-    Statu         configured using any	name ex: 'Cpu' 'Mem'.
-
+    Panel         		configured using this name 'Panel'.
+    Pager         		configured using this	name 'Pager'.
+    Taskbar       		configured using this	name 'Taskbar'.
+    Conky         		configured using this name 'Conky'.
+    Statu         		configured using any	name ex: 'Cpu' 'Mem'.
+	ActiveWindow  configured using this name 'ActiveWindow'."
   ~~~ 
 
 ### Available token                                       
@@ -179,7 +179,7 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
    -MaxText				<string>  default="+"
    -MinText 			     <string>  default="-"
 
-
+~~~
 #### Status 
 
   ~~~ sh
