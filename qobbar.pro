@@ -33,6 +33,8 @@ UI_DIR = build
 INCLUDEPATH +=build
 
 SOURCES += main.cpp\
+    ewindow/activewindow.cpp \
+    panelapplication.cpp \
         panelwidget.cpp \
         panel_adaptor.cpp \
     status/conkystatu.cpp \
@@ -52,7 +54,9 @@ SOURCES += main.cpp\
         utils/setting.cpp
 
 HEADERS  += panelwidget.h \
+    ewindow/activewindow.h \
             panel_adaptor.h \
+    panelapplication.h \
     status/conkystatu.h \
             status/statuslabel.h \
 #           utils/desktopfile.h \

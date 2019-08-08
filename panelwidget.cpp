@@ -9,28 +9,22 @@
 PanelWidget::PanelWidget(/*bool debug,*/ QWidget *parent) :
     QWidget(parent),
     ui(new Ui::PanelWidget)/*,mdebug(debug)*/,
-    mSysTray(nullptr),mPager(nullptr),mConky(nullptr),mTaskbar(nullptr),m_timer(nullptr)
+    mSysTray(nullptr),mPager(nullptr),mConky(nullptr),mTaskbar(nullptr),mWindow(nullptr)
 {
 
 
     QByteArray sS=qgetenv("DESKTOP_SESSION");
 
- qDebug()<<"\033[36m #####################################################";
- qDebug()<<"	  ___        _     _					";
- qDebug()<<"	 / _ \  ___ | |__ | |__   __ _ _ __		";
- qDebug()<<"	| | | |/ _ \| '_ \| '_ \ / _` | '__|	";
- qDebug()<<"	| |_| | (_) | |_) | |_) | (_| | |		";
- qDebug()<<"	 \__\_\\___/|_.__/|_.__/ \__,_|_|		";
- qDebug()<<"\033[36m #####################################################";
+    qDebug()<<"#####################################################";
+    qDebug()<<"                Qobbar V: "<<QApplication::applicationVersion();
+    qDebug()<<"#####################################################";
 
-     qDebug()<<"\033[36m[+] PanelWidget"<< __LINE__<<"Screens\033[0m"<<QApplication::screens().count();
+    qDebug()<<"\033[36m[+] PanelWidget"<< __LINE__<<"Screens\033[0m"<<QApplication::screens().count();
 
-     qDebug()<<"\033[36m[+] PanelWidget"<< __LINE__<<"  Env=\033[0m"<<sS;
+    qDebug()<<"\033[36m[+] PanelWidget"<< __LINE__<<"  Env=\033[0m"<<sS;
 
     //    if(sS=="i3")
-         setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-    //    else
-  //  setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint /*| Qt::WindowStaysOnTopHint*/);
+    setWindowFlags( Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::WindowDoesNotAcceptFocus );
 
     //TODO FIX This
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
@@ -39,17 +33,20 @@ PanelWidget::PanelWidget(/*bool debug,*/ QWidget *parent) :
     //    QXcbWindowFunctions::setWmWindowType(tlwWindow, QXcbWindowFunctions::Dock);
     //    setDock ();
 
-    setAttribute(Qt::WA_AlwaysShowToolTips);
+    //setAttribute(Qt::WA_AlwaysShowToolTips);
     setAttribute(Qt::WA_X11DoNotAcceptFocus);
-    setWindowTitle(tr("ObBar"));
+   // setWindowTitle(tr("ObBar"));
     // setObjectName("PanelWidget");
-    //setPalette(Qt::transparent);
+    // setPalette(QPalette(QPalette::Window));
+    // setAutoFillBackground(true);
     setAttribute(Qt::WA_TranslucentBackground,true);
 
     ui->setupUi(this);
 
-   // mSetting=new Setting();
-
+      m_timer=new QTimer;
+    // mSetting=new Setting();
+connect(m_timer,SIGNAL(	timeout()),this,SLOT(compositorChanged()));
+m_timer->start(5000);
     if(Defines::degug())   qDebug()<<"\033[36m  [+] PanelWidget"<<__LINE__<<"setting.fileName:\033[0m"<<Setting::instance()->fileName();
 
     mFileSystemWatcher=new QFileSystemWatcher(this);
@@ -57,7 +54,7 @@ PanelWidget::PanelWidget(/*bool debug,*/ QWidget *parent) :
     connect(mFileSystemWatcher,SIGNAL(fileChanged(QString)),this,SLOT(reconfigure()));
 
 
- //loadSettings(true);
+    //loadSettings(true);
 
     //-----------------------------------------------------------------
     connect(QApplication::desktop(),SIGNAL(workAreaResized(int)),this,SLOT(resizePanel()));
@@ -65,23 +62,31 @@ PanelWidget::PanelWidget(/*bool debug,*/ QWidget *parent) :
 
     moveToAllDesktop();
 
-loadIconThems();
-//resizePanel();
-//reconfigure();
-QTimer::singleShot(20,this,SLOT(reconfigure()));
+    loadIconThems();
+    //resizePanel();
+    //reconfigure();
+    QTimer::singleShot(20,this,SLOT(reconfigure()));
 
 
 }
 
+void PanelWidget::setNativeEventFilter(const QByteArray &eventType, void *message, long *result)
+{
+    if(mPager)   mPager->setNativeEventFilter(eventType,message,result);
+    if(mTaskbar) mTaskbar->setNativeEventFilter(eventType,message,result);
+    if(mSysTray) mSysTray->setNativeEventFilter(eventType,message,result);
+    if(mWindow)  mWindow->setNativeEventFilter(eventType,message,result);
+}
+
 QRect PanelWidget::desktopRect()
 {
-     QRect desktop;
+    QRect desktop;
 
     if(m_Screen<0 || m_Screen>QApplication::screens().count()-1){
         m_Screen=0;
         desktop=QApplication::primaryScreen()->geometry();
     }else{
-      desktop=QApplication::screens().at(m_Screen)->geometry();
+        desktop=QApplication::screens().at(m_Screen)->geometry();
     }
 
     return desktop;
@@ -94,71 +99,68 @@ PanelWidget::~PanelWidget()
 
 void PanelWidget::showHide()
 {
-    if(!m_timer)  m_timer=new QTimer;
+
 
 
     if(isHidden()){
-//        connect(m_timer,SIGNAL(	timeout()),this,SLOT(moveToShow()));
-//        m_timer->start(1000);
+
         show();
         moveToAllDesktop();
         resizePanel();
 
     }else{
-//        connect(m_timer,SIGNAL(	timeout()),this,SLOT(moveToHide()));
-//        m_timer->start(1000);
 
         hide();
 
-            setStrut(0, 0,
-                       0, 0,
-                       0, 0
-                       );
+        setStrut(0, 0,
+                 0, 0,
+                 0, 0
+                 );
 
     }
 }
 /*****************************************************************************************************
  *                    TODO FIX ANIMATION SHOW HID
- *****************************************************************************************************/
-void PanelWidget::moveToShow()
-{
-    if(m_topPos){
-        this->move(this->pos().x(),this->pos().y()+5);
-        if(this->pos().y()>=0) {
-           this->move(this->pos().x(),0);
-            m_timer->stop();
+ ****************************************************************************************************
+//void PanelWidget::moveToShow()
+//{
+//    if(m_topPos){
+//        this->move(this->pos().x(),this->pos().y()+5);
+//        if(this->pos().y()>=0) {
+//            this->move(this->pos().x(),0);
+//            m_timer->stop();
 
-            moveToAllDesktop();
-            resizePanel();
-        }
-     }else{
-         this->move(this->pos().x(),this->pos().y()-5);
-        //Todo fix me
-        if(this->pos().y()>=0) {
-           this->move(this->pos().x(),0);
-        }
-    }
+//            moveToAllDesktop();
+//            resizePanel();
+//        }
+//    }else{
+//        this->move(this->pos().x(),this->pos().y()-5);
+//        //Todo fix me
+//        if(this->pos().y()>=0) {
+//            this->move(this->pos().x(),0);
+//        }
+//    }
 
-}
+//}
 
-void PanelWidget::moveToHide()
-{
-    if(m_topPos){
-        this->move(this->pos().x(),this->pos().y()-5);
-        if(this->pos().y()<=-m_height) {
-           this->move(this->pos().x(),-m_height);
-             m_timer->stop();
-             hide();
-        }
-     }else{
-         this->move(this->pos().x(),this->pos().y()+5);
-        //Todo fix me
-        if(this->pos().y()>=0) {
-           this->move(this->pos().x(),0);
-        }
-    }
-}
-
+//void PanelWidget::moveToHide()
+//{
+//    if(m_topPos){
+//        this->move(this->pos().x(),this->pos().y()-5);
+//        if(this->pos().y()<=-m_height) {
+//            this->move(this->pos().x(),-m_height);
+//            m_timer->stop();
+//            hide();
+//        }
+//    }else{
+//        this->move(this->pos().x(),this->pos().y()+5);
+//        //Todo fix me
+//        if(this->pos().y()>=0) {
+//            this->move(this->pos().x(),0);
+//        }
+//    }
+//}
+*/
 //-------------------------------------------------------------------------------
 void PanelWidget:: loadSettings(bool charge)
 {
@@ -191,7 +193,7 @@ void PanelWidget:: loadSettings(bool charge)
     int         m_top           =Setting::marginTop();
     int         m_rigt          =Setting::marginRight();
     int         m_bot           =Setting::meginBottom();
-    m_Border                     =Setting::border();
+    m_Border                    =Setting::border();
     m_topPos                    =Setting::top();
     bool m_showSystry           =Setting::showSystry();
     int  m_radius               =Setting::radius();
@@ -238,6 +240,9 @@ void PanelWidget:: loadSettings(bool charge)
 
 
     QColor clbg(bgColor);
+    m_isCoposite=QX11Info::isCompositingManagerRunning();
+    if(!m_isCoposite){alpha=255;m_radius=0;}
+
     clbg.setAlpha(alpha);
 
     if(clbg.isValid())
@@ -271,29 +276,52 @@ void PanelWidget:: loadSettings(bool charge)
 
 
     // charge status ---------------------------------------------
-    if(charge)
-        chargeStatus( listLeft, listCenter, listRight);
+    if(charge){
 
-    if(m_showSystry){
-        if(!mSysTray){
-            mSysTray=new SysTray(/*mSetting,*/this);
-            // listWidget.append(group);
-            ui->horizontalLayout_tray->addWidget(mSysTray);
+
+        if(m_listLeft==listLeft && m_listRight==listRight && m_listCenter ==listCenter){
+            if(mPager)   mPager->loadSettings();
+            if(mTaskbar) mTaskbar->loadSettings();
+            if(mConky)   mConky->loadSettings();
+            if(mSysTray) mSysTray->loadSettings();
+            if(mWindow) mWindow->loadSettings();
+            foreach (StatusLabel *w, listStatus) {
+                w->loadSettings();
+            }
+            qDebug()<<"[+] PanelWidget : loadsettings: ==============returned";
+            return;
         }
 
-        // addWidget(mSysTray, pos);
-    }else{
-        if(mSysTray){delete mSysTray;mSysTray=nullptr;}
+        m_listLeft=listLeft;
+        m_listRight=listRight;
+        m_listCenter=listCenter;
 
+        chargeStatus( listLeft, listCenter, listRight);
+
+        if(m_showSystry){
+            if(!mSysTray){
+                mSysTray=new SysTray(/*mSetting,*/this);
+                // listWidget.append(group);
+                ui->horizontalLayout_tray->addWidget(mSysTray);
+            }
+
+            // addWidget(mSysTray, pos);
+        }else{
+            if(mSysTray){delete mSysTray;mSysTray=nullptr;}
+
+        }
+
+        moveToAllDesktop();
+        resizePanel();
     }
-
-moveToAllDesktop();
-resizePanel();
-    //    ui->widgetBg-> setAutoFillBackground(false);
-    //    ui->widgetBg-> setWindowOpacity(alpha);
 
 }
 
+void PanelWidget::compositorChanged()
+{
+    if(m_isCoposite!=QX11Info::isCompositingManagerRunning())
+        loadSettings(false);
+}
 //-----------------------------------------------------------------------------------
 void PanelWidget::chargeStatus(QStringList listLeft,QStringList listCenter,QStringList listRight)
 {
@@ -321,6 +349,7 @@ void PanelWidget::chargeStatus(QStringList listLeft,QStringList listCenter,QStri
             if     (e==MPAGER)  {if(mPager)  {delete mPager; mPager=nullptr; listWidget.removeOne(MPAGER);}}
             else if(e==MCONKY)  {if(mConky){delete mConky;mConky=nullptr;listWidget.removeOne(MCONKY);}}
             else if(e==MTASKBAR){if(mTaskbar){delete mTaskbar;mTaskbar=nullptr;listWidget.removeOne(MTASKBAR);}}
+            else if(e==MTASKBAR){if(mWindow){delete mWindow;mWindow=nullptr;listWidget.removeOne(MWINDOW);}}
         }
     }
 
@@ -347,6 +376,7 @@ void PanelWidget::addStatus(QStringList list,int pos)
 
         if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<" addWidget:\033[0m"<<group<<posString;
 
+        //_PAGER -------------------
         if(group==MPAGER){
             if(!mPager){
                 mPager=new Pager(/*mSetting,*/this/*,mdebug*/);
@@ -355,23 +385,35 @@ void PanelWidget::addStatus(QStringList list,int pos)
             addWidget(mPager, pos);
         }//_PAGER
 
-                else if(group==MCONKY){
-                    if(!mConky){
-                        mConky=new conkyStatu(/*mSetting,*/this);
-                        listWidget.append(group);
-                    }
+        //_SYSTRAY ----------------
+        else if(group==MCONKY){
+            if(!mConky){
+                mConky=new conkyStatu(/*mSetting,*/this);
+                listWidget.append(group);
+            }
 
-                   addWidget(mConky, pos);
-                }//_SYSTRAY
+            addWidget(mConky, pos);
+        }//_SYSTRAY
 
+        //_TASKBAR -----------------
         else if(group==MTASKBAR){
             if(!mTaskbar){
-                mTaskbar=new  DtaskbarWidget(/*mSetting,*/this/*,mdebug*/);
+                mTaskbar=new  DtaskbarWidget(this);
                 listWidget.append(group);
             }
             addWidget(mTaskbar, pos);
         }//_TASKBAR
 
+       // Active Window --------------
+        else if(group==MWINDOW){
+            if(!mWindow){
+                mWindow=new  ActiveWindow(this);
+                listWidget.append(group);
+            }
+            addWidget(mWindow, pos);
+        }//_Window
+
+        // Status --------------
         else {
 
             QString groupName=group;
@@ -388,12 +430,12 @@ void PanelWidget::addStatus(QStringList list,int pos)
                 }
             }else{
 
-                StatusLabel *statLab=new StatusLabel(group,this/*,mSetting,this,mdebug*/);
+                StatusLabel *statLab=new StatusLabel(group,this);
                 listStatus.insert(group,statLab);
                 addWidget(statLab, pos);
             }
 
-        }//Status
+        }//_Status
 
         // qApp->processEvents();
     }
@@ -432,18 +474,18 @@ void PanelWidget::reconfigure()
 
     loadSettings(true);
 
-    if(mPager)   mPager->loadSettings();
-    if(mTaskbar) mTaskbar->loadSettings();
-    if(mConky)   mConky->loadSettings();
-    if(mSysTray) mSysTray->loadSettings();
+//    if(mPager)   mPager->loadSettings();
+//    if(mTaskbar) mTaskbar->loadSettings();
+//    if(mConky)   mConky->loadSettings();
+//    if(mSysTray) mSysTray->loadSettings();
 
-    foreach (StatusLabel *w, listStatus) {
-        w->loadSettings();
-    }
+//    foreach (StatusLabel *w, listStatus) {
+//        w->loadSettings();
+//    }
 
 
-   moveToAllDesktop();
-   resizePanel();
+    moveToAllDesktop();
+    resizePanel();
 
 
     mFileSystemWatcher->addPath(Setting::instance()->fileName());
@@ -464,11 +506,11 @@ int PanelWidget::calculatSize()
     QFontMetrics fm(font());
     int heightSize=fm.height()+(fm.leading()*2)+(m_Border*4);
     foreach (StatusLabel *w, listStatus) {
-         heightSize=  qMax(heightSize,w->heightSize());
+        heightSize=  qMax(heightSize,w->heightSize());
     }
 
     if(mConky){
-         heightSize=  qMax(heightSize,mConky->heightSize());
+        heightSize=  qMax(heightSize,mConky->heightSize());
     }
 
     heightSize=  qMax(heightSize,m_height);
@@ -500,9 +542,9 @@ void PanelWidget::resizePanel()
     //        mSysTray->setIconSize(QSize(panelHeight-4,panelHeight-4));
     //    }
 
-   QRect screen=desktopRect();
+    QRect screen=desktopRect();
     //QRect screen=QApplication::primaryScreen()->geometry();
-    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"   screen  :\033[0m";
+    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"   screen  :\033[0m"<<screen;
     QRect rect;
 
     rect.moveLeft(screen.left());
@@ -538,36 +580,24 @@ void PanelWidget::resizePanel()
     this->move(rect.left()+p_left,rect.top()+p_top);
 
     // QRect desktop=desktopRect();
-
-//    if (m_topPos){
-//        setStrut(  rect.bottom(), 0,
-//                   rect.left(), rect.right(),
-//                   0, 0
-//                   );
-//    }else{
-//        setStrut(   0, panelHeight,
-//                    0, 0,
-//                    rect.left(), rect.right()
-//                    );
-
-//    }
-
+    //QRect desktop =QApplication::primaryScreen()->geometry();
     if (m_topPos){
         setStrut(  rect.bottom(), 0,
                    rect.left(), rect.right(),
-                   rect.left(), rect.right()
+                   0, 0
                    );
     }else{
-        setStrut(   0, panelHeight,
-                    rect.left(), rect.right(),
+        setStrut(   0, rect.height() - rect.y(),
+                    0, 0,
                     rect.left(), rect.right()
                     );
 
     }
+
     //    this->setGeometry(rect);
     //    this->resize(rect.width(),rect.height());
 
-   /* if(Defines::degug()) */  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"   widget panel resized: \033[0m"<< rect<<QApplication::primaryScreen()->availableGeometry();
+    if(Defines::degug())   qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"   widget panel resized: \033[0m"<<rect;
     setMaximumWidth(rect.width()-(p_left+p_right));
     setMinimumHeight(panelHeight);
     //  m_rootWindow = QX11Info::appRootWindow();
@@ -700,23 +730,14 @@ void PanelWidget::loadIconThems()
 
     QString icnThem=QIcon::themeName();
 
-//    QByteArray sS=qgetenv("DESKTOP_SESSION");
-
-//    if(sS=="elokab-session"){
-//        QSettings setting("elokab","elokabsettings");
-//        setting.beginGroup("Themes");
-//        icnThem=  setting.value("iconsTheme",QIcon::themeName()).toString();
-//        setting.endGroup();
-
-//    }
-
     if(icnThem=="hicolor"||icnThem.isEmpty()){
 
         QStringList failback;
-        failback << "Papirus"<<"Adwaita" <<"oxygen"<< "Mint-X"
-                 << "Humanity"<<"Numix"
-                 << "Prudence-icon"<< "elementary"
-                 <<"breeze"<< "gnome";
+        failback << "Papirus"<<"Adwaita"
+                 <<"oxygen"<< "Mint-X"
+                << "Humanity"<<"Numix"
+                << "elementary"
+                <<"breeze"<< "gnome";
 
         QDir dir("/usr/share/icons/");
         foreach (QString s, failback)

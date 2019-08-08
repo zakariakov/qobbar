@@ -18,11 +18,13 @@
  ***************************************************************************/
 
 #include "stylecolors.h"
+#include "utils/defines.h"
 #include <QFile>
 #include <QTextStream>
 #include <QTextCodec>
 #include <QDir>
-//#include <QDebug>
+#include <QDebug>
+
 QString StyleColors::loadXresourceColor(const QString &colorName)
 {
     QString xresourceFile=QDir::homePath()+"/.Xresources";
@@ -95,7 +97,8 @@ QString StyleColors::loadXresourceColor(const QString &colorName)
          }
 
      }
-//qDebug()<<"   [*]"<<__FILE__<<__LINE__<< "StyleColors::xrdbget return="<<txt;
+
+    // if(Defines::degug()) qDebug()<<"   [*]"<<__FILE__<<__LINE__<< "StyleColors::xrdbget return="<<txt;
      return txt;
 
  }
@@ -144,6 +147,6 @@ QString StyleColors::style( QString bgColor, QString fgColor,
    // else  mStyleSheet+=QString("border-top: 0px;\n") ;
    if(radius>0) mStyleSheet+=QString("border-radius: %1px;\n") .arg(QString::number(radius));
 
-   // qDebug()<<"   [*]"<<__FILE__<<__LINE__<<"StyleSheet"<<mStyleSheet;
+  //if(Defines::degug()) qDebug()<<"   [*]"<<__FILE__<<__LINE__<<"StyleSheet"<<mStyleSheet;
     return mStyleSheet;
 }

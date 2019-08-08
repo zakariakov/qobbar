@@ -67,14 +67,14 @@ private:
 /**
  * @brief The Pager class التبديل بين اسطح المكتب
  */
-class Pager : public QWidget,public QAbstractNativeEventFilter
+class Pager : public QWidget/*,public QAbstractNativeEventFilter*/
 
 {
     Q_OBJECT
 
 public:
     explicit    Pager(QWidget* parent = nullptr);
-    bool nativeEventFilter(const QByteArray &eventType, void *message, long *);
+    void setNativeEventFilter(const QByteArray &eventType, void *message, long *);
     ~Pager();
 
     void setSize(QSize size);

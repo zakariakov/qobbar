@@ -4,7 +4,6 @@
 #include <QX11Info>
 #include <QImage>
 #include <QHash>
-
 // Keep all the X11 stuff with scary defines below normal headers.
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -23,7 +22,7 @@ X11UTILLS *X11UTILLS::instance()
 {
    return X11UTILLSInstance();
 }
-static XErrorHandler oldX11ErrorHandler = NULL;
+static XErrorHandler oldX11ErrorHandler = nullptr;
 
 static int x11errorHandler(Display* display, XErrorEvent* error)
 {

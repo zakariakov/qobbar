@@ -284,7 +284,7 @@ void DActionTaskbar::dragEnterEvent(QDragEnterEvent *event)
 
 void DActionTaskbar::dragLeaveEvent(QDragLeaveEvent */*event*/)
 {
-    mimeData = NULL;
+    mimeData = nullptr;
 }
 
 void DActionTaskbar::activateWithDraggable()

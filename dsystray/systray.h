@@ -31,7 +31,7 @@ original code  http://razor-qt.org
 #include <X11/Xlib.h>
 #include <xcb/xcb.h>
 
-class SysTray: public  QWidget, QAbstractNativeEventFilter
+class SysTray: public  QWidget/*, QAbstractNativeEventFilter*/
 {
           Q_OBJECT
 
@@ -45,7 +45,7 @@ class SysTray: public  QWidget, QAbstractNativeEventFilter
       QSize iconSize() const { return mIconSize; }
       void setIconSize(QSize iconSize);
 
-      bool nativeEventFilter(const QByteArray &eventType, void *message, long *);
+      void setNativeEventFilter(const QByteArray &eventType, void *message, long *);
 
       void loadSettings();
 

@@ -1,6 +1,6 @@
 #include "panelwidget.h"
 
-#include <QApplication>
+#include "panelapplication.h"
 #include "panel_adaptor.h"
 #include "utils/defines.h"
 
@@ -33,17 +33,14 @@ void mylist()
     puts("Systray       configured using this name 'Systray'.");
     puts("Taskbar       configured using this name 'Taskbar'.");
     puts("Conky         configured using this name 'Conky'.");
+    puts("ActiveWindow  configured using this name 'ActiveWindow'.");
     puts("Statu         configured using any name ex: 'Cpu' 'Mem'.");
 
 }
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    a.setOrganizationName("qobbar");
-    a.setApplicationName("qobbar");
-    a.setApplicationDisplayName("QobBar");
-    a.setLayoutDirection(Qt::LeftToRight);
+    PanelApplication a(argc, argv);
 
     QStringList args = a.arguments();
     bool hide=false;
@@ -95,7 +92,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-   Defines::setDeguging(debug);
+    Defines::setDeguging(debug);
     PanelWidget w;
 
     new panel_adaptor(&w);
@@ -103,7 +100,7 @@ int main(int argc, char *argv[])
     connection.registerObject("/org/elokab/panel/"+a.applicationName(), &w);
 
     w.show();
-
+    a.setPanel(&w);
     return a.exec();
 
 }

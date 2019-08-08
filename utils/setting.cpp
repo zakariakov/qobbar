@@ -256,24 +256,35 @@ int Setting::interval()
 //___________________________________________________
 int Setting::maxSize()
 {
-     return instance()->value("MaxSize",100).toInt();
+     return instance()->value("MaxSize",150).toInt();
 }
 
 //___________________________________________________
 QString Setting::label()
 {
-     return instance()->value("Label").toString();
+     return instance()->value("Label","$Command").toString();
+}
+////___________________________________________________
+//QString Setting::suffix()
+//{
+//     return instance()->value("Suffix").toString();
+//}
+////___________________________________________________
+//QString Setting::prefix()
+//{
+//     return instance()->value("Prefix").toString();
+//}
+//___________________________________________________
+QStringList Setting::format()
+{
+     return instance()->value("Format",QStringList()<<"$Command").toStringList();
 }
 //___________________________________________________
-QString Setting::suffix()
+QStringList Setting::ramps()
 {
-     return instance()->value("Suffix").toString();
+     return instance()->value("Ramps").toStringList();
 }
-//___________________________________________________
-QString Setting::prefix()
-{
-     return instance()->value("Prefix").toString();
-}
+
 //___________________________________________________
 QString Setting::clickLeft()
 {
@@ -295,3 +306,34 @@ QString Setting::mouseWheelDown()
      return instance()->value("MouseWheelDown").toString();
 }
 //___________________________________________________
+
+//___________________________________________________
+QString Setting::closeColor(const QString &defaultValue)
+{
+    return instance()->value("CloseColor",defaultValue).toString();
+}
+//___________________________________________________
+QString Setting::maxColor(const QString &defaultValue)
+{
+    return instance()->value("MaxColor",defaultValue).toString();
+}
+//___________________________________________________
+QString Setting::minColor(const QString &defaultValue)
+{
+    return instance()->value("MinColor",defaultValue).toString();
+}
+//___________________________________________________
+QString Setting::closeText(const QString &defaultValue)
+{
+    return instance()->value("CloseText",defaultValue).toString();
+}
+//___________________________________________________
+QString Setting::maxText(const QString &defaultValue)
+{
+    return instance()->value("MaxText",defaultValue).toString();
+}
+//___________________________________________________
+QString Setting::minText(const QString &defaultValue)
+{
+    return instance()->value("MinText",defaultValue).toString();
+}

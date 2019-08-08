@@ -80,7 +80,7 @@ SysTray::SysTray(QWidget *parent):
 
     _NET_SYSTEM_TRAY_OPCODE = X11UTILLS::atom("_NET_SYSTEM_TRAY_OPCODE");
 
-   qApp->installNativeEventFilter(this);
+   //qApp->installNativeEventFilter(this);
     // Init the selection later just to ensure that no signals are sent until
     // after construction is done and the creating object has a chance to connect.
    // QTimer::singleShot(1500, this, SLOT(startTray()));
@@ -105,8 +105,8 @@ void SysTray::loadSettings()
 
     //_________________________________________________ Settings
 
-    if(!Setting::instance()->childGroups().contains("Systray")) return;
-    Setting::instance()->beginGroup("Systray");
+    if(!Setting::instance()->childGroups().contains(MSYSTRAY)) return;
+    Setting::instance()->beginGroup(MSYSTRAY);
 
     QString bgColor         =Setting::background();
     int     alpha           =Setting::alpha();//
@@ -134,12 +134,12 @@ void SysTray::loadSettings()
 /************************************************
 
  ************************************************/
-bool SysTray::nativeEventFilter(const QByteArray &eventType, void *message, long *)
+void SysTray::setNativeEventFilter(const QByteArray &eventType, void *message, long *)
 {
 
 
     if (eventType != "xcb_generic_event_t")
-        return false;
+        return ;
 
     xcb_generic_event_t* event = static_cast<xcb_generic_event_t *>(message);
 
@@ -175,7 +175,7 @@ bool SysTray::nativeEventFilter(const QByteArray &eventType, void *message, long
             break;
     }
 
-    return false;
+   // return false;
 }
 
 

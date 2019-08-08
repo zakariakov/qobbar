@@ -22,6 +22,7 @@
 #include "status/statuslabel.h"
 #include "status/conkystatu.h"
 
+
 #include <QWidget>
 //#include <QX11Info>
 #include <QApplication>
@@ -30,7 +31,7 @@
 #include <QProcess>
 #include <QLayout>
 #include <QFileSystemWatcher>
-//#include <QAbstractNativeEventFilter>
+
 //#include "xcb/xcb.h"
 namespace Ui {
 class PanelWidget;
@@ -39,57 +40,70 @@ class PanelWidget;
 #include <X11/Xatom.h>
 #include "etaskbar/dtaskbarwidget.h"
 #include "dsystray/systray.h"
+#include "ewindow/activewindow.h"
 #include "epager/pager.h"
 #include  <QTimer>
-#define MSYSTRAY "Systray"
-#define MPAGER "Pager"
-#define MTASKBAR "Taskbar"
-#define MCONKY   "Conky"
 
+#include <QAbstractNativeEventFilter>
 class PanelWidget : public QWidget
 {
     Q_OBJECT
 
 public:
     explicit PanelWidget(QWidget *parent = nullptr);
+    // bool nativeEventFilter(const QByteArray &eventType, void *message, long *);
+   void setNativeEventFilter(const QByteArray &eventType, void *message, long *result);
     ~PanelWidget();
 public slots:
     // void reconfigure();
     void exit(){qApp->quit();}
 
-//    void setDock ();
+    //    void setDock ();
     //unsigned int getWindowPID(Window winID) ;
 
-void showHide();
+    void showHide();
 private:
 
     Ui::PanelWidget *ui;
-  //  bool mdebug;
+    //  bool mdebug;
     SysTray *mSysTray;
     Pager *mPager;
-  conkyStatu  *mConky ;
+    conkyStatu  *mConky ;
     DtaskbarWidget *mTaskbar;
-    //Setting *mSetting;
-    int m_Screen=0;
-    int m_height=0;
+    ActiveWindow *mWindow;
+
+    QFileSystemWatcher *mFileSystemWatcher;
+    QTimer *m_timer;
+
     enum Pos{LEFT,CENTER,RIGHT};
-
-
     void loadSettings(bool charge=false);
-void chargeStatus(QStringList listLeft,QStringList listCenter,QStringList listRight);
-   // QList<StatusLabel *> listWidgets;
-     QHash<QString , StatusLabel*> listStatus;
-     QStringList listWidget;
-    bool m_topPos;
+    void chargeStatus(QStringList listLeft,QStringList listCenter,QStringList listRight);
+    // QList<StatusLabel *> listWidgets;
+    QHash<QString , StatusLabel*> listStatus;
+    QStringList listWidget;
+
+QStringList m_listLeft;
+QStringList m_listCenter;
+QStringList m_listRight;
+
     QRect m_PaddingRect;
     QRect m_MarginRect;
 
     //QWindow *tlwWindow ;
-    int m_Border;
-    QFileSystemWatcher *mFileSystemWatcher;
-QTimer *m_timer;
+
+
+
+    bool m_topPos;
+    bool m_isCoposite;
+
+    int m_Screen=0;
+    int m_height=0;
+    int m_Border=0;
+
+
 
 private slots:
+    void compositorChanged();
     void reconfigure();
     void resizePanel();
     int calculatSize();
@@ -100,10 +114,10 @@ private slots:
     void addStatus(QStringList list,int pos);
     void addWidget(QWidget *w,int pos);
     void loadIconThems();
-      QRect desktopRect();
+    QRect desktopRect();
 
-    void  moveToShow();
-       void  moveToHide();
+    //    void  moveToShow();
+    //       void  moveToHide();
 };
 
 #endif // PANELWIDGET_H

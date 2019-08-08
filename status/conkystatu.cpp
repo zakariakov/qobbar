@@ -32,7 +32,7 @@ void conkyStatu::loadSettings()
 
     m_process->close();
 
-    Setting::instance()->beginGroup("Conky");
+    Setting::instance()->beginGroup(MCONKY);
    // m_Setting->beginGroup("Conky");
     QString command            =Setting::command();
     int     border             =Setting::border();

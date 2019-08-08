@@ -10,7 +10,7 @@
 #include <X11/Xatom.h>
 #include <xcb/xcb_event.h>
 
-class DtaskbarWidget : public QWidget,public QAbstractNativeEventFilter
+class DtaskbarWidget : public QWidget/*,public QAbstractNativeEventFilter*/
 {
 
           Q_OBJECT
@@ -19,7 +19,7 @@ public:
           // DtaskbarWidget();
       explicit DtaskbarWidget(QWidget *parent = nullptr);
 
-      bool nativeEventFilter(const QByteArray &eventType, void *message, long *);
+      void setNativeEventFilter(const QByteArray &eventType, void *message, long *);
       void windowPropertyChanged(unsigned long window, unsigned long atom);
 
 protected:

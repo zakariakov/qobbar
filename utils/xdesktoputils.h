@@ -3,6 +3,7 @@
 #include <QStringList>
 #include <X11/Xlib.h>
 
+
 class XDesktop
 {
 public:

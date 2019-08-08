@@ -20,6 +20,7 @@
 #ifndef STYLECOLORS_H
 #define STYLECOLORS_H
 
+
 #include <QObject>
 #include <QColor>
 class StyleColors

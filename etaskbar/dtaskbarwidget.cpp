@@ -54,13 +54,13 @@ m_parent=parent;
       m_rootWindow = QX11Info::appRootWindow();
     loadSettings();
 
-    qApp->installNativeEventFilter(this);
+    //qApp->installNativeEventFilter(this);
 
 
 }
 
 //_________________________________________________________________________________________
-bool DtaskbarWidget::nativeEventFilter(const QByteArray &eventType, void *message, long *)
+void DtaskbarWidget::setNativeEventFilter(const QByteArray &eventType, void *message, long *)
 {
 
     if (eventType == "xcb_generic_event_t") {
@@ -81,7 +81,7 @@ bool DtaskbarWidget::nativeEventFilter(const QByteArray &eventType, void *messag
 
     }
 
-    return false;
+    //return false;
 }
 
 //_________________________________________________________________________________________
@@ -114,7 +114,7 @@ void DtaskbarWidget::loadSettings()
     QString highlight=qApp->palette().highlight().color().name();
     QString highlightTxt=qApp->palette().highlightedText().color().name();
 
-    Setting::instance()->beginGroup("Taskbar");
+    Setting::instance()->beginGroup(MTASKBAR);
 
     QString bgColor         =Setting::background();
     QString fgColor         =Setting::foreground(m_parent->palette().windowText().color().name());
@@ -251,7 +251,7 @@ void DtaskbarWidget::activeWindowChanged()
 
 
     //         التاكد من وجودها مع الازرا
-    DActionTaskbar* toolbtn =0;
+    DActionTaskbar* toolbtn =nullptr;
     if (mButtonsHash.contains(window)){
         toolbtn=mButtonsHash.value(window);
         m_activeWindow=window;

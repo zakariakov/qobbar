@@ -6,6 +6,7 @@
 #include <QX11Info>
 #include <QHash>
 
+
 //#define EXIT_SUCCESS 1
 //#define EXIT_FAILURE 0;
 XDesktop::XDesktop()

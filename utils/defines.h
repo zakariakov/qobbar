@@ -2,8 +2,12 @@
 #define DEFINES_H
 #include <QObject>
 #include <QDebug>
-#endif // DEFINES_H
 
+#define MSYSTRAY "Systray"
+#define MPAGER "Pager"
+#define MTASKBAR "Taskbar"
+#define MCONKY   "Conky"
+#define MWINDOW   "ActiveWindow"
 
 class Defines
 {
@@ -19,3 +23,4 @@ private:
     bool m_debug;
 
 };
+#endif // DEFINES_H

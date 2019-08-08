@@ -12,6 +12,7 @@
 #include <QPixmap>
 #include "X11/Xlib.h"
 
+
 typedef QList<unsigned long> WindowList;
 typedef QList<Atom> AtomList;
 /**

@@ -29,6 +29,7 @@ public:
     // Commun
     static  QString background(const QString &defaultValue=QString());
     static QString foreground(const QString &defaultValue=QString());
+
      static QString fontName(const QString &defaultValue);
     static  QString underline();
      static QString overline();
@@ -76,12 +77,22 @@ public:
     static  int interval();
     static  int maxSize();
     static  QString label();
-    static  QString suffix();
-    static  QString prefix();
+//    static  QString suffix();
+//    static  QString prefix();
+ static  QStringList format();
+ static  QStringList ramps();
     static  QString clickLeft();
     static  QString clickRight();
     static  QString mouseWheelUp();
     static  QString mouseWheelDown();
+
+      static QString closeColor(const QString &defaultValue=QString());
+      static QString maxColor(const QString &defaultValue=QString());
+      static QString minColor(const QString &defaultValue=QString());
+      static QString closeText(const QString &defaultValue=QString());
+      static QString maxText(const QString &defaultValue=QString());
+      static QString minText(const QString &defaultValue=QString());
+
 
 
 private:

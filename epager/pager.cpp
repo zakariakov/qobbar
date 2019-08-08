@@ -69,7 +69,7 @@ Pager::Pager(QWidget* parent)
    // m_size=QSize(16,16);
 
     loadSettings();
-    qApp->installNativeEventFilter(this);
+    //qApp->installNativeEventFilter(this);
 
     rechargeDesktop();
 
@@ -85,7 +85,7 @@ void Pager::loadSettings()
     QString highlight=qApp->palette().highlight().color().name();
     QString highlightTxt=qApp->palette().highlightedText().color().name();
 
-    Setting::instance()->beginGroup("Pager");
+    Setting::instance()->beginGroup(MPAGER);
 
     QString bgColor         =Setting::background();
     QString fgColor         =Setting::foreground(mParent->palette().windowText().color().name());
@@ -150,9 +150,10 @@ void Pager::loadSettings()
 }
 
 //__________________________________________________________________________________
-bool Pager::nativeEventFilter(const QByteArray &eventType, void *message, long *)
+void Pager::setNativeEventFilter(const QByteArray &eventType, void *message, long *)
 {
-    // qDebug()<<"Pager:"<< __LINE__<<"nativeEventFilter()";
+
+   //  qDebug()<<"Pager:"<< __LINE__<<"nativeEventFilter()";
     if (eventType == "xcb_generic_event_t") {
         xcb_generic_event_t* event = static_cast<xcb_generic_event_t *>(message);
 
@@ -173,7 +174,7 @@ bool Pager::nativeEventFilter(const QByteArray &eventType, void *message, long *
 
     }
 
-    return false;
+    //return false;
 }
 
 //__________________________________________________________________________________
@@ -250,7 +251,8 @@ void Pager::setupBtns()
         btn->setToolTip( tr("Desktop %1").arg(XDesktop::name(i,"desktop")));
         btn->setData(btn->text());
         QFontMetrics mtr(btn->font());
-        int w=mtr.width(btn->text());
+        //int w=mtr.width(btn->text());
+        int w=mtr.horizontalAdvance(btn->text());
         btn->setMaximumWidth(w+10);
        //4  m_pSignalMapper->setMapping(btn, i);
        //5  connect(btn, SIGNAL(activated()), m_pSignalMapper, SLOT(map())) ;

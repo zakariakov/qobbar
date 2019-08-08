@@ -7,16 +7,16 @@
 #include <QFutureWatcher>
 #include <QThread>
 
-//*********************THREAD**************************
+//********************* THREAD **************************
 class Thread : public QThread
 {
     Q_OBJECT
 
 public:
     Thread(){}
-
     void setCommand(const QString &cmd){mCmd=cmd;}
     QString command(){return mCmd;}
+
 signals:
     void terminated(const QString &result);
 
@@ -24,10 +24,10 @@ protected:
     void run();
 
 private:
-
     QString     mCmd;
 };
 
+//********************* STATU **************************
 class StatusLabel : public QLabel
 {
     Q_OBJECT
@@ -36,59 +36,57 @@ signals:
     void readFiniched();
     void textReady(QString str);
 
-protected slots:
- //   void on_textReady(QString str);
-  //  void on_render_finished();
-
 public slots:
+    void    loadSettings();
 
- void    loadSettings();
 protected:
     void mouseReleaseEvent(QMouseEvent *ev);
     void wheelEvent(QWheelEvent* e);
-    //__________________________________________
+
 public:
-    StatusLabel(QString group,/*Setting *s,*/ QWidget *parent=nullptr/*,bool debug=false*/);
-      ~StatusLabel();
-int heightSize(){return mHeight;}
-
+    //  البناء
+    StatusLabel(QString group, QWidget *parent=nullptr);
+    // انهاء البناء
+    ~StatusLabel();
+    //  اعادة حجم النص مع الاطار
+    int heightSize(){return mHeight;}
+    //  اسم العملية
     QString name(){return mName;}
+    // انهاء الرندر
+    void cancelRender();
 
-void    cancelRender();
 private:
-     enum CmdType { MouseLeft, MouseRight, MouseWheelUp, MouseWheelDown };
+    enum CmdType { MouseLeft, MouseRight, MouseWheelUp, MouseWheelDown };
 
-    Thread *mThread;
+    Thread *mThread;                // العملية في الخلفية
     //_________________________________
-  // QString mCommand;
-    QString mLabel;
-    QString mSuffix;
-    QString mPrefix;
-    QString mName;
-    int     mInterval;
-    int maxSize=100;
-    QTimer *mTimer;
-QWidget *mParent;
-//Setting *mySetting;
-    QString mMouseLeftCmd;
-    QString mMouseRightCmd;
-    QString mMouseWheelUpCmd;
-    QString mMouseWheelDownCmd;
-    int mBoreder;
-    int mHeight;
+
+    QString     mLabel;
+    //    QString mSuffix;
+    //    QString mPrefix;
+    QString     mName;              // الاسم
+    int         mInterval;          // مدة اعادة تنفيذ الامر
+    int         maxSize=100;        // الحجم الاقصى للحامل
+    QTimer      *mTimer;            // ساعة ضبط التنفيذ
+    QWidget     *mParent;           // النافذة الاب لتغيير لمعرفة اعداداتها
+    QString     mMouseLeftCmd;      // امر نقر الموس الايسر
+    QString     mMouseRightCmd;     // امر عند نقر الموس الايمن
+    QString     mMouseWheelUpCmd;   // امر تدوير العجلة للاعلى
+    QString     mMouseWheelDownCmd; //امر تدوير العجللة للاسفل
+    int         mBoreder;           // عرض الاطار
+    int         mHeight;            // حجم النض مع الاطار
+
     //________________________________
-    QFutureWatcher< void >* m_render;
-    QString m_string;
-   // void render();
+    //  بداية الرندر
     void startCommand(int interval);
+    //  تنفيذ الامر عند النقر او سحب الماوس
     void execCmd(int type);
-//bool mdebug;
+
+
 private slots:
-   // QString updateCommand();
-
-    void    startRender();
-    //void    cancelRender();
-
+    // بداية القراءة
+    void startRender();
+    // تحديث القراءة
     void updateCmd(QString result);
 };
 
