@@ -82,60 +82,74 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 ### Available modules
 
   ~~~ sh
+    Colors                      configured using this name 'Colors'.
     Panel         		configured using this name 'Panel'.
-    Pager         		configured using this	name 'Pager'.
-    Taskbar       		configured using this	name 'Taskbar'.
+    Pager         		configured using this name 'Pager'.
+    Taskbar       		configured using this name 'Taskbar'.
     Conky         		configured using this name 'Conky'.
-    Statu         		configured using any	name ex: 'Cpu' 'Mem'.
-	ActiveWindow  configured using this name 'ActiveWindow'."
+    Statu         		configured using any  name ex: 'Cpu' 'Mem'.
+    ActiveWindow                configured using this name 'ActiveWindow'.
   ~~~ 
 
 ### Available token                                       
+
+#### Colors
+
+  ~~~ sh
+- Variable color
+ [Colors]
+ BgColor=#161925
+ FgColor=xrdb.color7
+- ----------------------
+[Panel]
+Background=$BgColor
+Foreground=$FgColor
+ ~~~
 
 #### Common 
 
   ~~~ sh
 - Background			<string>  color Hex or xrdb.color<num>
 - Foreground			<string>  color Hex or xrdb.color<num>
-- Underline				<string>  color Hex or xrdb.color<num>
-- Overline				<string>  color Hex or xrdb.color<num>
-						to get color from Xresource 
-						ex: 'Background=xrdb.background'
-						ex: 'Overline=xrdb.color5'
+- Underline			<string>  color Hex or xrdb.color<num>
+- Overline			<string>  color Hex or xrdb.color<num>
+                                        to get color from Xresource
+                                        ex: 'Background=xrdb.background'
+                                        ex: 'Overline=xrdb.color5'
 
-- Border					<int>     default=0
-- BorderRadius			<int>     default 0
-- Alpha					<int>     0-to-255 default=255
-- FontName				<string>  default parent fontfamily
-- FontSize				<int>     default parent font size
-- FontBold				<bool>    default  window fontbold
+- Border        <int>     default=0
+- BorderRadius  <int>     default 0
+- Alpha         <int>     0-to-255 default=255
+- FontName      <string>  default parent fontfamily
+- FontSize      <int>     default parent font size
+- FontBold      <bool>    default  window fontbold
   ~~~
 
 #### Panel 
 
   ~~~ sh
-- Monitor				<int>     default 0
-- Top					<bool> panel top or bottom default=true
-- BorderColor			<string>  color Hex or xrdb.color<num>
-- BarLeft				<list> Ex:statu1,statu2
-- BarCenter				<list> Ex:Time,Date
-- BarRight				<list> Ex:Pager
--							To repeat the same statu, add ":" and then a number
--							Ex: BarLeft=Sep:1,Cpu,Sep:2,Mem,Sep:3,Wifi
-- BarLeftSpacing		<int>  default=0
-- BarRightSpacing		<int>  default=0
+- Monitor         <int>     default 0
+- Top               <bool> panel top or bottom default=true
+- BorderColor     <string>  color Hex or xrdb.color<num>
+- BarLeft         <list> Ex:statu1,statu2
+- BarCenter       <list> Ex:Time,Date
+- BarRight        <list> Ex:Pager
+-		To repeat the same statu, add ":" and then a number
+-		Ex: BarLeft=Sep:1,Cpu,Sep:2,Mem,Sep:3,Wifi
+- BarLeftSpacing    <int>  default=0
+- BarRightSpacing	<int>  default=0
 - BarCenterSpacing	<int>  default=0
-- MarginLeft            	<int>  default=0
-- MarginTop             	<int>  default=0
-- MarginRight           	<int>  default=0
-- MarginBottom          <int>  default=0
-- Systray				<bool>  default=false
+- MarginLeft        <int>  default=0
+- MarginTop         <int>  default=0
+- MarginRight       <int>  default=0
+- MarginBottom      <int>  default=0
+- Systray           <bool>  default=false
 
  -----padding has no effect in tilling i3wm -----
-- PaddingBottom         <int>  default=0
-- PaddingLeft           	<int>  default=0
-- PaddingRight         	 <int>  default=0
-- PaddingTop            	<int>  default=0
+- PaddingBottom     <int>  default=0
+- PaddingLeft       <int>  default=0
+- PaddingRight      <int>  default=0
+- PaddingTop        <int>  default=0
 
   ~~~
 
@@ -143,11 +157,11 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 #### Pager and Taskbar
 
   ~~~ sh
-- ActiveBackground     	 <string>  default  window highlight
-- ActiveAlpha 			    	<int>     0-to-255 default=255
-- ActiveForeground		<string>  default  window highlightText
-- ActiveUnderline			<string>  color Hex or xrdb.color
-- ActiveOverline			<string>  color Hex or xrdb.color
+- ActiveBackground    <string>  default  window highlight
+- ActiveAlpha         <int>     0-to-255 default=255
+- ActiveForeground    <string>  default  window highlightText
+- ActiveUnderline     <string>  color Hex or xrdb.color
+- ActiveOverline      <string>  color Hex or xrdb.color
   ~~~
 
 #### Pager 
@@ -159,8 +173,8 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
                                 You can get a list of the defined desktops using:
                                 $ xprop -root _NET_DESKTOP_NAMES
 
-- IconsList			<list> 		list of icon 0 to 9 ex: home,office,multimedia,...
-- ActiveIcon        <string> 	if DesktopDesplay==icon default=NULL
+- IconsList       <list> 		list of icon 0 to 9 ex: home,office,multimedia,...
+- ActiveIcon      <string> 	if DesktopDesplay==icon default=NULL
   ~~~
   
 #### Conky 
@@ -172,25 +186,25 @@ to run any configuration ex: top-bar.conf run "qobbar -c top-bar".
 #### ActiveWindow
 
   ~~~ sh
-  -CloseColor 			<string>  color Hex or xrdb.color<num>
-   -MaxColor 			<string>  color Hex or xrdb.color<num>
-   -MinColor 			     <string>  color Hex or xrdb.color<num>
-  -CloseText				<string>  default="x"
-   -MaxText				<string>  default="+"
-   -MinText 			     <string>  default="-"
+   -CloseColor     <string>  color Hex or xrdb.color<num>
+   -MaxColor      <string>  color Hex or xrdb.color<num>
+   -MinColor      <string>  color Hex or xrdb.color<num>
+   -CloseText      <string>  default="x"
+   -MaxText       <string>  default="+"
+   -MinText       <string>  default="-"
 
-~~~
+   ~~~
 #### Status 
 
   ~~~ sh
-- Command			<string>  Command to desplay
+- Command       <string>  Command to desplay
 - Interval			<int>     second default 1
-- MaxSize			<int>     default 100
-- Label				<string> default $Command  ex:"  $Command "
-- ClickLeft         <string>   Command to exec
-- ClickRight		<string>   Command to exec
-- MouseWheelUp		<string>   Command to exec
-- MouseWheelDown	<string>   Command to exec
+- MaxSize       <int>     default 100
+- Label         <string> default $Command  ex:"  $Command "
+- ClickLeft     <string>   Command to exec
+- ClickRight    <string>   Command to exec
+- MouseWheelUp  <string>   Command to exec
+- MouseWheelDown  <string>   Command to exec
   ~~~
 
 

@@ -305,7 +305,9 @@ QString Setting::mouseWheelDown()
 {
      return instance()->value("MouseWheelDown").toString();
 }
-//___________________________________________________
+/*---------------------------------------------------*
+*                 ACtiveWindow                       *
+*---------------------------------------------------*/
 
 //___________________________________________________
 QString Setting::closeColor(const QString &defaultValue)
@@ -336,4 +338,13 @@ QString Setting::maxText(const QString &defaultValue)
 QString Setting::minText(const QString &defaultValue)
 {
     return instance()->value("MinText",defaultValue).toString();
+}
+
+/*---------------------------------------------------*
+*                 Variable Colors                   *
+*---------------------------------------------------*/
+
+QString Setting::vriableColor(QString key)
+{
+    return instance()->value(key).toString();
 }

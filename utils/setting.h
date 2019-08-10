@@ -93,7 +93,7 @@ public:
       static QString maxText(const QString &defaultValue=QString());
       static QString minText(const QString &defaultValue=QString());
 
-
+static QString vriableColor(QString key);
 
 private:
     QString mGroup;

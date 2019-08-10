@@ -43,12 +43,14 @@ ActiveWindow::ActiveWindow(QWidget *parent) : QWidget(parent),mParent(parent)
     connect(btnClose,SIGNAL(clicked()),this,SLOT(closeActiveWindow()));
     connect(btnMax,SIGNAL(clicked()),this,SLOT(maxRestoreActiveWindow()));
     connect(btnMin,SIGNAL(clicked()),this,SLOT(minRestoreActiveWindow()));
-    connect(mTimer,SIGNAL(timeout()),this,SLOT(activeWindowChanged()));
+    connect(mTimer,SIGNAL(timeout()),this,SLOT(updateTitle()));
 
     loadSettings();
-    // mTimer->start(1000);
+
   //  qApp->installNativeEventFilter(this);
     activeWindowChanged();
+
+   mTimer->start(3000);
 }
 
 //_________________________________________________________________________________________
@@ -63,10 +65,9 @@ void ActiveWindow::setNativeEventFilter(const QByteArray &eventType, void *messa
         case XCB_PROPERTY_NOTIFY: {
             xcb_property_notify_event_t *property = reinterpret_cast<xcb_property_notify_event_t*>(event);
 
-            // windowPropertyChanged(property->window, property->atom);
             if(property->atom == X11UTILLS::atom("_NET_ACTIVE_WINDOW")){
                 // qDebug()<<"DtaskbarWidget::windowPropertyChanged   _NET_ACTIVE_WINDOW";
-                qDebug()<<"activeWindowChanged->atom"<<property->atom;
+               // qDebug()<<"activeWindowChanged->atom"<<property->atom;
                 activeWindowChanged();
             }
             break;
@@ -80,6 +81,28 @@ void ActiveWindow::setNativeEventFilter(const QByteArray &eventType, void *messa
    // return false;
 }
 
+void ActiveWindow::updateTitle()
+{
+    if( ! m_window)return;
+    QString result=X11UTILLS::getWindowTitle(m_window);
+    if(mTitle==result)return;
+
+   setTitle( result);
+
+}
+
+void ActiveWindow::setTitle(QString result)
+{
+    mTitle=result;
+   labelTitle-> setToolTip(QString());
+    if(result.length()>maxSize){
+        setToolTip(result);
+        result.resize(maxSize-1);
+        result+="…";
+    }
+
+    labelTitle->setText(result );
+}
 //____________________________________________________________________________النافذة المفعلة
 void ActiveWindow::activeWindowChanged()
 {
@@ -101,21 +124,11 @@ void ActiveWindow::activeWindowChanged()
    wAllow=X11UTILLS::allowed(m_window);
 
     btnClose->setVisible(true);
-    //    btnMax->setVisible(true);
-    //    btnMin->setVisible(true);
 
     btnMin->setVisible(wAllow["Minimize"] /*&& !wState["Hidden"]*/);
     btnMax->setVisible(wAllow["MaximizeHoriz"] && wAllow["MaximizeVert"]);
     QString result=X11UTILLS::getWindowTitle(m_window);
-
-   labelTitle-> setToolTip(QString());
-    if(result.length()>maxSize){
-        setToolTip(result);
-        result.resize(maxSize-1);
-        result+="…";
-    }
-
-    labelTitle->setText(result );
+    setTitle( result);
 
 
 }
@@ -193,7 +206,7 @@ void ActiveWindow::loadSettings()
     QString closeText       =Setting::closeText("x");
     QString maxText         =Setting::maxText("+");
     QString minText         =Setting::minText("-");
- maxSize                    =Setting::maxSize();
+    maxSize                    =Setting::maxSize();
     int     alpha           =Setting::alpha();//
     QString underline       =Setting::underline();
     QString overline        =Setting::overline();

@@ -54,7 +54,8 @@ void activeWindowChanged();
 void closeActiveWindow();
 void maxRestoreActiveWindow();
 void minRestoreActiveWindow();
-
+void updateTitle();
+void setTitle(QString result);
 private:
      QWidget *mParent;
      QWidget *mWidBgr;
@@ -67,6 +68,7 @@ private:
 
      QHash<QString ,bool>wState;
      QHash<QString ,bool>wAllow;
+     QString mTitle;
      int maxSize;
 };
 

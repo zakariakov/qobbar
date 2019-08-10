@@ -19,6 +19,7 @@
 
 #include "stylecolors.h"
 #include "utils/defines.h"
+#include "utils/setting.h"
 #include <QFile>
 #include <QTextStream>
 #include <QTextCodec>
@@ -103,26 +104,38 @@ QString StyleColors::loadXresourceColor(const QString &colorName)
 
  }
 
+ QString StyleColors::loadVariableColor(QString key)
+ {
+      Setting::instance()->beginGroup("Colors");
+      QString col= Setting::vriableColor(key);
+      Setting::instance()->endGroup();
+
+      return  col;
+ }
+
+
+ QString StyleColors::getColors(QString col)
+ {
+
+     if(col.startsWith("$"))
+          col=loadVariableColor(col.remove("$"));
+
+     if(col.startsWith("xrdb"))
+         col=loadXresourceColor(col.section(".",1));
+
+     return col;
+ }
+
 QString StyleColors::style( QString bgColor, QString fgColor,
                       QString underline, QString overline,
                      int border,int alpha,QString borderColor,int radius)
 {
 
-
-    if(bgColor.startsWith("xrdb"))
-        bgColor=loadXresourceColor(bgColor.section(".",1));
-
-    if(fgColor.startsWith("xrdb"))
-        fgColor=loadXresourceColor(fgColor.section(".",1));
-
-    if(underline.startsWith("xrdb"))
-        underline=loadXresourceColor(underline.section(".",1));
-
-    if(overline.startsWith("xrdb"))
-        overline=loadXresourceColor(overline.section(".",1));
-
-    if(borderColor.startsWith("xrdb"))
-        borderColor=loadXresourceColor(borderColor.section(".",1));
+bgColor=    getColors(bgColor);
+fgColor=    getColors(fgColor);
+underline=  getColors(underline);
+overline=   getColors(overline);
+borderColor=getColors(borderColor);
 
     QColor bg(bgColor);
     bg.setAlpha(alpha);

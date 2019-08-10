@@ -28,6 +28,7 @@ void help()
 
 void mylist()
 {
+    puts("Colors        configured using this name 'Colors'.");
     puts("Panel         configured using this name 'Panel'.");
     puts("Pager         configured using this name 'Pager'.");
     puts("Systray       configured using this name 'Systray'.");
@@ -69,7 +70,7 @@ int main(int argc, char *argv[])
             else if (arg == "-x" || arg == "--exit" )    {exit=true; }
             else if (arg == "-R" || arg == "--reconfig") {reconfig=true;}
             else if (arg == "-r" || arg == "--right" )   { a.setLayoutDirection(Qt::RightToLeft);}
-            else if (arg == "-l" || arg == "--list" )    { mylist(); return 1;}
+            else if (arg == "-l" || arg == "--list" )    { mylist(); return 0;}
 
         }//for
     }//if

@@ -42,7 +42,7 @@ StatusLabel::~StatusLabel()
 {
 
     delete mTimer;
-
+    delete mThread;
 }
 
 //________________________________________________________________Settings
@@ -229,9 +229,10 @@ void StatusLabel::startRender()
 void StatusLabel::cancelRender()
 {
     if(Defines::degug())   qDebug()<<"\033[32m   [-] statu : "<<mName<< __LINE__<<"close \033[0m"<<mName;
-    mTimer->stop();
-    mThread->terminate();
 
+    mTimer->stop();
+    //mThread->terminate();
+    mThread->blockSignals(true);
 }
 
 

@@ -19,6 +19,7 @@ void panel_adaptor::setShortcut(const QString &shortcut)
     // handle method call org.tawhid.session.org.logout
     QMetaObject::invokeMethod(parent(), "setShortcut", Q_ARG(QString, shortcut));
 }
+
 void panel_adaptor::reconfigure()
 {
      qDebug()<<"parent dbus"<< parent()->objectName();

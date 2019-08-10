@@ -33,47 +33,39 @@ UI_DIR = build
 INCLUDEPATH +=build
 
 SOURCES += main.cpp\
-    ewindow/activewindow.cpp \
-    panelapplication.cpp \
+        panelapplication.cpp \
         panelwidget.cpp \
         panel_adaptor.cpp \
-    status/conkystatu.cpp \
+        status/conkystatu.cpp \
         status/statuslabel.cpp \
         etaskbar/dtaskbarwidget.cpp \
         etaskbar/dactiontaskbar.cpp \
-    utils/defines.cpp \
+        utils/defines.cpp \
         utils/x11utills.cpp \
-#        utils/edir.cpp \
-#       utils/desktopfile.cpp \
         dsystray/systray.cpp \
         dsystray/trayicon.cpp \
         utils/xdesktoputils.cpp \
         epager/pager.cpp \
-#        windowdock.cpp \
         utils/stylecolors.cpp \
-        utils/setting.cpp
+        utils/setting.cpp \
+        ewindow/activewindow.cpp
 
 HEADERS  += panelwidget.h \
-    ewindow/activewindow.h \
             panel_adaptor.h \
-    panelapplication.h \
-    status/conkystatu.h \
+            panelapplication.h \
+            status/conkystatu.h \
             status/statuslabel.h \
-#           utils/desktopfile.h \
-    utils/defines.h \
+            utils/defines.h \
             utils/x11utills.h \
-#            utils/edir.h \
-#            utils/mystyle.h \
             utils/xdesktoputils.h \
             etaskbar/dactiontaskbar.h \
             etaskbar/dtaskbarwidget.h \
             dsystray/systray.h \
             dsystray/trayicon.h \
             epager/pager.h \
-#            windowdock.h \
             utils/stylecolors.h \
-            utils/setting.h
-
+            utils/setting.h \
+            ewindow/activewindow.h
 
 FORMS    += panelwidget.ui \
 

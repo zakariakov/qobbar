@@ -35,26 +35,20 @@ PanelWidget::PanelWidget(/*bool debug,*/ QWidget *parent) :
 
     //setAttribute(Qt::WA_AlwaysShowToolTips);
     setAttribute(Qt::WA_X11DoNotAcceptFocus);
-   // setWindowTitle(tr("ObBar"));
-    // setObjectName("PanelWidget");
-    // setPalette(QPalette(QPalette::Window));
-    // setAutoFillBackground(true);
+
     setAttribute(Qt::WA_TranslucentBackground,true);
 
     ui->setupUi(this);
 
-      m_timer=new QTimer;
+    m_timer=new QTimer;
     // mSetting=new Setting();
-connect(m_timer,SIGNAL(	timeout()),this,SLOT(compositorChanged()));
-m_timer->start(5000);
+    connect(m_timer,SIGNAL(	timeout()),this,SLOT(compositorChanged()));
+    m_timer->start(5000);
     if(Defines::degug())   qDebug()<<"\033[36m  [+] PanelWidget"<<__LINE__<<"setting.fileName:\033[0m"<<Setting::instance()->fileName();
 
     mFileSystemWatcher=new QFileSystemWatcher(this);
     mFileSystemWatcher->addPath(Setting::instance()->fileName());
     connect(mFileSystemWatcher,SIGNAL(fileChanged(QString)),this,SLOT(reconfigure()));
-
-
-    //loadSettings(true);
 
     //-----------------------------------------------------------------
     connect(QApplication::desktop(),SIGNAL(workAreaResized(int)),this,SLOT(resizePanel()));
@@ -70,6 +64,7 @@ m_timer->start(5000);
 
 }
 
+//-----------------------------------------------------------------------------------
 void PanelWidget::setNativeEventFilter(const QByteArray &eventType, void *message, long *result)
 {
     if(mPager)   mPager->setNativeEventFilter(eventType,message,result);
@@ -78,6 +73,8 @@ void PanelWidget::setNativeEventFilter(const QByteArray &eventType, void *messag
     if(mWindow)  mWindow->setNativeEventFilter(eventType,message,result);
 }
 
+
+//-----------------------------------------------------------------------------------
 QRect PanelWidget::desktopRect()
 {
     QRect desktop;
@@ -100,24 +97,20 @@ PanelWidget::~PanelWidget()
 void PanelWidget::showHide()
 {
 
-
-
     if(isHidden()){
-
         show();
         moveToAllDesktop();
         resizePanel();
+    }
 
-    }else{
-
+    else{
         hide();
-
         setStrut(0, 0,
                  0, 0,
                  0, 0
                  );
-
     }
+
 }
 /*****************************************************************************************************
  *                    TODO FIX ANIMATION SHOW HID
@@ -206,8 +199,6 @@ void PanelWidget:: loadSettings(bool charge)
 
     Setting::instance()->endGroup();
 
-
-
     if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"loadSettings():endGroup(Panel)\033[0m";
     //if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"loadSettings():endGroup(Panel):m_showSystry\033[0m"<<m_showSystry;
 
@@ -216,14 +207,10 @@ void PanelWidget:: loadSettings(bool charge)
     font.setFamily(fontName);
     font.setBold(fontBold);
     font.setPointSize(fontSize);
-    //    font.insertSubstitution("Font Awesome","Font Awesome");
-    //    font.insertSubstitution("Ubuntu","Font Awesome");
-    //    font.insertSubstitution("Sans","Font Awesome");
-    //    qDebug()<<"[==]"<<"PanelWidget"<< __LINE__<<"font"<<font.substitutions();
+
     setFont(font);
 
     // ui->horizontalLayout->setMargin(m_Border);
-
     ui->horizontalLayout_ceter->setSpacing(barCenterSpacing);
     ui->horizontalLayout_right->setSpacing(barRightSpacing);
     ui->horizontalLayout_left->setSpacing(barLeftSpacing);
@@ -238,7 +225,6 @@ void PanelWidget:: loadSettings(bool charge)
     if(fgColor.startsWith("xrdb"))
         fgColor=StyleColors::loadXresourceColor(fgColor.section(".",1));
 
-
     QColor clbg(bgColor);
     m_isCoposite=QX11Info::isCompositingManagerRunning();
     if(!m_isCoposite){alpha=255;m_radius=0;}
@@ -247,8 +233,6 @@ void PanelWidget:: loadSettings(bool charge)
 
     if(clbg.isValid())
         pal.setColor(QPalette::Window,clbg);
-
-
 
     if(QColor(fgColor).isValid())
         pal.setColor(QPalette::WindowText,QColor(fgColor));
@@ -274,10 +258,8 @@ void PanelWidget:: loadSettings(bool charge)
     qDebug()<<"[+] PanelWidget : fontName: "<<fontName;
     qDebug()<<"[+] PanelWidget : fontSize: "<<fontSize<<"\033[0m";
 
-
     // charge status ---------------------------------------------
     if(charge){
-
 
         if(m_listLeft==listLeft && m_listRight==listRight && m_listCenter ==listCenter){
             if(mPager)   mPager->loadSettings();
@@ -322,6 +304,7 @@ void PanelWidget::compositorChanged()
     if(m_isCoposite!=QX11Info::isCompositingManagerRunning())
         loadSettings(false);
 }
+
 //-----------------------------------------------------------------------------------
 void PanelWidget::chargeStatus(QStringList listLeft,QStringList listCenter,QStringList listRight)
 {
@@ -346,10 +329,10 @@ void PanelWidget::chargeStatus(QStringList listLeft,QStringList listCenter,QStri
     // Delete non-existing widgets ---------------------------
     foreach (QString e, listWidget) {
         if(!list.contains(e)){
-            if     (e==MPAGER)  {if(mPager)  {delete mPager; mPager=nullptr; listWidget.removeOne(MPAGER);}}
-            else if(e==MCONKY)  {if(mConky){delete mConky;mConky=nullptr;listWidget.removeOne(MCONKY);}}
-            else if(e==MTASKBAR){if(mTaskbar){delete mTaskbar;mTaskbar=nullptr;listWidget.removeOne(MTASKBAR);}}
-            else if(e==MTASKBAR){if(mWindow){delete mWindow;mWindow=nullptr;listWidget.removeOne(MWINDOW);}}
+            if     (e==MPAGER)  {if(mPager)  {listWidget.removeOne(MPAGER);  delete mPager;  mPager=nullptr;  }}
+            else if(e==MCONKY)  {if(mConky)  {listWidget.removeOne(MCONKY);  delete mConky;  mConky=nullptr;  }}
+            else if(e==MTASKBAR){if(mTaskbar){listWidget.removeOne(MTASKBAR);delete mTaskbar;mTaskbar=nullptr;}}
+            else if(e==MTASKBAR){if(mWindow) {listWidget.removeOne(MWINDOW); delete mWindow; mWindow=nullptr; }}
         }
     }
 
@@ -404,7 +387,7 @@ void PanelWidget::addStatus(QStringList list,int pos)
             addWidget(mTaskbar, pos);
         }//_TASKBAR
 
-       // Active Window --------------
+        // Active Window --------------
         else if(group==MWINDOW){
             if(!mWindow){
                 mWindow=new  ActiveWindow(this);
@@ -417,9 +400,8 @@ void PanelWidget::addStatus(QStringList list,int pos)
         else {
 
             QString groupName=group;
-            if(group.contains(":")){
-                groupName=group.section(":",0,0);
-            }
+            if(group.contains(":")){groupName=group.section(":",0,0);}
+
             if(!Setting::instance()->childGroups().contains(groupName))continue;
 
             if(listStatus.contains(group)){
@@ -428,6 +410,7 @@ void PanelWidget::addStatus(QStringList list,int pos)
                     addWidget(statLab, pos);
                     statLab->loadSettings();
                 }
+
             }else{
 
                 StatusLabel *statLab=new StatusLabel(group,this);
@@ -437,7 +420,6 @@ void PanelWidget::addStatus(QStringList list,int pos)
 
         }//_Status
 
-        // qApp->processEvents();
     }
 
 }
@@ -447,17 +429,10 @@ void PanelWidget::addWidget(QWidget *w,int pos)
 {
 
     switch (pos) {
-    case LEFT:
-        ui->horizontalLayout_left->addWidget(w);
-        break;
-    case CENTER:
-        ui->horizontalLayout_ceter->addWidget(w);
-        break;
-    case RIGHT:
-        ui->horizontalLayout_right->addWidget(w);
-        break;
-    default:
-        break;
+    case LEFT:      ui->horizontalLayout_left->addWidget(w);  break;
+    case CENTER:    ui->horizontalLayout_ceter->addWidget(w); break;
+    case RIGHT:     ui->horizontalLayout_right->addWidget(w); break;
+    default:        break;
     }
 
 }
@@ -465,8 +440,10 @@ void PanelWidget::addWidget(QWidget *w,int pos)
 //-----------------------------------------------------------------------------------
 void PanelWidget::reconfigure()
 {
-    if(Defines::degug()) qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"reconfigure()\033[0m"<<listStatus.count();
-    if(Defines::degug()) qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"reconfigure()\033[0m"<<listWidget.count();
+    if(Defines::degug()) {
+        qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"reconfigure()\033[0m"<<listStatus.count();
+        qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"reconfigure()\033[0m"<<listWidget.count();
+    }
 
     Setting::instance()->sync();
 
@@ -474,27 +451,19 @@ void PanelWidget::reconfigure()
 
     loadSettings(true);
 
-//    if(mPager)   mPager->loadSettings();
-//    if(mTaskbar) mTaskbar->loadSettings();
-//    if(mConky)   mConky->loadSettings();
-//    if(mSysTray) mSysTray->loadSettings();
-
-//    foreach (StatusLabel *w, listStatus) {
-//        w->loadSettings();
-//    }
-
-
     moveToAllDesktop();
-    resizePanel();
 
+    resizePanel();
 
     mFileSystemWatcher->addPath(Setting::instance()->fileName());
 
     mFileSystemWatcher->blockSignals(false);
 
-    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<" reconfigure Setting FileName\033[0m"<<Setting::instance()->fileName();
-    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"reconfigure()\033[0m"<<listStatus.count();
-    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"reconfigure()\033[0m"<<listWidget.count();
+    if(Defines::degug()) {
+        qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<" reconfigure Setting FileName\033[0m"<<Setting::instance()->fileName();
+        qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"reconfigure()\033[0m"<<listStatus.count();
+        qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"reconfigure()\033[0m"<<listWidget.count();
+    }
 
 }
 
@@ -514,12 +483,12 @@ int PanelWidget::calculatSize()
     }
 
     heightSize=  qMax(heightSize,m_height);
-    heightSize=heightSize+m_MarginRect.top()+m_MarginRect.bottom();
+    heightSize=  heightSize+m_MarginRect.top()+m_MarginRect.bottom();
     setMaximumHeight(heightSize);
-    if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"calculatSize()"<<"MaximumHeight:\033[0m"<< heightSize+m_MarginRect.top()+m_MarginRect.bottom();
-    qDebug()<<"\033[36m[+] PanelWidget : height :\033[0m"<<heightSize;
-    return  heightSize ;
 
+
+  qDebug()<<"\033[36m[+] PanelWidget >> calculatSize : height :\033[0m"<<heightSize;
+    return  heightSize ;
 
 }
 
@@ -535,12 +504,7 @@ void PanelWidget::resizePanel()
     int p_right=m_PaddingRect.right();
     int p_bot=m_PaddingRect.bottom();
 
-    // QFontMetrics fm(font());
-    //  int size=fm.height();
     int panelHeight=calculatSize();
-    //    if(mSysTray){
-    //        mSysTray->setIconSize(QSize(panelHeight-4,panelHeight-4));
-    //    }
 
     QRect screen=desktopRect();
     //QRect screen=QApplication::primaryScreen()->geometry();
@@ -579,8 +543,6 @@ void PanelWidget::resizePanel()
 
     this->move(rect.left()+p_left,rect.top()+p_top);
 
-    // QRect desktop=desktopRect();
-    //QRect desktop =QApplication::primaryScreen()->geometry();
     if (m_topPos){
         setStrut(  rect.bottom(), 0,
                    rect.left(), rect.right(),
@@ -593,9 +555,6 @@ void PanelWidget::resizePanel()
                     );
 
     }
-
-    //    this->setGeometry(rect);
-    //    this->resize(rect.width(),rect.height());
 
     if(Defines::degug())   qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"   widget panel resized: \033[0m"<<rect;
     setMaximumWidth(rect.width()-(p_left+p_right));
@@ -757,7 +716,6 @@ void PanelWidget::loadIconThems()
 
     if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"icon theme :\033[0m"<< icnThem;
     QIcon::setThemeName(icnThem);
-
 
 }
 

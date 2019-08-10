@@ -38,6 +38,8 @@ public:
 
     static   QString xrdbget(QString txt);
 
+    static   QString loadVariableColor(QString key);
+    static   QString getColors(QString col);
 signals:
 
 public slots:
