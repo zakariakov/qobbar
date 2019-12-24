@@ -65,7 +65,7 @@ void StatusLabel::loadSettings()
     QString mCommand           =Setting::command();
     int     interval           =Setting::interval();
     mLabel                     =Setting::label();
-    //             mSuffix            =Setting::suffix();
+    mRampList                  =Setting::ramps();
     //             mPrefix            =Setting::prefix();
     mMouseLeftCmd              =Setting::clickLeft();
     mMouseRightCmd             =Setting::clickRight();
@@ -83,6 +83,8 @@ void StatusLabel::loadSettings()
     int     fontSize           =Setting::fontSize(mParent->font().pointSize());
     bool    fontBold           =Setting::fontBold(mParent->font().bold());
     int     radius             =Setting::radius();
+    int     leftRadius         =Setting::leftRadius();
+    int     rightRadius        =Setting::rightRadius();
     Setting::instance()->endGroup();
 
     //_________________________________________________ INIT
@@ -121,8 +123,15 @@ void StatusLabel::loadSettings()
         qDebug()<<"   [-] statu : "<<mName<< __LINE__<<"MouseWheelDownCmd:"<<mMouseWheelDownCmd<<"\033[0m";
     }
 
-    if(radius>0)
-        setContentsMargins((radius/2)+1,0,(radius/2)+1,0);
+    int RadiusSize=radius;
+    RadiusSize=qMax(RadiusSize,leftRadius);
+    RadiusSize=qMax(RadiusSize,rightRadius);
+
+
+    if(RadiusSize>0)
+        setContentsMargins((RadiusSize/2)+1,0,(RadiusSize/2)+1,0);
+
+
     //_________________________________________________ STYLESHEET
     QString mystyle=StyleColors::style(bgColor,
                                        fgColor,
@@ -131,7 +140,10 @@ void StatusLabel::loadSettings()
                                        mBoreder,
                                        alpha,
                                        borderColor,
-                                       radius);
+                                       radius,
+                                       leftRadius,
+                                       rightRadius);
+    qDebug()<<"   [*]"<<__FILE__<<__LINE__<<mName<<radius<<leftRadius<<rightRadius;
 
     setStyleSheet(mystyle);
 
@@ -237,6 +249,27 @@ void StatusLabel::cancelRender()
 
 
 //***********************  THREAD ******************************
+QString StatusLabel::getRampIcon(QString str)
+{
+
+    int result=str.remove("%").trimmed().toInt();
+
+    if(result<0 || result>100)
+        return QString();
+
+
+    //int percent=100/mRampList.count();
+  int ramp=(result*mRampList.count())/100;
+
+  if(ramp<0 )
+      ramp=0;
+   else if(ramp>mRampList.count()-1)
+      ramp=mRampList.count()-1;
+
+       return mRampList.at(ramp);
+
+
+}
 void StatusLabel::updateCmd(QString result)
 {
 
@@ -250,6 +283,9 @@ void StatusLabel::updateCmd(QString result)
     }
 
     QString txt=mLabel;
+
+    if(txt.contains("$RampIcons") )
+        txt=txt.replace("$RampIcons",getRampIcon(result.trimmed()));
 
     if(txt.contains("$Command"))
         txt=txt.replace("$Command",result.trimmed());

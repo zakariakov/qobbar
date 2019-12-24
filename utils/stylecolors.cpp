@@ -126,9 +126,10 @@ QString StyleColors::loadXresourceColor(const QString &colorName)
      return col;
  }
 
-QString StyleColors::style( QString bgColor, QString fgColor,
+QString StyleColors::style(QString bgColor, QString fgColor,
                       QString underline, QString overline,
-                     int border,int alpha,QString borderColor,int radius)
+                     int border, int alpha, QString borderColor,
+                     int radius, int leftRadius, int rightRadius)
 {
 
 bgColor=    getColors(bgColor);
@@ -158,8 +159,13 @@ borderColor=getColors(borderColor);
     if(QColor(borderColor).isValid())mStyleSheet+=QString("border: %1px solid %2;\n")
             .arg(qMax(1,border)).arg(borderColor);
    // else  mStyleSheet+=QString("border-top: 0px;\n") ;
-   if(radius>0) mStyleSheet+=QString("border-radius: %1px;\n") .arg(QString::number(radius));
-
+   if(radius>0)
+       mStyleSheet+=QString("border-radius: %1px;\n") .arg(QString::number(radius));
+  else{
+       if(leftRadius>0) mStyleSheet+=QString("border-top-left-radius: %1px;\n border-bottom-left-radius: %1px;\n") .arg(QString::number(leftRadius));
+       if(rightRadius>0) mStyleSheet+=QString("border-top-right-radius: %1px;\n border-bottom-right-radius: %1px;\n") .arg(QString::number(rightRadius));
+  }
+   //qDebug()<<"   [*]"<<__FILE__<<__LINE__<<radius<<leftRadius<<rightRadius;
   //if(Defines::degug()) qDebug()<<"   [*]"<<__FILE__<<__LINE__<<"StyleSheet"<<mStyleSheet;
     return mStyleSheet;
 }

@@ -34,7 +34,9 @@ public:
 
     static   QString style(QString bgColor, QString fgColor,
                          QString underLine, QString overLine,
-                         int border=1, int alpha=255, QString borderColor=QString(), int radius=0);
+                         int border=1, int alpha=255,
+                         QString borderColor=QString(), int radius=0,
+                         int leftRadius=0,int rightRadius=0);
 
     static   QString xrdbget(QString txt);
 

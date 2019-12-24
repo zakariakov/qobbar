@@ -76,6 +76,18 @@ int Setting::radius(int defaultValue)
 }
 
 //___________________________________________________
+int Setting::leftRadius(int defaultValue)
+{
+    return instance()->value("LeftRadius",defaultValue).toInt();
+}
+//___________________________________________________
+int Setting::rightRadius(int defaultValue)
+{
+    return instance()->value("RightRadius",defaultValue).toInt();
+}
+
+
+//___________________________________________________
 bool Setting::fontBold(bool defaultValue)
 {
     return instance()->value("FontBold",defaultValue).toBool();
@@ -282,7 +294,7 @@ QStringList Setting::format()
 //___________________________________________________
 QStringList Setting::ramps()
 {
-     return instance()->value("Ramps").toStringList();
+     return instance()->value("RampIcons").toStringList();
 }
 
 //___________________________________________________

@@ -219,11 +219,12 @@ void PanelWidget:: loadSettings(bool charge)
     // StyleSheet ________________________________________________
     QPalette pal=this->palette();
 
-    if(bgColor.startsWith("xrdb"))
-        bgColor=StyleColors::loadXresourceColor(bgColor.section(".",1));
+    if(bgColor.startsWith("xrdb") || bgColor.startsWith("$"))
+        bgColor=StyleColors::getColors(bgColor);
 
-    if(fgColor.startsWith("xrdb"))
-        fgColor=StyleColors::loadXresourceColor(fgColor.section(".",1));
+    if(fgColor.startsWith("xrdb") || fgColor.startsWith("$"))
+        fgColor=StyleColors::getColors(fgColor);
+
 
     QColor clbg(bgColor);
     m_isCoposite=QX11Info::isCompositingManagerRunning();

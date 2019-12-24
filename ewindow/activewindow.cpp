@@ -95,6 +95,7 @@ void ActiveWindow::setTitle(QString result)
 {
     mTitle=result;
    labelTitle-> setToolTip(QString());
+   //qDebug()<<"ActiveWindow::maxSize"<<maxSize;
     if(result.length()>maxSize){
         setToolTip(result);
         result.resize(maxSize-1);
@@ -165,6 +166,7 @@ void ActiveWindow::maxRestoreActiveWindow()
         }
 
  activeWindowChanged();
+ X11UTILLS::raiseWindow(m_window);
 }
 
 void ActiveWindow::minRestoreActiveWindow()
@@ -206,7 +208,7 @@ void ActiveWindow::loadSettings()
     QString closeText       =Setting::closeText("x");
     QString maxText         =Setting::maxText("+");
     QString minText         =Setting::minText("-");
-    maxSize                    =Setting::maxSize();
+    maxSize                 =Setting::maxSize();
     int     alpha           =Setting::alpha();//
     QString underline       =Setting::underline();
     QString overline        =Setting::overline();
@@ -220,9 +222,9 @@ void ActiveWindow::loadSettings()
 
     //_________________________________________________ INIT
     QFont font;
+    font.setFamily(fontName);
     font.setPointSize(fontSize);
     font.setBold(fontBold);
-    font.setFamily(fontName);
     setFont(font);
 
     btnClose->setText(closeText);

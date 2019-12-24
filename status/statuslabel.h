@@ -60,7 +60,7 @@ private:
 
     Thread *mThread;                // العملية في الخلفية
     //_________________________________
-
+    QStringList mRampList;
     QString     mLabel;
     //    QString mSuffix;
     //    QString mPrefix;
@@ -88,6 +88,8 @@ private slots:
     void startRender();
     // تحديث القراءة
     void updateCmd(QString result);
+
+    QString getRampIcon(QString str);
 };
 
 #endif // STATUSLABEL_H

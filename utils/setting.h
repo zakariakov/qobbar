@@ -36,6 +36,9 @@ public:
      static QString borderColor();
      static int fontSize(int defaultValue);
      static int radius(int defaultValue=0);
+     static int leftRadius(int defaultValue=0);
+     static int rightRadius(int defaultValue=0);
+
      static int screen();
      static int border();
      static bool fontBold(bool defaultValue);
