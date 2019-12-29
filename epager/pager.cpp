@@ -251,8 +251,13 @@ void Pager::setupBtns()
         btn->setToolTip( tr("Desktop %1").arg(XDesktop::name(i,"desktop")));
         btn->setData(btn->text());
         QFontMetrics mtr(btn->font());
-        //int w=mtr.width(btn->text());
+
+#if QT_VERSION >= QT_VERSION_CHECK(5,10,0)
         int w=mtr.horizontalAdvance(btn->text());
+#else
+       int w=mtr.width(btn->text());
+
+#endif
         btn->setMaximumWidth(w+10);
        //4  m_pSignalMapper->setMapping(btn, i);
        //5  connect(btn, SIGNAL(activated()), m_pSignalMapper, SLOT(map())) ;

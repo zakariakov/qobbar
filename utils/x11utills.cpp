@@ -250,12 +250,13 @@ bool X11UTILLS::getClientIcon(Window _wid, QPixmap& _pixreturn)
 
     //TODO FIX deprecated
     //img.sizeInBytes()
-    //    for (int i=0; i<img.byteCount()/4; ++i)
-   //        ((uint*)img.bits())[i] = data[i+2];
-
+#if QT_VERSION >= QT_VERSION_CHECK(5,10,0)
     for (int i=0; i<img.sizeInBytes()/4; ++i)
         ((uint*)img.bits())[i] = data[i+2];
-
+#else
+    for (int i=0; i<img.byteCount()/4; ++i)
+        ((uint*)img.bits())[i] = data[i+2];
+#endif
     _pixreturn = QPixmap::fromImage(img);
     XFree(data);
 

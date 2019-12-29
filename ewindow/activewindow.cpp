@@ -226,6 +226,10 @@ void ActiveWindow::loadSettings()
     font.setPointSize(fontSize);
     font.setBold(fontBold);
     setFont(font);
+    labelTitle->setFont(font);
+    btnClose->setFont(font);
+    btnMax->setFont(font);
+    btnMin->setFont(font);
 
     btnClose->setText(closeText);
     btnMax->setText(maxText);
@@ -234,7 +238,11 @@ void ActiveWindow::loadSettings()
     Setting::instance()->endGroup();
 
     QFontMetrics mtr(font);
+    #if QT_VERSION >= QT_VERSION_CHECK(5,10,0)
     int w=mtr.horizontalAdvance(closeText);
+#else
+     int w=mtr.width(closeText);
+#endif
     btnClose->setMaximumWidth(w+5);
     btnMax->setMaximumWidth(w+5);
     btnMin->setMaximumWidth(w+5);
