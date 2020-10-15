@@ -1,11 +1,11 @@
 #ifndef DTASKBARWIDGET_H
 #define DTASKBARWIDGET_H
 
-#include "dactiontaskbar.h"
+
 #include <QWidget>
 #include <QLayout>
 #include <QSpacerItem>
-
+#include "dactiontaskbar.h"
 #include "X11/Xlib.h"
 #include <X11/Xatom.h>
 #include <xcb/xcb_event.h>

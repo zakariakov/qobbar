@@ -50,7 +50,7 @@ class PanelWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit PanelWidget(QWidget *parent = nullptr);
+    explicit PanelWidget(bool bypassWm=false,QWidget *parent = nullptr);
     // bool nativeEventFilter(const QByteArray &eventType, void *message, long *);
    void setNativeEventFilter(const QByteArray &eventType, void *message, long *result);
     ~PanelWidget();
@@ -62,6 +62,7 @@ public slots:
     //unsigned int getWindowPID(Window winID) ;
 
     void showHide();
+    void emitSignal(const QString &group);
 private:
 
     Ui::PanelWidget *ui;

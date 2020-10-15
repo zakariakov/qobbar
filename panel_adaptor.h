@@ -20,8 +20,8 @@ class panel_adaptor: public QDBusAbstractAdaptor
     Q_CLASSINFO("D-Bus Interface", "org.elokab.panel.Interface")
     Q_CLASSINFO("D-Bus Introspection", ""
                                        "  <interface name=\"org.elokab.panel.Interface\">\n"
-                                       "    <method name=\"setShortcut\">\n"
-                                       "        <arg name=\"shortcut\" type=\"s\" direction=\"in\"/>"
+                                       "    <method name=\"emitSignal\">\n"
+                                       "        <arg name=\"key\" type=\"s\" direction=\"in\"/>"
                                        "    </method>"
                                        "    <method name=\"reconfigure\">\n"
                                        "    </method>"
@@ -37,7 +37,7 @@ public:
 
 
 public Q_SLOTS: // METHODS
-    void setShortcut(const QString &shortcut);
+    void emitSignal(const QString &key);
     void reconfigure();
     void showHide();
     void exit();

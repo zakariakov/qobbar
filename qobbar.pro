@@ -33,7 +33,7 @@ UI_DIR = build
 INCLUDEPATH +=build
 
 SOURCES += main.cpp\
-        panelapplication.cpp \
+         panelapplication.cpp \
         panelwidget.cpp \
         panel_adaptor.cpp \
         status/conkystatu.cpp \

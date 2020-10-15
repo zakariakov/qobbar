@@ -15,7 +15,7 @@ void help()
     puts("OPTION:\n");
     puts(" -h  --help                      Print this help.");
     puts(" -c  --config     <string>       config file name.");
-    puts("                                 ex: create file in $HOME/.config/qobbar/top-bar.conf ");
+    puts("                                 Ex: create file in $HOME/.config/qobbar/top-bar.conf ");
     puts("                                 run \"qobbar -c top-bar\"  .");
     puts(" -d  --debug                     Print debug in termminal.");
     puts(" -r  --right                     right-to-left layout direction.");
@@ -23,7 +23,9 @@ void help()
     puts(" -x  --exit                      close the bar ex:\"qobbar -x -c top-bar\".");
     puts(" -s  --showhide                  show or hide bar. ex: \"qobbar -s -c top-bar\".");
     puts(" -l  --list                      Print list of available modules.");
-
+    puts(" -b  --bypass-wm                 Bypass the window manager completely.");
+    puts(" -signal         <string Key>    Emit signal has chznged .");
+    puts("                                 Ex: qobbar -c top-bar -signal Cpu");
 }
 
 void mylist()
@@ -48,6 +50,8 @@ int main(int argc, char *argv[])
     bool exit=false;
     bool reconfig=false;
     bool debug=false;
+    bool bypassWm=false;
+    QString signal;
     if(args.count()>1)
     {
         for (int i = 0; i < args.count(); ++i) {
@@ -64,13 +68,20 @@ int main(int argc, char *argv[])
                     a.setApplicationName(conf);
                 }
             }
+            else if (arg == "-signal" )  {
 
+                if(i+1>args.count()-1){help();return 1;}
+                signal=QString(args.at(i+1));
+
+            }
             else if (arg == "-d" || arg == "--debug" )   { debug=true;}
             else if (arg == "-s" || arg == "--showhide") { hide=true; }
             else if (arg == "-x" || arg == "--exit" )    {exit=true; }
             else if (arg == "-R" || arg == "--reconfig") {reconfig=true;}
             else if (arg == "-r" || arg == "--right" )   { a.setLayoutDirection(Qt::RightToLeft);}
             else if (arg == "-l" || arg == "--list" )    { mylist(); return 0;}
+            else if (arg == "-b" || arg == "--bypass-wm" )    {bypassWm=true;}
+
 
         }//for
     }//if
@@ -85,19 +96,18 @@ int main(int argc, char *argv[])
                             "/org/elokab/panel/"+a.applicationName(),
                             "org.elokab.panel.Interface");
 
-        if (!dbus.isValid()) { printf ("QDBusInterface is not valid!");return 0; }
-        if (hide)            {dbus.call("showHide"); return 0;}
-        if (exit)            {dbus.call("exit"); return 0;}
-        if (reconfig)        {dbus.call("reconfigure"); return 0;}
-
+        if (!dbus.isValid())   { printf ("QDBusInterface is not valid!");return 0; }
+        if (hide)              {dbus.call("showHide"); return 0;}
+        if (exit)              {dbus.call("exit"); return 0;}
+        if (reconfig)          {dbus.call("reconfigure"); return 0;}
+        if (!signal.isEmpty()) {dbus.call("emitSignal",signal); return 0;}
         return 0;
     }
 
     Defines::setDeguging(debug);
-    PanelWidget w;
+    PanelWidget w(bypassWm);
 
     new panel_adaptor(&w);
-
     connection.registerObject("/org/elokab/panel/"+a.applicationName(), &w);
 
     w.show();

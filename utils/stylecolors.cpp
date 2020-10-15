@@ -24,10 +24,97 @@
 #include <QTextStream>
 #include <QTextCodec>
 #include <QDir>
+#include <QProcess>
 #include <QDebug>
 
+Q_GLOBAL_STATIC(StyleColors, StyleColorsInstance)
+StyleColors *StyleColors::instance()
+{
+    return StyleColorsInstance();
+}
+
+
+
+void StyleColors::xrdbquey()
+{
+    QProcess pr;
+    pr.start("xrdb",QStringList()<<"-query");
+    if (!pr.waitForStarted())
+        return ;
+
+    if (!pr.waitForFinished())
+        return ;
+
+    QString str= pr.readAllStandardOutput();
+    //QString str2= pr.readAllStandardError();
+
+    //qDebug()<<"str2="<<str2;
+
+    QStringList list=str.split("\n");
+    list.removeDuplicates();
+    if(list.count()<15){
+
+        return;
+    }
+
+    QStringList listColor;
+
+    foreach (QString s, list) {
+
+        if(!s.startsWith("*")){
+            continue;
+        }
+
+        QString key=s.section(":",0,0).trimmed();
+key.remove("*");
+key.remove(".");
+
+        // background
+        if(key.trimmed()==("background")){
+            QString value=s.section(":",1,1).trimmed();
+            if(value.startsWith("#")){
+                qDebug()<< "background"<<value;
+                instance()->colorsMap["background"]=value;
+
+            }
+        }
+        // foreground
+        if(key.trimmed()==("foreground")){
+            QString value=s.section(":",1,1).trimmed();
+            if(value.startsWith("#")){
+                qDebug()<< "foreground"<<value;
+                instance()->colorsMap["foreground"]=value;
+
+            }
+        }
+        // color[num]
+        for (int i = 0; i < 16; ++i) {
+            if(key.trimmed()==("color"+QString::number(i))){
+                QString value=s.section(":",1,1).trimmed();
+                if(value.startsWith("#")){
+                    qDebug()<< key<<value;
+                    instance()->colorsMap["color"+QString::number(i)]=value;
+
+                }
+            }
+
+            //qDebug()<<s<<key;
+
+        }
+    }
+}
 QString StyleColors::loadXresourceColor(const QString &colorName)
 {
+
+//    if(!colX.isEmpty()){
+//        QString colX=xrdbquey(colorName);
+//        return colX;
+//    }
+    QString colx=instance()->colorsMap.value(colorName);
+    if(!colx.isEmpty()){
+        return colx;
+    }
+
     QString xresourceFile=QDir::homePath()+"/.Xresources";
     if(!QFile::exists(xresourceFile))
         xresourceFile=QDir::homePath()+"/.Xdefaults";
@@ -61,7 +148,7 @@ QString StyleColors::loadXresourceColor(const QString &colorName)
 
             if (value.isEmpty()) continue;
 
-           // qDebug()<<key.section(".",1,1) <<value;
+            // qDebug()<<key.section(".",1,1) <<value;
             key.remove("*");
             key.remove(".");
             QString color=key.trimmed();
@@ -76,81 +163,85 @@ QString StyleColors::loadXresourceColor(const QString &colorName)
     }
 
     files.close();
- return QString();
+    return QString();
 
 }
- QString StyleColors::xrdbget(QString txt)
- {
-
-     if(txt.contains("xrdb.background"))
-         txt.replace("xrdb.background",loadXresourceColor("background"));
-
-     if(txt.contains("xrdb.foreground"))
-         txt.replace("xrdb.foreground",loadXresourceColor("foreground"));
-
-
-     for (int i = 0; i < 16; ++i) {
-           QRegExp rx("xrdb.color"+QString::number(i)+"(\\s*)(;)");
-
-         if(txt.contains(rx)){
-             QString newCol=loadXresourceColor("color"+QString::number(i));
-             txt.replace(rx,newCol+";");
-         }
-
-     }
-
-    // if(Defines::degug()) qDebug()<<"   [*]"<<__FILE__<<__LINE__<< "StyleColors::xrdbget return="<<txt;
-     return txt;
-
- }
-
- QString StyleColors::loadVariableColor(QString key)
- {
-      Setting::instance()->beginGroup("Colors");
-      QString col= Setting::vriableColor(key);
-      Setting::instance()->endGroup();
-
-      return  col;
- }
-
-
- QString StyleColors::getColors(QString col)
- {
-
-     if(col.startsWith("$"))
-          col=loadVariableColor(col.remove("$"));
-
-     if(col.startsWith("xrdb"))
-         col=loadXresourceColor(col.section(".",1));
-
-     return col;
- }
-
-QString StyleColors::style(QString bgColor, QString fgColor,
-                      QString underline, QString overline,
-                     int border, int alpha, QString borderColor,
-                     int radius, int leftRadius, int rightRadius)
+QString StyleColors::xrdbget(QString txt)
 {
 
-bgColor=    getColors(bgColor);
-fgColor=    getColors(fgColor);
-underline=  getColors(underline);
-overline=   getColors(overline);
-borderColor=getColors(borderColor);
+    if(txt.contains("xrdb.background")){
+        txt.replace("xrdb.background",loadXresourceColor("background"));
+
+    }
+
+    if(txt.contains("xrdb.foreground")){
+        txt.replace("xrdb.foreground",loadXresourceColor("foreground"));
+
+    }
+
+    for (int i = 0; i < 16; ++i) {
+        QRegExp rx("xrdb.color"+QString::number(i)+"(\\s*)(;)");
+
+        if(txt.contains(rx)){
+            QString newCol=loadXresourceColor("color"+QString::number(i));
+            txt.replace(rx,newCol+";");
+        }
+
+    }
+
+    // if(Defines::degug()) qDebug()<<"   [*]"<<__FILE__<<__LINE__<< "StyleColors::xrdbget return="<<txt;
+    return txt;
+
+}
+
+QString StyleColors::loadVariableColor(QString key)
+{
+    Setting::instance()->beginGroup("Colors");
+    QString col= Setting::vriableColor(key);
+    Setting::instance()->endGroup();
+
+    return  col;
+}
+
+
+QString StyleColors::getColors(QString col)
+{
+
+    if(col.startsWith("$"))
+        col=loadVariableColor(col.remove("$"));
+
+    if(col.startsWith("xrdb"))
+        col=loadXresourceColor(col.section(".",1));
+
+    return col;
+}
+
+QString StyleColors::style(QString bgColor, QString fgColor,
+                           QString underline, QString overline,
+                           int border, int alpha, QString borderColor,
+                           int radius, int leftTopRadius, int rightTopRadius,
+                           int leftBotRadius, int rightBotRadius)
+{
+
+    bgColor=    getColors(bgColor);
+    fgColor=    getColors(fgColor);
+    underline=  getColors(underline);
+    overline=   getColors(overline);
+    borderColor=getColors(borderColor);
 
     QColor bg(bgColor);
     bg.setAlpha(alpha);
 
     QString mStyleSheet;
     if(bg.isValid())mStyleSheet+=QString("background-color:rgba(%1,%2,%3,%4);\n")
-          .arg(bg.red()).arg(bg.green()).arg(bg.blue()).arg(bg.alpha());
+            .arg(bg.red()).arg(bg.green()).arg(bg.blue()).arg(bg.alpha());
 
     if(QColor(fgColor).isValid())mStyleSheet+=QString("color:%1;\n")
             .arg(fgColor);
 
     if(QColor(underline).isValid())mStyleSheet+=QString("border-bottom: %1px solid %2;\n")
             .arg(qMax(1,border)).arg(underline);
-     else mStyleSheet+=QString("border-bottom: 0px;\n") ;
+    else mStyleSheet+=QString("border-bottom: 0px;\n") ;
 
     if(QColor(overline).isValid())mStyleSheet+=QString("border-top: %1px solid %2;\n")
             .arg(qMax(1,border)).arg(overline);
@@ -158,14 +249,16 @@ borderColor=getColors(borderColor);
 
     if(QColor(borderColor).isValid())mStyleSheet+=QString("border: %1px solid %2;\n")
             .arg(qMax(1,border)).arg(borderColor);
-   // else  mStyleSheet+=QString("border-top: 0px;\n") ;
-   if(radius>0)
-       mStyleSheet+=QString("border-radius: %1px;\n") .arg(QString::number(radius));
-  else{
-       if(leftRadius>0) mStyleSheet+=QString("border-top-left-radius: %1px;\n border-bottom-left-radius: %1px;\n") .arg(QString::number(leftRadius));
-       if(rightRadius>0) mStyleSheet+=QString("border-top-right-radius: %1px;\n border-bottom-right-radius: %1px;\n") .arg(QString::number(rightRadius));
-  }
-   //qDebug()<<"   [*]"<<__FILE__<<__LINE__<<radius<<leftRadius<<rightRadius;
-  //if(Defines::degug()) qDebug()<<"   [*]"<<__FILE__<<__LINE__<<"StyleSheet"<<mStyleSheet;
+    // else  mStyleSheet+=QString("border-top: 0px;\n") ;
+    if(radius>0)
+        mStyleSheet+=QString("border-radius: %1px;\n") .arg(QString::number(radius));
+    else{
+        if(leftTopRadius>0)  mStyleSheet+=QString("border-top-left-radius: %1px;\n").arg(QString::number(leftTopRadius));
+        if(rightTopRadius>0) mStyleSheet+=QString("border-top-right-radius: %1px;\n").arg(QString::number(rightTopRadius));
+        if(leftBotRadius>0)  mStyleSheet+=QString("border-bottom-left-radius: %1px;\n").arg(QString::number(leftBotRadius));
+        if(rightBotRadius>0) mStyleSheet+=QString("border-bottom-right-radius: %1px;\n").arg(QString::number(rightBotRadius));
+    }
+    //qDebug()<<"   [*]"<<__FILE__<<__LINE__<<radius<<leftRadius<<rightRadius;
+    //if(Defines::degug()) qDebug()<<"   [*]"<<__FILE__<<__LINE__<<"StyleSheet"<<mStyleSheet;
     return mStyleSheet;
 }

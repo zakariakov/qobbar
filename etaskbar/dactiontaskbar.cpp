@@ -6,7 +6,7 @@
 *********************************************************************/
 
 
-#include "dactiontaskbar.h"
+
 
 #include <QtGui/QContextMenuEvent>
 
@@ -15,6 +15,8 @@
 #include<QToolButton>
 #include<QMenu>
 #include<QStyle>
+
+#include "dactiontaskbar.h"
 #include "utils/x11utills.h"
 #include <X11/X.h>
 #include <X11/Xlib.h>
@@ -42,16 +44,18 @@ DActionTaskbar::DActionTaskbar(const Window window, QWidget *parent) :
 
    setFont(font);
 
-   QFontMetrics fm(font);
-   int size=fm.height()-2;
+//   QFontMetrics fm(font);
+//   int size=fm.height()-2;
+   int size=parent->height()-6;
    if(size<16) size=16;
-  // qDebug()<<"DActionTaskbar::DActionTaskbar()================================iconSize()"<<size;
-  setIconSize(QSize(size,size));
+    if(size>48) size=48;
 
+  setIconSize(QSize(size,size));
+   qDebug()<<"DActionTaskbar::DActionTaskbar()"<<"parent->height()"<<parent->height()<<"=======iconSize()"<<size;
           getText();
           getIcon();
-        this->setMaximumWidth(parent->height()+6);
-
+this->setMaximumWidth(this->height());
+this->setMinimumWidth(this->height());
 }
 
 QString getIconFromDesktopApp(QString fileName )
@@ -93,7 +97,7 @@ void DActionTaskbar::getIcon()
     //from appname
     icon=QIcon::fromTheme(appName());
     if(!icon.isNull()){
-        QPixmap pixmap = icon.pixmap(QSize(32, 32),QIcon::Active,QIcon::Off);
+        QPixmap pixmap = icon.pixmap(QSize(48, 48),QIcon::Active,QIcon::Off);
         setIcon(QIcon(pixmap));
        // qDebug()<<"getIcon from appname-------------";
         return;
@@ -101,7 +105,7 @@ void DActionTaskbar::getIcon()
     //from classe name
     icon=QIcon::fromTheme(classeName().toLower());
     if(!icon.isNull()){
-        QPixmap pixmap = icon.pixmap(QSize(32, 32),QIcon::Active,QIcon::Off);
+        QPixmap pixmap = icon.pixmap(QSize(48, 48),QIcon::Active,QIcon::Off);
         setIcon(QIcon(pixmap));
        // qDebug()<<"getIcon from classename-------------";
         return;
@@ -113,7 +117,7 @@ void DActionTaskbar::getIcon()
     // qDebug()<<"getIconFromDesktopAppappName xdgicon------------"<<xdgicon;
     icon=QIcon::fromTheme(xdgicon);
     if(!icon.isNull()){
-        QPixmap pixmap = icon.pixmap(QSize(32, 32),QIcon::Active,QIcon::Off);
+        QPixmap pixmap = icon.pixmap(QSize(48, 48),QIcon::Active,QIcon::Off);
         setIcon(QIcon(pixmap));
          //qDebug()<<"getIconFromDesktopAppappName------------";
         return;
@@ -122,7 +126,7 @@ void DActionTaskbar::getIcon()
     xdgicon=getIconFromDesktopApp(classeName());
    icon=QIcon::fromTheme(xdgicon);
    if(!icon.isNull()){
-       QPixmap pixmap = icon.pixmap(QSize(32, 32),QIcon::Active,QIcon::Off);
+       QPixmap pixmap = icon.pixmap(QSize(48, 48),QIcon::Active,QIcon::Off);
        setIcon(QIcon(pixmap));
       //  qDebug()<<"getIconFromDesktopAppclasseName-------------";
        return;

@@ -32,6 +32,7 @@
 #include <QAbstractNativeEventFilter>
 #include <QToolButton>
 #include <QLayout>
+#include <QHash>
 #include <xcb/xcb_event.h>
 class QSignalMapper;
 class QButtonGroup;
@@ -89,7 +90,10 @@ private:
  //   Setting *mSetting;
   QWidget *widgetContent;
     /*!< قائمة بمجموعة ازرار */
-        QButtonGroup * m_GroupBtns;
+       QButtonGroup * m_GroupBtns;
+       QList<ToolButton *>listbtn;
+        QList<int> listWndDesk;
+         // QHash<ToolButton *,int> *m_GroupBtns;
     /*!< قائمة ياسماء اسطح المكتب */
     QStringList m_desktopNames;
     /*!< حجم الزر */
@@ -105,6 +109,9 @@ private:
      */
     void setupBtns();
     QHBoxLayout * mHBoxLayout ;
+QString m_bgColor;
+QString m_fgColor;
+QString m_activeBgColor;
 
 enum DesktopType{DESKINDEX,DESKNAME,DESKICON};
 int mDesktopType;
@@ -120,7 +127,10 @@ private slots:
     void actvateBtnDesktop();
     void rechargeDesktop();
 
+    void refreshTaskList();
+    void refreshTaskButton();
 protected slots:
+
 
 };
 

@@ -25,6 +25,7 @@
 #include <QSignalMapper>
 #include "utils/stylecolors.h"
 #include "utils/xdesktoputils.h"
+#include "utils/x11utills.h"
 #include "utils/setting.h"
 #include "utils/defines.h"
 #include "pager.h"
@@ -87,9 +88,9 @@ void Pager::loadSettings()
 
     Setting::instance()->beginGroup(MPAGER);
 
-    QString bgColor         =Setting::background();
-    QString fgColor         =Setting::foreground(mParent->palette().windowText().color().name());
-    QString activebgColor   =Setting::activeBackground(highlight);
+    m_bgColor         =Setting::background();
+    m_fgColor         =Setting::foreground(mParent->palette().windowText().color().name());
+    m_activeBgColor   =Setting::activeBackground(highlight);
     QString activefgColor   =Setting::activeForeground(mParent->palette().windowText().color().name());
             mActiveIcon     =Setting::activeIcon();
     int     alpha           =Setting::alpha();//
@@ -134,15 +135,15 @@ void Pager::loadSettings()
     //-------------------------------------------------------STYLESHEET
         widgetContent->setContentsMargins((radius+1),0,(radius+1),0);
         QString mStylebg="QWidget#WidgetContent{";
-        mStylebg+=StyleColors::style(bgColor,fgColor,QString(),QString(),border,alpha,borderColor,radius)+"\n}";
+        mStylebg+=StyleColors::style(m_bgColor,m_fgColor,QString(),QString(),border,alpha,borderColor,radius)+"\n}";
 
      //QtoolButton Normale
     QString mStyleSheet="QToolButton{";
-    mStyleSheet+=StyleColors::style(bgColor,fgColor,underline,overline,border,alpha,borderColor,0)+"\n}";
+    mStyleSheet+=StyleColors::style(m_bgColor,m_fgColor,underline,overline,border,alpha,borderColor,0)+"\n}";
 
     //QtoolButton Active
     QString activeStyleSheet="QToolButton:checked{\n";
-    activeStyleSheet+=StyleColors::style(activebgColor,activefgColor,activeunderline,activeoverline,border,activeAlpha,QString(),0)+"\n}";
+    activeStyleSheet+=StyleColors::style(m_activeBgColor,activefgColor,activeunderline,activeoverline,border,activeAlpha,QString(),0)+"\n}";
     setStyleSheet(mStylebg+mStyleSheet+activeStyleSheet);
 
     setupBtns();
@@ -168,13 +169,53 @@ void Pager::setNativeEventFilter(const QByteArray &eventType, void *message, lon
             {if(Defines::degug())  qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"_NET_CURRENT_DESKTOP\033[0m"<<property->atom; actvateBtnDesktop();}
             else if(property->atom==XDesktop::atom("_NET_NUMBER_OF_DESKTOPS"))
             { if(Defines::degug()) qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"_NET_NUMBER_OF_DESKTOPS\033[0m"<<property->atom; rechargeDesktop();}
-
+           if (property->atom == X11UTILLS::atom("_NET_CLIENT_LIST")){
+                //  qDebug()<<"DtaskbarWidget::windowPropertyChanged   _NET_CLIENT_LIST";
+                refreshTaskList();
+            }
             break;
         }
 
     }
 
     //return false;
+}
+
+void Pager::refreshTaskList()
+{
+    QList<unsigned long> listWindow = X11UTILLS::getClientList();
+   listWndDesk.clear();
+    foreach (unsigned long wnd, listWindow)
+    {
+        int dx=X11UTILLS::getWindowDesktop(wnd);
+        listWndDesk.removeAll(dx);
+        listWndDesk.append(dx);
+
+    }
+    qDebug()<<"=============================";
+    qDebug()<<listWndDesk;
+refreshTaskButton();
+
+}
+
+void Pager::refreshTaskButton()
+{
+    // int activeDesk = qMax(XDesktop::active(), 0);
+     int count= listbtn.count();
+    for (int i = 0; i < count; ++i) {
+        //  if(i==activeDesk)continue;
+
+          ToolButton *btn=listbtn.at(i);
+        if(listWndDesk.contains(i)){
+
+          btn->setText("°"+btn->data());
+
+        }else{
+            btn->setText(btn->data());
+
+        }
+    }
+
 }
 
 //__________________________________________________________________________________
@@ -211,15 +252,20 @@ void Pager::rechargeDesktop()
 //__________________________________________________________________________________
 void Pager::setupBtns()
 {
-   if(Defines::degug())  qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"setupBtns()\033[0m";
+    if(Defines::degug())  qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"setupBtns()\033[0m";
+
+    listbtn.clear();
     foreach (QAbstractButton * b, m_GroupBtns->buttons())
     {
-       //3  m_pSignalMapper->removeMappings(b);
+        //3  m_pSignalMapper->removeMappings(b);
         m_GroupBtns->removeButton(b);
+
         delete b;
     }
 
-   if(Defines::degug())  qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"m_DeskCount<<"""<<m_DeskCount;
+    if(Defines::degug())  qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"m_DeskCount<<"""<<m_DeskCount;
+
+    int activeDesk = qMax(XDesktop::active(), 0);
 
     for (int i = 0; i < m_DeskCount; ++i)
     {
@@ -235,7 +281,7 @@ void Pager::setupBtns()
             break;
         case DESKICON:
             if(i<listIcons.count())
-               btn->setText(listIcons.at(i).trimmed());
+                btn->setText(listIcons.at(i).trimmed());
             else
                 btn->setText(QString::number(i+1).trimmed());
             break;
@@ -246,38 +292,52 @@ void Pager::setupBtns()
 
         }
 
-        //  btn->setText(QString::number(i+1));//XDesktop::name(i,"desktop")
         btn->setCheckable(true);
         btn->setToolTip( tr("Desktop %1").arg(XDesktop::name(i,"desktop")));
         btn->setData(btn->text());
+       if(i==activeDesk){
+        if(mDesktopType==DESKICON && activeDesk<listIcons.count() && !mActiveIcon.isEmpty()){
+            btn->setText(mActiveIcon);
+            btn->setData(mActiveIcon);
+        }
+       }
+        //qDebug()<<"desktop name ::"<<   XDesktop::name(i,"desktop").trimmed();
+        //  btn->setText(QString::number(i+1));//XDesktop::name(i,"desktop")
+
         QFontMetrics mtr(btn->font());
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,10,0)
         int w=mtr.horizontalAdvance(btn->text());
 #else
-       int w=mtr.width(btn->text());
+        int w=mtr.width(btn->text());
 
 #endif
-        btn->setMaximumWidth(w+10);
-       //4  m_pSignalMapper->setMapping(btn, i);
-       //5  connect(btn, SIGNAL(activated()), m_pSignalMapper, SLOT(map())) ;
-       // btn->setMaximumWidth(btn->height());
+        btn->setMaximumWidth((w*2));
+        btn->setMinimumWidth((w*2));
+        //4  m_pSignalMapper->setMapping(btn, i);
+        //5  connect(btn, SIGNAL(activated()), m_pSignalMapper, SLOT(map())) ;
+        // btn->setMaximumWidth(btn->height());
         mHBoxLayout->addWidget(btn);
         m_GroupBtns->addButton(btn, i);
-
+        listbtn.append(btn);
     }
 
-    int activeDesk = qMax(XDesktop::active(), 0);
-    QAbstractButton * button = m_GroupBtns->button(activeDesk);
 
-    if (button){
-        button->setChecked(true);
+    //    QAbstractButton * button = m_GroupBtns->button(activeDesk);
 
-        if(mDesktopType==DESKICON && activeDesk<listIcons.count() && !mActiveIcon.isEmpty())
-            button->setText(mActiveIcon);
-    }
+
+    //    if (button){
+    //        button->setChecked(true);
+
+    //        if(mDesktopType==DESKICON && activeDesk<listIcons.count() && !mActiveIcon.isEmpty()){
+    //            button->setText(mActiveIcon);
+
+    //        }
+    //    }
+
     connect(m_GroupBtns, SIGNAL(buttonClicked(int)),
             this, SLOT(setDesktop(int)));
+    refreshTaskList();
 
 }
 
@@ -291,25 +351,26 @@ void Pager::setDesktop(int desktop)
 {
 
     XDesktop::setCurrent(desktop);
-    int activeDesk = qMax(XDesktop::active(), 0);
+//    int activeDesk = qMax(XDesktop::active(), 0);
 
-    if(mDesktopType==DESKICON  && !mActiveIcon.isEmpty()){
-        for (int i = 0; i < m_DeskCount; ++i)
-        {
-            if(i<listIcons.count())
-                m_GroupBtns->button(i)->setText(listIcons.at(i).trimmed());
-            else
-                 m_GroupBtns->button(activeDesk)->setText(QString::number(i+1).trimmed());
+//    if(mDesktopType==DESKICON  && !mActiveIcon.isEmpty()){
+//        for (int i = 0; i < m_DeskCount; ++i)
+//        {
+//            if(i<listIcons.count())
+//                m_GroupBtns->button(i)->setText(listIcons.at(i).trimmed());
+//            else
+//                 m_GroupBtns->button(activeDesk)->setText(QString::number(i+1).trimmed());
 
-        }
-    }
-    QAbstractButton * button = m_GroupBtns->button(activeDesk);
-     if (button){
+//        }
+//    }
+//    QAbstractButton * button = m_GroupBtns->button(activeDesk);
+//     if (button){
 
-         button->setChecked(true);
-         if(mDesktopType==DESKICON && activeDesk<listIcons.count() && !mActiveIcon.isEmpty())
-           button->setText(mActiveIcon);
-     }
+//         button->setChecked(true);
+//         if(mDesktopType==DESKICON && activeDesk<listIcons.count() && !mActiveIcon.isEmpty())
+//           button->setText(mActiveIcon);
+//     }
+  actvateBtnDesktop();
 }
 
 //__________________________________________________________________________________
@@ -336,26 +397,36 @@ void Pager::actvateBtnDesktop()
    if(mDesktopType==DESKICON  && !mActiveIcon.isEmpty() ){
        for (int i = 0; i < m_DeskCount; ++i)
        {
-           if(i<listIcons.count())
-               m_GroupBtns->button(i)->setText(listIcons.at(i).trimmed());
-           else
-                m_GroupBtns->button(activeDesk)->setText(QString::number(i+1).trimmed());
+           ToolButton *btn=listbtn.at(i);
+           if(i<listIcons.count()){
+              btn->setText(listIcons.at(i).trimmed());
+              btn->setData(listIcons.at(i).trimmed());
 
+           }else{
+               btn=listbtn.at(activeDesk);
+               btn->setText(QString::number(i+1).trimmed());
+                btn->setData(QString::number(i+1).trimmed());
+           }
+          // btn->setData(btn->text());
        }
+
    }
 
 
-   QAbstractButton * button = m_GroupBtns->button(activeDesk);
+   ToolButton * button = listbtn.at(activeDesk);
     if (button){
 
         button->setChecked(true);
 
-        if(mDesktopType==DESKICON && activeDesk<listIcons.count() && !mActiveIcon.isEmpty())
+        if(mDesktopType==DESKICON && activeDesk<listIcons.count() && !mActiveIcon.isEmpty()){
         button->setText(mActiveIcon);
+       button ->setData(mActiveIcon);
+        }
     }
     else
         rechargeDesktop();
 
+   refreshTaskButton();
 }
 
 //__________________________________________________________________________________

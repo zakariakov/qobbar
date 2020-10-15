@@ -27,7 +27,7 @@ ActiveWindow::ActiveWindow(QWidget *parent) : QWidget(parent),mParent(parent)
     btnMin=new MToolButton(this);
     btnMin->setObjectName("BMin");
     labelTitle=new QLabel;
-
+labelTitle->setAlignment(Qt::AlignCenter);
     hLayout->addWidget(btnClose);
     hLayout->addWidget(btnMax);
     hLayout->addWidget(btnMin);
@@ -121,13 +121,19 @@ void ActiveWindow::activeWindowChanged()
     }
 
 
-   wState=X11UTILLS::states(m_window);
-   wAllow=X11UTILLS::allowed(m_window);
+    wState=X11UTILLS::states(m_window);
+    wAllow=X11UTILLS::allowed(m_window);
 
-    btnClose->setVisible(true);
+    if(showButtons){
+        btnClose->setVisible(true);
+        btnMin->setVisible(wAllow["Minimize"] /*&& !wState["Hidden"]*/);
+        btnMax->setVisible(wAllow["MaximizeHoriz"] && wAllow["MaximizeVert"]);
+    }else{
+        btnClose->setVisible(false);
+        btnMin->setVisible(false);
+        btnMax->setVisible(false);
+    }
 
-    btnMin->setVisible(wAllow["Minimize"] /*&& !wState["Hidden"]*/);
-    btnMax->setVisible(wAllow["MaximizeHoriz"] && wAllow["MaximizeVert"]);
     QString result=X11UTILLS::getWindowTitle(m_window);
     setTitle( result);
 
@@ -200,6 +206,7 @@ void ActiveWindow::loadSettings()
 
     Setting::instance()->beginGroup(MWINDOW);
 
+
     QString bgColor         =Setting::background();
     QString fgColor         =Setting::foreground(mParent->palette().windowText().color().name());
     QString closeColor      =Setting::closeColor(mParent->palette().windowText().color().name());
@@ -218,8 +225,20 @@ void ActiveWindow::loadSettings()
     int     radius          =Setting::radius();
     QString fontName        =Setting::fontName(mParent->font().family());
     int     fontSize        =Setting::fontSize(mParent->font().pointSize());
-    bool    fontBold        =Setting::fontBold(mParent->font().bold());
 
+   bool    fontBold        =Setting::fontBold(mParent->font().bold());
+
+   showButtons=Setting::showButtons(false);
+
+   if(showButtons){
+        btnClose->setVisible(true);
+        btnMin->setVisible(wAllow["Minimize"] /*&& !wState["Hidden"]*/);
+        btnMax->setVisible(wAllow["MaximizeHoriz"] && wAllow["MaximizeVert"]);
+    }else{
+        btnClose->setVisible(false);
+        btnMin->setVisible(false);
+        btnMax->setVisible(false);
+    }
     //_________________________________________________ INIT
     QFont font;
     font.setFamily(fontName);

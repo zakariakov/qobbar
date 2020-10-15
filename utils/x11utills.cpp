@@ -696,7 +696,8 @@ QRect rect;
         return rect;
     }
 
-    (void) XTranslateCoordinates (QX11Info::display(), window, win_attributes.root,
+    (void) XTranslateCoordinates (
+                QX11Info::display(), window, win_attributes.root,
                                   -win_attributes.border_width,
                                   -win_attributes.border_width,
                                   &rx, &ry, &junkwin);
@@ -705,6 +706,8 @@ QRect rect;
 //    hash["win_height"]=(win_attributes.height);
 //    hash["win_width"]=  (win_attributes.width)    ;
     rect=QRect(rx,ry,win_attributes.width,win_attributes.height);
+ //QRect   rectb=QRect(rx,ry,win_attributes.border_width,win_attributes.border_width);
+  //  qDebug()<<"test====="<<rectb<<rec;
     Window wmframe = window;
     while (True) {
         Window root, parent;

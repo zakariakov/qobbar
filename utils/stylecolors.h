@@ -23,26 +23,31 @@
 
 #include <QObject>
 #include <QColor>
+#include <QMap>
 class StyleColors
 {
 
 public:
 
     explicit StyleColors(){}
-
+ static StyleColors *instance();
     static   QString loadXresourceColor(const QString &colorName);
 
     static   QString style(QString bgColor, QString fgColor,
                          QString underLine, QString overLine,
                          int border=1, int alpha=255,
                          QString borderColor=QString(), int radius=0,
-                         int leftRadius=0,int rightRadius=0);
+                         int leftTopRadius=0, int rightTopRadius=0, int leftBotRadius=0, int rightBotRadius=0);
 
     static   QString xrdbget(QString txt);
 
     static   QString loadVariableColor(QString key);
     static   QString getColors(QString col);
+    static    void xrdbquey();
 signals:
+private:
+
+   QMap<QString,QString>colorsMap;
 
 public slots:
 };

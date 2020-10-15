@@ -36,8 +36,11 @@ public:
      static QString borderColor();
      static int fontSize(int defaultValue);
      static int radius(int defaultValue=0);
-     static int leftRadius(int defaultValue=0);
-     static int rightRadius(int defaultValue=0);
+
+     static int leftTopRadius(int defaultValue=0);
+     static int rightTopRadius(int defaultValue=0);
+     static int leftBottomRadius(int defaultValue=0);
+     static int rightBottomRadius(int defaultValue=0);
 
      static int screen();
      static int border();
@@ -79,6 +82,7 @@ public:
     static  QString command();
     static  int interval();
     static  int maxSize();
+    static  int minSize();
     static  QString label();
 //    static  QString suffix();
 //    static  QString prefix();
@@ -89,6 +93,7 @@ public:
     static  QString mouseWheelUp();
     static  QString mouseWheelDown();
 
+      static bool showButtons(bool defaultValue);
       static QString closeColor(const QString &defaultValue=QString());
       static QString maxColor(const QString &defaultValue=QString());
       static QString minColor(const QString &defaultValue=QString());

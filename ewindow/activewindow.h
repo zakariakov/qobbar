@@ -65,7 +65,7 @@ private:
     QLabel *labelTitle;
     QTimer *mTimer;
      unsigned long m_window ;
-
+bool showButtons;
      QHash<QString ,bool>wState;
      QHash<QString ,bool>wAllow;
      QString mTitle;

@@ -76,16 +76,25 @@ int Setting::radius(int defaultValue)
 }
 
 //___________________________________________________
-int Setting::leftRadius(int defaultValue)
+int Setting::leftTopRadius(int defaultValue)
 {
-    return instance()->value("LeftRadius",defaultValue).toInt();
+    return instance()->value("LeftTopRadius",defaultValue).toInt();
 }
 //___________________________________________________
-int Setting::rightRadius(int defaultValue)
+int Setting::rightTopRadius(int defaultValue)
 {
-    return instance()->value("RightRadius",defaultValue).toInt();
+    return instance()->value("RightTopRadius",defaultValue).toInt();
 }
-
+//___________________________________________________
+int Setting::leftBottomRadius(int defaultValue)
+{
+    return instance()->value("LeftBottomRadius",defaultValue).toInt();
+}
+//___________________________________________________
+int Setting::rightBottomRadius(int defaultValue)
+{
+    return instance()->value("RightBottomRadius",defaultValue).toInt();
+}
 
 //___________________________________________________
 bool Setting::fontBold(bool defaultValue)
@@ -270,6 +279,11 @@ int Setting::maxSize()
 {
      return instance()->value("MaxSize",150).toInt();
 }
+//___________________________________________________
+int Setting::minSize()
+{
+     return instance()->value("MinSize",0).toInt();
+}
 
 //___________________________________________________
 QString Setting::label()
@@ -321,6 +335,11 @@ QString Setting::mouseWheelDown()
 *                 ACtiveWindow                       *
 *---------------------------------------------------*/
 
+//___________________________________________________
+bool Setting::showButtons(bool defaultValue)
+{
+    return instance()->value("ShowButtons",defaultValue).toBool();
+}
 //___________________________________________________
 QString Setting::closeColor(const QString &defaultValue)
 {

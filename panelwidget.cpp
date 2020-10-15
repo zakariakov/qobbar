@@ -6,7 +6,7 @@
 #include "utils/defines.h"
 #include <QtPlatformHeaders/QXcbWindowFunctions>
 #include <QDesktopWidget>
-PanelWidget::PanelWidget(/*bool debug,*/ QWidget *parent) :
+PanelWidget::PanelWidget(bool bypassWm, /*bool debug,*/ QWidget *parent) :
     QWidget(parent),
     ui(new Ui::PanelWidget)/*,mdebug(debug)*/,
     mSysTray(nullptr),mPager(nullptr),mConky(nullptr),mTaskbar(nullptr),mWindow(nullptr)
@@ -25,6 +25,8 @@ PanelWidget::PanelWidget(/*bool debug,*/ QWidget *parent) :
 
     //    if(sS=="i3")
     setWindowFlags( Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::WindowDoesNotAcceptFocus );
+if(bypassWm)
+     setWindowFlags( Qt::BypassWindowManagerHint);
 
     //TODO FIX This
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
@@ -192,12 +194,18 @@ void PanelWidget:: loadSettings(bool charge)
     int  m_radius               =Setting::radius();
     m_Screen                    =Setting::screen();
     m_height                    =Setting::panelHeight();
+    int     leftTopRadius      =Setting::leftTopRadius();
+    int     rightTopRadius     =Setting::rightTopRadius();
+    int     leftBotRadius      =Setting::leftBottomRadius();
+    int     rightBotRadius     =Setting::rightBottomRadius();
 
     m_PaddingRect = QRect(QPoint(_left,_top),QPoint(_rigt,_bot));
 
     m_MarginRect = QRect(QPoint(m_left,m_top),QPoint(m_rigt,m_bot));
 
     Setting::instance()->endGroup();
+
+StyleColors::instance()->xrdbquey();
 
     if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"loadSettings():endGroup(Panel)\033[0m";
     //if(Defines::degug())  qDebug()<<"\033[36m [+]"<<"PanelWidget"<< __LINE__<<"loadSettings():endGroup(Panel):m_showSystry\033[0m"<<m_showSystry;
@@ -214,7 +222,9 @@ void PanelWidget:: loadSettings(bool charge)
     ui->horizontalLayout_ceter->setSpacing(barCenterSpacing);
     ui->horizontalLayout_right->setSpacing(barRightSpacing);
     ui->horizontalLayout_left->setSpacing(barLeftSpacing);
-    ui->horizontalLayout->setContentsMargins(m_left+(m_radius/2),m_top+m_Border,m_rigt+(m_radius/2),m_bot+m_Border);
+   // ui->horizontalLayout->setContentsMargins(m_left+(m_radius/2),m_top+m_Border,m_rigt+(m_radius/2),m_bot+m_Border);
+    ui->horizontalLayout->setContentsMargins(m_left,m_top+m_Border,m_rigt,m_bot+m_Border);
+
     ui->horizontalLayout->setSpacing(spacing);
     // StyleSheet ________________________________________________
     QPalette pal=this->palette();
@@ -228,7 +238,18 @@ void PanelWidget:: loadSettings(bool charge)
 
     QColor clbg(bgColor);
     m_isCoposite=QX11Info::isCompositingManagerRunning();
-    if(!m_isCoposite){alpha=255;m_radius=0;}
+    if(!m_isCoposite){
+        alpha=255;
+        m_radius=0;
+        leftTopRadius=0;
+        rightTopRadius=0;
+        leftBotRadius=0;
+        rightBotRadius=0;
+_left=0;
+_top=0;
+_rigt=0;
+_bot=0;
+    }
 
     clbg.setAlpha(alpha);
 
@@ -240,6 +261,16 @@ void PanelWidget:: loadSettings(bool charge)
 
     setPalette(pal);
 
+    int RadiusSize=m_radius;
+    RadiusSize=qMax(RadiusSize,leftTopRadius);
+    RadiusSize=qMax(RadiusSize,rightTopRadius);
+    RadiusSize=qMax(RadiusSize,leftBotRadius);
+    RadiusSize=qMax(RadiusSize,rightBotRadius);
+
+    if(RadiusSize>0)
+     ui->widgetBg->setContentsMargins((RadiusSize/2)+1,0,(RadiusSize/2)+1,0);
+
+    setContentsMargins(_left,_top,_rigt,_bot);
     QString mystyle=StyleColors::style(bgColor,
                                        fgColor,
                                        underline,
@@ -247,7 +278,11 @@ void PanelWidget:: loadSettings(bool charge)
                                        m_Border,
                                        alpha,
                                        borderColor,
-                                       m_radius);
+                                       m_radius,
+                                       leftTopRadius,
+                                       rightTopRadius,
+                                       leftBotRadius,
+                                       rightBotRadius);
 
     ui->widgetBg-> setStyleSheet("QWidget#widgetBg{"+mystyle+"}");
 
@@ -299,6 +334,16 @@ void PanelWidget:: loadSettings(bool charge)
     }
 
 }
+
+ void PanelWidget::emitSignal(const QString &group)
+ {
+     if(listStatus.contains(group)){
+         StatusLabel *statLab=listStatus.value(group);
+         if(statLab){
+             statLab->startRender();
+         }
+     }
+ }
 
 void PanelWidget::compositorChanged()
 {
@@ -550,7 +595,7 @@ void PanelWidget::resizePanel()
                    0, 0
                    );
     }else{
-        setStrut(   0, rect.height() - rect.y(),
+        setStrut(   0,rect.height() ,
                     0, 0,
                     rect.left(), rect.right()
                     );

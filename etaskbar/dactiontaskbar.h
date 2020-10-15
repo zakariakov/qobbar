@@ -1,5 +1,6 @@
 #ifndef DACTIONTASKBAR_H
 #define DACTIONTASKBAR_H
+
 #include <QtGui>
 #include <QToolButton>
 
@@ -10,7 +11,7 @@ class DActionTaskbar : public QToolButton
           Q_OBJECT
 public:
 
-          explicit DActionTaskbar(const Window window, QWidget *parent = 0);
+          explicit DActionTaskbar(const Window window, QWidget *parent =nullptr);
 void setActiveWin(bool arg);
 protected:
          virtual void dragEnterEvent(QDragEnterEvent *event);

@@ -4,8 +4,7 @@
 original code  http://razor-qt.org
  modified by abou zakaria
 *********************************************************************/
-#include "dtaskbarwidget.h"
-#include "dactiontaskbar.h"
+
 //#include "taskbarsettingdialog.h"
 #include "utils/stylecolors.h"
 #include "utils/defines.h"
@@ -14,7 +13,8 @@ original code  http://razor-qt.org
 #include <QX11Info>
 #include <QDesktopWidget>
 #include <QMenu>
-
+#include "dtaskbarwidget.h"
+#include "dactiontaskbar.h"
 #include "utils/x11utills.h"
 #include "xcb/xcb.h"
 
@@ -211,6 +211,7 @@ void DtaskbarWidget::refreshTaskList()
         //            انشاء زر جديد للنوافذ الحاضرة
         DActionTaskbar *btn=new DActionTaskbar(wnd,this);
 
+//===========================================
         //            اضافة ازر للقائمة
         mButtonsHash.insert(wnd, btn);
 
@@ -221,7 +222,13 @@ void DtaskbarWidget::refreshTaskList()
     }
 
     foreach (DActionTaskbar *btn,mButtonsHash){
-         btn->setMaximumWidth(this->height()+6);
+         btn->setMaximumWidth(btn->height());
+    btn->setMinimumWidth(btn->height());
+    int size=btn->height()-6;
+    if(size<16) size=16;
+     if(size>48) size=48;
+
+   btn->setIconSize(QSize(size,size));
     }
 
     activeWindowChanged();

@@ -37,8 +37,9 @@ signals:
     void textReady(QString str);
 
 public slots:
-    void    loadSettings();
-
+    void  loadSettings();
+    // بداية القراءة
+    void startRender();
 protected:
     void mouseReleaseEvent(QMouseEvent *ev);
     void wheelEvent(QWheelEvent* e);
@@ -84,8 +85,7 @@ private:
 
 
 private slots:
-    // بداية القراءة
-    void startRender();
+
     // تحديث القراءة
     void updateCmd(QString result);
 

@@ -14,10 +14,10 @@ panel_adaptor::~panel_adaptor()
 
 }
 
-void panel_adaptor::setShortcut(const QString &shortcut)
+void panel_adaptor::emitSignal(const QString &key)
 {
     // handle method call org.tawhid.session.org.logout
-    QMetaObject::invokeMethod(parent(), "setShortcut", Q_ARG(QString, shortcut));
+    QMetaObject::invokeMethod(parent(), "emitSignal", Q_ARG(QString, key));
 }
 
 void panel_adaptor::reconfigure()

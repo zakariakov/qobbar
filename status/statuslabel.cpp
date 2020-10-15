@@ -72,6 +72,7 @@ void StatusLabel::loadSettings()
     mMouseWheelUpCmd           =Setting::mouseWheelUp();
     mMouseWheelDownCmd         =Setting::mouseWheelDown();
     maxSize                    =Setting::maxSize();
+    int minSize                =Setting::minSize();
     QString bgColor            =Setting::background();
     QString fgColor            =Setting::foreground(mParent->palette().windowText().color().name());
     QString underline          =Setting::underline();
@@ -83,8 +84,11 @@ void StatusLabel::loadSettings()
     int     fontSize           =Setting::fontSize(mParent->font().pointSize());
     bool    fontBold           =Setting::fontBold(mParent->font().bold());
     int     radius             =Setting::radius();
-    int     leftRadius         =Setting::leftRadius();
-    int     rightRadius        =Setting::rightRadius();
+    int     leftTopRadius      =Setting::leftTopRadius();
+    int     rightTopRadius     =Setting::rightTopRadius();
+    int     leftBotRadius      =Setting::leftBottomRadius();
+    int     rightBotRadius     =Setting::rightBottomRadius();
+
     Setting::instance()->endGroup();
 
     //_________________________________________________ INIT
@@ -95,6 +99,9 @@ void StatusLabel::loadSettings()
     setFont(font);
     QFontMetrics fm(font);
     mHeight=fm.height()+(fm.leading()*2)+(mBoreder*2);
+int w=fm.horizontalAdvance("x")*minSize;
+
+setMinimumWidth(w);
 
     //    if(mSuffix.contains("xrdb."))
     //        mSuffix=StyleColors::xrdbget(mSuffix);
@@ -124,9 +131,10 @@ void StatusLabel::loadSettings()
     }
 
     int RadiusSize=radius;
-    RadiusSize=qMax(RadiusSize,leftRadius);
-    RadiusSize=qMax(RadiusSize,rightRadius);
-
+    RadiusSize=qMax(RadiusSize,leftTopRadius);
+    RadiusSize=qMax(RadiusSize,rightTopRadius);
+    RadiusSize=qMax(RadiusSize,leftBotRadius);
+    RadiusSize=qMax(RadiusSize,rightBotRadius);
 
     if(RadiusSize>0)
         setContentsMargins((RadiusSize/2)+1,0,(RadiusSize/2)+1,0);
@@ -141,9 +149,11 @@ void StatusLabel::loadSettings()
                                        alpha,
                                        borderColor,
                                        radius,
-                                       leftRadius,
-                                       rightRadius);
-    qDebug()<<"   [*]"<<__FILE__<<__LINE__<<mName<<radius<<leftRadius<<rightRadius;
+                                       leftTopRadius,
+                                       rightTopRadius,
+                                       leftBotRadius,
+                                       rightBotRadius);
+    qDebug()<<"   [*]"<<__FILE__<<__LINE__<<mName<<radius<<leftTopRadius<<rightTopRadius;
 
     setStyleSheet(mystyle);
 
@@ -194,19 +204,34 @@ void StatusLabel::wheelEvent(QWheelEvent* e)
 void StatusLabel::execCmd(int type)
 {
     QProcess pr;
+    QStringList listLeft=mMouseLeftCmd.split(" ",Qt::SkipEmptyParts);
+    QString cmdLeft=listLeft.first();
+    listLeft.removeFirst();
+
+    QStringList listRight=mMouseRightCmd.split(" ",Qt::SkipEmptyParts);
+    QString cmdRight=listRight.first();
+    listRight.removeFirst();
+
+    QStringList listUp=mMouseWheelUpCmd.split(" ",Qt::SkipEmptyParts);
+    QString cmdUp=listUp.first();
+    listUp.removeFirst();
+
+    QStringList listDown=mMouseWheelDownCmd.split(" ",Qt::SkipEmptyParts);
+    QString cmdDown=listDown.first();
+    listDown.removeFirst();
 
     switch (type) {
     case MouseLeft:
-        pr.startDetached(mMouseLeftCmd);
+        pr.startDetached(cmdLeft,listLeft);
         break;
     case MouseRight:
-        pr.startDetached(mMouseRightCmd);
+        pr.startDetached(cmdRight,listRight);
         break;
     case MouseWheelUp:
-        pr.startDetached(mMouseWheelUpCmd);
+        pr.startDetached(cmdUp,listUp);
         break;
     case MouseWheelDown:
-        pr.startDetached(mMouseWheelDownCmd);
+        pr.startDetached(cmdDown,listDown);
         break;
     default:
         break;
