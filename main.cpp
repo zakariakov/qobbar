@@ -22,6 +22,7 @@ void help()
     puts(" -R  --reconfig                  Reconfigure the bar ex:\"qobbar -R -c top-bar\".");
     puts(" -x  --exit                      close the bar ex:\"qobbar -x -c top-bar\".");
     puts(" -s  --showhide                  show or hide bar. ex: \"qobbar -s -c top-bar\".");
+    puts(" -n  --hindonum                  qisplay the hindo number .١٢٣٤٥٦٧٨٩.");
     puts(" -l  --list                      Print list of available modules.");
     puts(" -b  --bypass-wm                 Bypass the window manager completely.");
     puts(" -signal         <string Key>    Emit signal has chznged .");
@@ -51,6 +52,7 @@ int main(int argc, char *argv[])
     bool reconfig=false;
     bool debug=false;
     bool bypassWm=false;
+    bool hindo=false;
     QString signal;
     if(args.count()>1)
     {
@@ -81,7 +83,7 @@ int main(int argc, char *argv[])
             else if (arg == "-r" || arg == "--right" )   { a.setLayoutDirection(Qt::RightToLeft);}
             else if (arg == "-l" || arg == "--list" )    { mylist(); return 0;}
             else if (arg == "-b" || arg == "--bypass-wm" )    {bypassWm=true;}
-
+            else if (arg == "-n" || arg == "--hindonum" )    {hindo=true;}
 
         }//for
     }//if
@@ -105,6 +107,7 @@ int main(int argc, char *argv[])
     }
 
     Defines::setDeguging(debug);
+    Defines::setHindoNum(hindo);
     PanelWidget w(bypassWm);
 
     new panel_adaptor(&w);

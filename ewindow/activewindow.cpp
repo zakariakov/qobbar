@@ -87,6 +87,8 @@ void ActiveWindow::updateTitle()
     QString result=X11UTILLS::getWindowTitle(m_window);
     if(mTitle==result)return;
 
+    if(Defines::hinDonum())
+        result=Defines::replaceNum(result);
    setTitle( result);
 
 }
@@ -94,6 +96,7 @@ void ActiveWindow::updateTitle()
 void ActiveWindow::setTitle(QString result)
 {
     mTitle=result;
+
    labelTitle-> setToolTip(QString());
    //qDebug()<<"ActiveWindow::maxSize"<<maxSize;
     if(result.length()>maxSize){
@@ -101,7 +104,8 @@ void ActiveWindow::setTitle(QString result)
         result.resize(maxSize-1);
         result+="…";
     }
-
+    if(Defines::hinDonum())
+        result=Defines::replaceNum(result);
     labelTitle->setText(result );
 }
 //____________________________________________________________________________النافذة المفعلة

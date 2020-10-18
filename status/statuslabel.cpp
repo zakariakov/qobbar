@@ -204,25 +204,26 @@ void StatusLabel::wheelEvent(QWheelEvent* e)
 void StatusLabel::execCmd(int type)
 {
     QProcess pr;
-    QStringList listLeft=mMouseLeftCmd.split(" ",Qt::SkipEmptyParts);
-    QString cmdLeft=listLeft.first();
-    listLeft.removeFirst();
 
-    QStringList listRight=mMouseRightCmd.split(" ",Qt::SkipEmptyParts);
+        QStringList listleft=mMouseLeftCmd.split(" ");
+       QString cmdLeft=listleft.first();
+      listleft.removeFirst();
+
+    QStringList listRight=mMouseRightCmd.split(" ");
     QString cmdRight=listRight.first();
     listRight.removeFirst();
 
-    QStringList listUp=mMouseWheelUpCmd.split(" ",Qt::SkipEmptyParts);
+    QStringList listUp=mMouseWheelUpCmd.split(" ");
     QString cmdUp=listUp.first();
     listUp.removeFirst();
 
-    QStringList listDown=mMouseWheelDownCmd.split(" ",Qt::SkipEmptyParts);
+    QStringList listDown=mMouseWheelDownCmd.split(" ");
     QString cmdDown=listDown.first();
     listDown.removeFirst();
 
     switch (type) {
     case MouseLeft:
-        pr.startDetached(cmdLeft,listLeft);
+        pr.startDetached(cmdLeft,listleft);
         break;
     case MouseRight:
         pr.startDetached(cmdRight,listRight);
@@ -238,7 +239,7 @@ void StatusLabel::execCmd(int type)
     }
 
     //تطبيق الامر اذا كان موجودا بمجرد النقر او الازاحة للعجلة
-    if(!mThread->command().isEmpty())
+   if(!mThread->command().isEmpty())
         startRender();
 
 }
@@ -317,6 +318,9 @@ void StatusLabel::updateCmd(QString result)
     else
         txt+=result.trimmed();
 
+    if(Defines::hinDonum())
+        txt=Defines::replaceNum(txt);
+
     setText(txt);
     if(Defines::degug())  qDebug()<<"\033[32m   [-] Statu : "<<mName<< __LINE__<<txt<<"\033[0m";
 
@@ -327,7 +331,12 @@ void Thread::run()
 {
     QProcess pr;
 
-    pr.start(mCmd);
+    QStringList listArg=mCmd.split(" ");
+    if(listArg.isEmpty())return;
+
+   QString cmd=listArg.first();
+  listArg.removeFirst();
+    pr.start(cmd,listArg);
     if (!pr.waitForStarted())
         return ;
 
@@ -340,7 +349,7 @@ void Thread::run()
     if(Defines::degug() && !err.isEmpty())
         qDebug()<<"\033[31m   statu Error command:\033[0m"<<err;
 
-    QStringList list=result.split("\n",QString::SkipEmptyParts);
+    QStringList list=result.split("\n",Qt::SkipEmptyParts);
 
     if(list.count() >0){
         emit terminated(list.last());

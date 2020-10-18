@@ -120,7 +120,12 @@ void Pager::loadSettings()
         mDesktopType=DESKICON;
         QStringList list= Setting::iconsList();
         listIcons.clear();
-        listIcons<<"0"<<"1"<<"2"<<"3"<<"4"<<"5"<<"6"<<"7"<<"8"<<"9";
+
+        if(Defines::hinDonum())
+            listIcons<<"٠"<<"١"<<"٢"<<"٣"<<"٤"<<"٥"<<"٦"<<"٧"<<"٨"<<"٩";
+        else
+             listIcons<<"0"<<"1"<<"2"<<"3"<<"4"<<"5"<<"6"<<"7"<<"8"<<"9";
+
         for (int i = 0; i < list.count(); ++i) {
             if(i<listIcons.count())
                 listIcons.replace(i,list.at(i));
@@ -269,12 +274,16 @@ void Pager::setupBtns()
 
     for (int i = 0; i < m_DeskCount; ++i)
     {
+        QString txt=QString::number(i+1).trimmed();
+
+        if(Defines::hinDonum())
+            txt=Defines::replaceNum(txt);
 
         ToolButton * btn = new ToolButton(this);
 
         switch (mDesktopType) {
         case DESKINDEX:
-            btn->setText(QString::number(i+1).trimmed());
+            btn->setText(txt);
             break;
         case DESKNAME:
             btn->setText(XDesktop::name(i,"desktop").trimmed());
@@ -283,11 +292,11 @@ void Pager::setupBtns()
             if(i<listIcons.count())
                 btn->setText(listIcons.at(i).trimmed());
             else
-                btn->setText(QString::number(i+1).trimmed());
+                btn->setText(txt);
             break;
 
         default:
-            btn->setText(QString::number(i+1).trimmed());//XDesktop::name(i,"desktop")
+            btn->setText(txt);//XDesktop::name(i,"desktop")
             break;
 
         }
@@ -295,12 +304,12 @@ void Pager::setupBtns()
         btn->setCheckable(true);
         btn->setToolTip( tr("Desktop %1").arg(XDesktop::name(i,"desktop")));
         btn->setData(btn->text());
-       if(i==activeDesk){
-        if(mDesktopType==DESKICON && activeDesk<listIcons.count() && !mActiveIcon.isEmpty()){
-            btn->setText(mActiveIcon);
-            btn->setData(mActiveIcon);
+        if(i==activeDesk){
+            if(mDesktopType==DESKICON && activeDesk<listIcons.count() && !mActiveIcon.isEmpty()){
+                btn->setText(mActiveIcon);
+                btn->setData(mActiveIcon);
+            }
         }
-       }
         //qDebug()<<"desktop name ::"<<   XDesktop::name(i,"desktop").trimmed();
         //  btn->setText(QString::number(i+1));//XDesktop::name(i,"desktop")
 
@@ -426,7 +435,7 @@ void Pager::actvateBtnDesktop()
     else
         rechargeDesktop();
 
-   refreshTaskButton();
+   refreshTaskList();
 }
 
 //__________________________________________________________________________________
@@ -445,7 +454,7 @@ void Pager::goDesktop(int arg)
 
    if(Defines::degug())  qDebug()<<"\033[34m   [-]"<<"Pager:"<< __LINE__<<"current\033[0m"<<current<<max;
     XDesktop::setCurrent(current);
-
+refreshTaskButton();
 }
 
 //__________________________________________________________________________________
